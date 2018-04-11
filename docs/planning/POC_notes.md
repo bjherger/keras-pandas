@@ -34,4 +34,89 @@ Requirements:
 
 ## Custom module
 
- - 
+ - Can sit on top of Pandas-SKLearn
+ - Can mimic SKLearn `fit` and `transform` interface
+
+#  Need to determine if it'll be handled as numerical or categorical
+
+## Numerical 
+
+ - Less compute time
+ - Reduced complexity
+
+## Categorical
+
+ - Embedding representing different values
+
+# Pip installable: Need to determine level of effort
+
+## Lit review
+
+ - PMOTW: Setuptools
+ - Common library: setuptools
+ - PMOTW: distutils
+ - Common library: distutils
+ - Blog review
+
+## PMOTW: Setuptools
+
+ - Unavailable
+
+## [Common library: setuptools](https://setuptools.readthedocs.io/en/latest/)
+
+ - Designed to facilitate packaging Python projects
+ - Enhancement to distutils
+
+Highlights
+
+ - Dependency resolution & downloading
+ - Create eggs
+ - Automatically create wrapper scripts & .exe files
+ - [Decent getting started guide](https://setuptools.readthedocs.io/en/latest/setuptools.html#basic-use)
+
+Superset of of distutils
+
+## PMOTW: distutils
+
+ - Unavailable
+
+## [Common library: distutils](https://docs.python.org/2/distutils/)
+
+[Intro](https://docs.python.org/2/distutils/introduction.html)
+
+ - Setup script
+ - Source distribution
+ - Binary distributions
+
+Setup script
+
+ - Handles packaging
+ - Not aware of package managers
+
+[PyPi](https://docs.python.org/2/distutils/packageindex.html#pypi-overview)
+
+ - Registering
+ - Upload
+
+## Blogs
+
+ - [Marthall](https://marthall.github.io/blog/how-to-package-a-python-app/)
+ - [so](https://stackoverflow.com/questions/9411494/how-do-i-create-a-pip-installable-project)
+
+## [Marthall](https://marthall.github.io/blog/how-to-package-a-python-app/)
+
+ - Strong, convenient walk through
+
+## [so](https://stackoverflow.com/questions/9411494/how-do-i-create-a-pip-installable-project)
+
+ - Rambling
+
+## [Scott Torborg](http://python-packaging.readthedocs.io/en/latest/)
+
+- Strong advanced discussion
+- How to declare dependencies
+
+# Decisions
+
+ - Interface: Will use custom interface, similar to SKLearn, with Pandas-SKLearn under the hood.
+ - Pip installable: Will move forward w/ setuptools
