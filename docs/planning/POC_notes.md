@@ -116,6 +116,10 @@ Setup script
 - Strong advanced discussion
 - How to declare dependencies
 
+## [PyPI docs](https://packaging.python.org/tutorials/distributing-packages/#uploading-your-project-to-pypi)
+
+
+
 # Decisions
 
  - Interface: Will use custom interface, similar to SKLearn, with Pandas-SKLearn under the hood.

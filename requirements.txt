@@ -1,0 +1,16 @@
+Package         Version
+--------------- -------
+Keras           2.1.5  
+numpy           1.14.2 
+pandas          0.22.0 
+pip             9.0.3  
+python-dateutil 2.7.2  
+pytz            2018.4 
+PyYAML          3.12   
+scikit-learn    0.19.1 
+scipy           1.0.1  
+setuptools      39.0.1 
+six             1.11.0 
+sklearn         0.0    
+sklearn-pandas  1.6.0  
+wheel           0.31.0 
