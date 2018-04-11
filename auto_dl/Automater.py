@@ -1,5 +1,6 @@
 class Automater(object):
-    def __init__(self):
+    def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(),
+                 non_transformed_vars=list()):
 
         # TODO
         self._sklearn_pandas_object = None
@@ -25,11 +26,15 @@ class Automater(object):
         # TODO
         self._output_nub = None
 
-    def fit(self):
+    def fit(self, dataframe):
         # TODO
         pass
 
-    def transform(self):
+    def transform(self, dataframe):
+        # TODO
+        pass
+
+    def fit_transform(self, dataframe):
         # TODO
         pass
 
@@ -41,11 +46,11 @@ class Automater(object):
         # TODO
         pass
 
-    def set_embedding_size_function(self):
+    def set_embedding_size_function(self, embedding_size_function):
         # TODO
         pass
 
-    def set_embedding_size(self, variable):
+    def set_embedding_size(self, variable, embedding_size):
         # TODO
         pass
 
