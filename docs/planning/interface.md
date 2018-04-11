@@ -28,6 +28,8 @@
  - check_input_dataframe_columns
  - check_output_dataframe_columns
  - datetime expansion
+ - get_input_nub
+ - get_output_nub
 
 ## Attributes
 
@@ -37,3 +39,5 @@
  - variable_transformer_dict
  - input_variables
  - output variables
+ - input_numb
+ - output_nub
