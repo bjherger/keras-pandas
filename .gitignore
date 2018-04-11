@@ -1,0 +1,10 @@
+# Compiled python code
+~.pyc
+*.pyc
+
+# Mac files
+.DS_Store
+**/.DS_Store
+
+# User-specific Idea / Pycharm files
+.idea/
