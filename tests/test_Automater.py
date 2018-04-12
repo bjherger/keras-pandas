@@ -50,6 +50,7 @@ class test_Automater(unittest.TestCase):
         self.assertEqual({'numerical_vars': list(), 'categorical_vars': list(),
                                                     'boolean_vars': list(), 'datetime_vars': list(),
                                                     'non_transformed_vars': list()}, auto._variable_type_dict,)
+        self.assertItemsEqual(list(), auto._input_variables)
 
         # Common use case: Variables in each
         data = {
@@ -65,7 +66,11 @@ class test_Automater(unittest.TestCase):
         auto = Automater(numerical_vars=data['numerical_vars'], categorical_vars=data['categorical_vars'],
                          datetime_vars=data['datetime_vars'])
 
+
         self.assertEqual(response, auto._variable_type_dict)
+
+        response_variable_list = [item for sublist in response.values() for item in sublist]
+        self.assertItemsEqual(response_variable_list, auto._input_variables)
 
         # Overlapping variable lists
         data = {
@@ -81,5 +86,7 @@ class test_Automater(unittest.TestCase):
         self.assertRaises(ValueError, Automater().__init__(), numerical_vars=data['numerical_vars'],
                           categorical_vars=data['categorical_vars'],
                          datetime_vars=data['datetime_vars'])
+
+
 
 

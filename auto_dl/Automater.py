@@ -26,7 +26,7 @@ class Automater(object):
         self._variable_transformer_dict = None
 
         # TODO
-        self._input_variables = None
+        self._input_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
 
         # TODO
         self._output_variables = None
