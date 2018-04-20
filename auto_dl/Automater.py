@@ -37,7 +37,7 @@ class Automater(object):
         self._output_variables = None
 
         # TODO
-        self._input_nub = None
+        self._input_nub = self._create_input_nub(self._variable_type_dict)
 
         # TODO
         self._output_nub = None
@@ -100,6 +100,25 @@ class Automater(object):
 
     def _datetime_expansion_(self, dataframe):
         # TODO
+        pass
+
+    @staticmethod
+    def _create_input_nub(_variable_type_dict):
+        # TODO Set up reference variables
+        # TODO Variable names
+        # TODO Input layers
+        # TODO Input nub tips
+
+        # TODO Iterate through variable types
+
+            # TODO Pull correct handler for variable type
+
+            # TODO Iterate through variables for current variable type
+
+            # TODO Apply handler to current variable, creating nub input and nub tip
+
+        # TODO Concatenate nub tips
+
         pass
 
     @staticmethod
