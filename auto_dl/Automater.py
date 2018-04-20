@@ -1,4 +1,9 @@
+import logging
+
+from sklearn_pandas import DataFrameMapper
+
 import lib
+import constants
 
 
 class Automater(object):
@@ -13,8 +18,8 @@ class Automater(object):
         self._variable_type_dict['non_transformed_vars'] = non_transformed_vars
         lib.check_variable_list_are_valid(self._variable_type_dict)
 
-        # TODO
-        self._sklearn_pandas_object = None
+        # Create mapper, to transform input variables
+        self._sklearn_pandas_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict)
 
         # TODO
         self._datetime_expansion_method_dict = None
@@ -96,3 +101,26 @@ class Automater(object):
     def _datetime_expansion_(self, dataframe):
         # TODO
         pass
+
+    @staticmethod
+    def _create_sklearn_pandas_mapper(_variable_type_dict):
+
+        transformation_list = list()
+
+        # Iterate through all variable types
+        for (variable_type, variable_list) in _variable_type_dict.items():
+            logging.info('Working variable type: {}, with variable list: {}'.format(variable_type, variable_list))
+
+            # Extract default transformation pipeline
+            default_pipeline = constants.mapper_default_pipelines[variable_type]
+            logging.info('For variable type: {}, using default pipeline: {}'.format(variable_type, default_pipeline))
+
+            for variable in variable_list:
+                logging.debug('Creating transformation for variable: {}'.format(variable))
+
+                transformation_list.append((variable, default_pipeline))
+
+        logging.info('Created transformation pipeline: {}'.format(transformation_list))
+        mapper = DataFrameMapper(transformation_list)
+
+        return mapper

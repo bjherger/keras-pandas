@@ -1,6 +1,8 @@
 import copy
 import unittest
 
+from sklearn.preprocessing import Imputer, StandardScaler
+
 from auto_dl import lib
 from auto_dl.Automater import Automater
 
@@ -42,6 +44,38 @@ class test_Automater(unittest.TestCase):
         }
 
         self.assertRaises(ValueError, lib.check_variable_list_are_valid, data)
+
+    def test_create_sklearn_pandas_mapper(self):
+        # Base case: No variables
+        data = {}
+        mapper = Automater._create_sklearn_pandas_mapper(data)
+        self.assertItemsEqual(list(), mapper.features)
+
+        # A single numerical
+        data = {'numerical_vars': ['n1']}
+        mapper = Automater._create_sklearn_pandas_mapper(data)
+        self.assertEqual(1, len(mapper.features))
+
+        # Two numerical
+        data = {'numerical_vars': ['n1', 'n2']}
+        mapper = Automater._create_sklearn_pandas_mapper(data)
+        self.assertEqual(2, len(mapper.features))
+
+        # Two variables of different types
+        data = {'numerical_vars': ['n1'],
+                'categorical_vars': ['c1']}
+        mapper = Automater._create_sklearn_pandas_mapper(data)
+        self.assertEqual(2, len(mapper.features))
+
+        # Two varibles with default pipelines
+        data = {'NO_DEFAULT_ASDFSDA': ['x1', 'x2']}
+        mapper = Automater._create_sklearn_pandas_mapper(data)
+        self.assertEqual(2, len(mapper.features))
+
+        mapper_pipelines = map(lambda x: x[1], mapper.features)
+
+        self.assertItemsEqual([None, None], mapper_pipelines)
+
 
     def test_Automater_initializer(self):
 
