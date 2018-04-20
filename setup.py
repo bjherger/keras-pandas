@@ -6,9 +6,6 @@ from setuptools import setup
 
 with open('requirements.txt') as f:
     required = f.read().splitlines()
-    required = required[2:]
-    required = map(lambda x: x.strip(), required)
-    required = map(lambda x: re.sub(r'\s+', '==', x), required)
 
 setup(
     name='auto_dl',

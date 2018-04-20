@@ -1,21 +1,17 @@
-Package         Version
---------------- -------
-attrs           17.4.0 
-funcsigs        1.0.2  
-Keras           2.1.5  
-more-itertools  4.1.0  
-numpy           1.14.2 
-pandas          0.22.0 
-pip             9.0.3  
-pluggy          0.6.0  
-py              1.5.3  
-python-dateutil 2.7.2  
-pytz            2018.4 
-PyYAML          3.12   
-scikit-learn    0.19.1 
-scipy           1.0.1  
-setuptools      39.0.1 
-six             1.11.0 
-sklearn         0.0    
-sklearn-pandas  1.6.0  
-wheel           0.31.0 
+attrs==17.4.0
+certifi==2018.4.16
+funcsigs==1.0.2
+Keras==2.1.5
+more-itertools==4.1.0
+numpy==1.14.2
+pandas==0.22.0
+pluggy==0.6.0
+py==1.5.3
+python-dateutil==2.7.2
+pytz==2018.4
+PyYAML==3.12
+scikit-learn==0.19.1
+scipy==1.0.1
+six==1.11.0
+sklearn==0.0
+sklearn-pandas==1.6.0
