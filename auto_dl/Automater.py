@@ -1,3 +1,4 @@
+import copy
 import logging
 
 from sklearn_pandas import DataFrameMapper
@@ -9,6 +10,9 @@ import constants
 class Automater(object):
     def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
                  non_transformed_vars=list()):
+
+        self.fitted = False
+
         # Set up variable type dict, with entries <variable_type, list of variables>
         self._variable_type_dict = dict()
         self._variable_type_dict['numerical_vars'] = numerical_vars
@@ -18,8 +22,14 @@ class Automater(object):
         self._variable_type_dict['non_transformed_vars'] = non_transformed_vars
         lib.check_variable_list_are_valid(self._variable_type_dict)
 
+        # Create transformation pipeline from defaults
+        self.sklearn_mapper_pipelines = copy.deepcopy(constants.default_sklearn_mapper_pipelines)
+
         # Create mapper, to transform input variables
         self._sklearn_pandas_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict)
+
+        # Create input variable type handler
+        self.input_nub_type_handlers = constants.default_input_nub_type_handlers
 
         # TODO
         self._datetime_expansion_method_dict = None
@@ -36,14 +46,22 @@ class Automater(object):
         # TODO
         self._output_variables = None
 
-        # TODO
-        self._input_nub = self._create_input_nub(self._variable_type_dict)
+    def fit(self, input_dataframe):
+        # TODO Validate input dataframe
 
-        # TODO
-        self._output_nub = None
+        # Fit _sklearn_pandas_mapper with input dataframe
+        self._sklearn_pandas_mapper.fit(input_dataframe)
 
-    def fit(self, dataframe):
-        # TODO
+        # Transform input dataframe, for use to create input layers
+        self._sklearn_pandas_mapper.transform(input_dataframe)
+
+        # TODO Initialize & set input layers
+        self._create_input_nub(self._variable_type_dict, input_dataframe)
+
+        # TODO Initialize & set output layer(s)
+
+        # TODO Set self.fitted to True
+
         pass
 
     def transform(self, dataframe):
@@ -102,27 +120,41 @@ class Automater(object):
         # TODO
         pass
 
-    @staticmethod
-    def _create_input_nub(_variable_type_dict):
-        # TODO Set up reference variables
-        # TODO Variable names
-        # TODO Input layers
-        # TODO Input nub tips
+    def _create_input_nub(self, _variable_type_dict, input_dataframe):
 
-        # TODO Iterate through variable types
+        logging.info('Beginning creation of input nubs and input nub tips')
 
-            # TODO Pull correct handler for variable type
+        # Set up reference variables
+        # Variable names
+        input_variable_names = list()
 
+        # Input layers
+        input_layers = list()
+
+        # Input nub tips (nub tip = the last layer for a specific input. This is the layer that is connected to the rest
+        # of the network)
+        input_nub_tips = list()
+
+        # Iterate through variable types
+        for (variable_type, variable_type_list) in _variable_type_dict.items():
+            logging.info('Creating input nubs for variable_type: {}'.format(variable_type))
+
+            # Pull correct handler for variable type
+            if variable_type in self.input_nub_type_handlers:
+                variable_type_handler = self.input_nub_type_handlers[variable_type]
+            else:
+                raise ValueError('No handler for provided variable_type: {}'.format(variable_type))
+            
             # TODO Iterate through variables for current variable type
 
             # TODO Apply handler to current variable, creating nub input and nub tip
+            pass
 
         # TODO Concatenate nub tips
 
-        pass
+        return input_nub_tips
 
-    @staticmethod
-    def _create_sklearn_pandas_mapper(_variable_type_dict):
+    def _create_sklearn_pandas_mapper(self, _variable_type_dict):
 
         transformation_list = list()
 
@@ -131,7 +163,7 @@ class Automater(object):
             logging.info('Working variable type: {}, with variable list: {}'.format(variable_type, variable_list))
 
             # Extract default transformation pipeline
-            default_pipeline = constants.mapper_default_pipelines[variable_type]
+            default_pipeline = self.sklearn_mapper_pipelines[variable_type]
             logging.info('For variable type: {}, using default pipeline: {}'.format(variable_type, default_pipeline))
 
             for variable in variable_list:
