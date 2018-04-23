@@ -1,6 +1,7 @@
 import copy
 import logging
 
+from keras.layers import Concatenate
 from sklearn_pandas import DataFrameMapper
 
 import lib
@@ -22,6 +23,12 @@ class Automater(object):
         self._variable_type_dict['non_transformed_vars'] = non_transformed_vars
         lib.check_variable_list_are_valid(self._variable_type_dict)
 
+        # Create list of user provided input variables
+        self._user_provided_input_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
+
+        # TODO
+        self._output_variables = None
+
         # Create transformation pipeline from defaults
         self.sklearn_mapper_pipelines = copy.deepcopy(constants.default_sklearn_mapper_pipelines)
 
@@ -32,6 +39,9 @@ class Automater(object):
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
 
         # TODO
+        self.input_nub = None
+
+        # TODO
         self._datetime_expansion_method_dict = None
 
         # TODO
@@ -40,11 +50,7 @@ class Automater(object):
         # TODO
         self._variable_transformer_dict = None
 
-        # TODO
-        self._input_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
 
-        # TODO
-        self._output_variables = None
 
     def fit(self, input_dataframe):
         # TODO Validate input dataframe
@@ -55,28 +61,22 @@ class Automater(object):
         # Transform input dataframe, for use to create input layers
         self._sklearn_pandas_mapper.transform(input_dataframe)
 
-        # TODO Initialize & set input layers
-        self._create_input_nub(self._variable_type_dict, input_dataframe)
+        # Initialize & set input layers
+        input_layers, input_nub = self._create_input_nub(self._variable_type_dict, input_dataframe)
+        self.input_nub = input_nub
 
         # TODO Initialize & set output layer(s)
 
-        # TODO Set self.fitted to True
+        # Set self.fitted to True
+        self.fitted = True
 
-        pass
+        return self
 
     def transform(self, dataframe):
         # TODO
         pass
 
     def fit_transform(self, dataframe):
-        # TODO
-        pass
-
-    def get_input_nub(self):
-        # TODO
-        pass
-
-    def get_output_nub(self):
         # TODO
         pass
 
@@ -100,14 +100,6 @@ class Automater(object):
         # TODO
         pass
 
-    def list_input_variables(self):
-        # TODO
-        pass
-
-    def list_output_variables(self):
-        # TODO
-        pass
-
     def _check_input_dataframe_columns_(self, input_dataframe):
         # TODO
         pass
@@ -122,11 +114,10 @@ class Automater(object):
 
     def _create_input_nub(self, _variable_type_dict, input_dataframe):
 
-        logging.info('Beginning creation of input nubs and input nub tips')
+        logging.info('Beginning creation of input nubs and input nub tips for _variable_type_dict: {}'.format(
+            _variable_type_dict))
 
         # Set up reference variables
-        # Variable names
-        input_variable_names = list()
 
         # Input layers
         input_layers = list()
@@ -136,23 +127,42 @@ class Automater(object):
         input_nub_tips = list()
 
         # Iterate through variable types
-        for (variable_type, variable_type_list) in _variable_type_dict.items():
+        # TODO Iterate through handled variable types, rather than given variable types. Ordering could matter.
+        for (variable_type, variable_list) in _variable_type_dict.items():
             logging.info('Creating input nubs for variable_type: {}'.format(variable_type))
+
+            if len(variable_list) <= 0:
+                logging.info('Variable type {} has 0 corresponding variables. Skipping.'.format(variable_type))
+                continue
 
             # Pull correct handler for variable type
             if variable_type in self.input_nub_type_handlers:
                 variable_type_handler = self.input_nub_type_handlers[variable_type]
             else:
                 raise ValueError('No handler for provided variable_type: {}'.format(variable_type))
-            
-            # TODO Iterate through variables for current variable type
 
-            # TODO Apply handler to current variable, creating nub input and nub tip
-            pass
+            # Iterate through variables for current variable type
+            for variable in variable_list:
+                logging.debug('Creating input nub for variable type: {}, variable: {}'.format(variable_type, variable))
+
+                if variable not in self._user_provided_input_variables:
+                    raise ValueError(
+                        'Unknown input variable: {}, which is not in list of input variables'.format(variable))
+
+                if variable not in input_dataframe.columns:
+                    raise ValueError('Given variable: {} is not in transformed dataframe columns: {}'
+                                     .format(variable, input_dataframe.columns))
+
+                # Apply handler to current variable, creating nub input and nub tip
+                variable_input, variable_input_nub_tip = variable_type_handler(variable, input_dataframe)
+                input_layers.append(variable_input)
+                input_nub_tips.append(variable_input_nub_tip)
 
         # TODO Concatenate nub tips
+        logging.info('Creating input_nub, by concatenating input_nub_tips: {}'.format(input_nub_tips))
+        input_nub = Concatenate(input_nub_tips, name='concatenate_inputs')
 
-        return input_nub_tips
+        return input_layers, input_nub
 
     def _create_sklearn_pandas_mapper(self, _variable_type_dict):
 
@@ -169,7 +179,7 @@ class Automater(object):
             for variable in variable_list:
                 logging.debug('Creating transformation for variable: {}'.format(variable))
 
-                transformation_list.append((variable, default_pipeline))
+                transformation_list.append(([variable], default_pipeline))
 
         logging.info('Created transformation pipeline: {}'.format(transformation_list))
         mapper = DataFrameMapper(transformation_list)

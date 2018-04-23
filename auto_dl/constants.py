@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+import keras
 from sklearn.preprocessing import Imputer, StandardScaler, LabelEncoder
 
 default_sklearn_mapper_pipelines = defaultdict(lambda: None)
@@ -12,8 +13,22 @@ default_sklearn_mapper_pipelines.update({
 })
 
 
-def input_nub_numeric_handler(variable_name):
-    pass
+def input_nub_numeric_handler(variable, input_dataframe):
+
+    # Get transformed data for shaping
+    transformed = input_dataframe[variable].as_matrix()
+
+    # Set up dimensions for input layer
+    if len(transformed.shape) >= 2:
+        input_length = int(transformed.shape[1])
+    else:
+        input_length = 1
+
+    # Create input layer
+    input = keras.Input(shape=(input_length,), dtype='float32', name='input_{}'.format(variable))
+
+    # Return, in format of input, last variable-specific layer
+    return input, input
 
 default_input_nub_type_handlers = dict()
 

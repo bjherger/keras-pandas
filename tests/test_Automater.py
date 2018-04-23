@@ -1,11 +1,14 @@
 import copy
+import logging
 import unittest
 
 import pandas
-from sklearn.preprocessing import Imputer, StandardScaler
+from keras.layers import Concatenate
 
 from auto_dl import lib
 from auto_dl.Automater import Automater
+
+logging.getLogger().setLevel(logging.DEBUG)
 
 
 class test_Automater(unittest.TestCase):
@@ -82,7 +85,7 @@ class test_Automater(unittest.TestCase):
         self.assertEqual({'numerical_vars': list(), 'categorical_vars': list(),
                           'boolean_vars': list(), 'datetime_vars': list(),
                           'non_transformed_vars': list()}, auto._variable_type_dict, )
-        self.assertItemsEqual(list(), auto._input_variables)
+        self.assertItemsEqual(list(), auto._user_provided_input_variables)
 
         # Common use case: Variables in each
         data = {
@@ -101,7 +104,7 @@ class test_Automater(unittest.TestCase):
         self.assertEqual(response, auto._variable_type_dict)
 
         response_variable_list = [item for sublist in response.values() for item in sublist]
-        self.assertItemsEqual(response_variable_list, auto._input_variables)
+        self.assertItemsEqual(response_variable_list, auto._user_provided_input_variables)
 
         # Overlapping variable lists
         data = {
@@ -118,26 +121,50 @@ class test_Automater(unittest.TestCase):
                           categorical_vars=data['categorical_vars'],
                           datetime_vars=data['datetime_vars'])
 
-    def test_Automater_fit(self):
-        pass
+    def test_fit(self):
+        iris_df = self.iris_dataframe()
+
+        # One variable
+        iris_numerical_cols = ['sepal_length']
+        auto = Automater(numerical_vars=iris_numerical_cols)
+        auto.fit(iris_df)
+        self.assertEqual(iris_numerical_cols, auto._user_provided_input_variables)
+
+        self.assertTrue(auto.fitted)
+
+        self.assertEqual(Automater, type(auto))
+
+        # Assert that transformation pipline has been built / trained
+        self.assertEqual([['sepal_length']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
+
+
+    def test_transform(self):
+        iris_df = self.iris_dataframe()
+
 
     def test_create_input_nub_numerical(self):
         iris_df = self.iris_dataframe()
 
         # Zero variables
         variable_type_dict = {'numerical_vars': []}
-        input_nub = Automater._create_input_nub(variable_type_dict, iris_df)
-        self.assertEqual(list(), input_nub)
+        input_layers, input_nub = Automater()._create_input_nub(variable_type_dict, iris_df)
+        self.assertEqual(list(), input_layers)
 
         # One variable
         iris_numerical_cols = ['sepal_length']
         variable_type_dict = {'numerical_vars': iris_numerical_cols}
-        input_nub = Automater._create_input_nub(variable_type_dict, iris_df)
-        self.assertEqual(1, len(input_nub))
+        input_layers, input_nub = Automater(numerical_vars=iris_numerical_cols)._create_input_nub(variable_type_dict, iris_df)
+        self.assertEqual(1, len(input_layers))
 
+        # Multiple numeric variables
         iris_numerical_cols = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
+        variable_type_dict = {'numerical_vars': iris_numerical_cols}
+        input_layers, input_nub = Automater(numerical_vars=iris_numerical_cols)._create_input_nub(variable_type_dict,
+                                                                                                  iris_df)
+        self.assertEqual(4, len(input_layers))
 
         pass
+
 
     @staticmethod
     def iris_dataframe():
