@@ -10,9 +10,10 @@ import constants
 
 class Automater(object):
     def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
-                 non_transformed_vars=list()):
+                 non_transformed_vars=list(), df_out=False):
 
         self.fitted = False
+        self.df_out = df_out
 
         # Set up variable type dict, with entries <variable_type, list of variables>
         self._variable_type_dict = dict()
@@ -33,7 +34,7 @@ class Automater(object):
         self.sklearn_mapper_pipelines = copy.deepcopy(constants.default_sklearn_mapper_pipelines)
 
         # Create mapper, to transform input variables
-        self._sklearn_pandas_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict)
+        self._sklearn_pandas_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict, self.df_out)
 
         # Create input variable type handler
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
@@ -74,7 +75,16 @@ class Automater(object):
 
     def transform(self, dataframe):
         # TODO
-        pass
+
+        # TODO Check variables
+
+        # TODO Expand variables, as necessary
+
+        # TODO Transform expanded dataframe
+        transformed = self._sklearn_pandas_mapper.transform(dataframe)
+
+        # TODO Return transformed dataframe
+        return transformed
 
     def fit_transform(self, dataframe):
         # TODO
@@ -164,7 +174,7 @@ class Automater(object):
 
         return input_layers, input_nub
 
-    def _create_sklearn_pandas_mapper(self, _variable_type_dict):
+    def _create_sklearn_pandas_mapper(self, _variable_type_dict, df_out):
 
         transformation_list = list()
 
@@ -182,6 +192,6 @@ class Automater(object):
                 transformation_list.append(([variable], default_pipeline))
 
         logging.info('Created transformation pipeline: {}'.format(transformation_list))
-        mapper = DataFrameMapper(transformation_list)
+        mapper = DataFrameMapper(transformation_list, df_out=df_out)
 
         return mapper

@@ -51,35 +51,35 @@ class test_Automater(unittest.TestCase):
     def test_create_sklearn_pandas_mapper_pipeline_length(self):
         # Base case: No variables
         data = {}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
+        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
         self.assertItemsEqual(list(), mapper.features)
 
         # A single numerical
         data = {'numerical_vars': ['n1']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
+        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
         self.assertEqual(1, len(mapper.features))
 
         # Two numerical
         data = {'numerical_vars': ['n1', 'n2']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
+        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
         self.assertEqual(2, len(mapper.features))
 
         # Two variables of different types
         data = {'numerical_vars': ['n1'],
                 'categorical_vars': ['c1']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
+        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
         self.assertEqual(2, len(mapper.features))
 
         # Two varibles with default pipelines
         data = {'NO_DEFAULT_ASDFSDA': ['x1', 'x2']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
+        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
         self.assertEqual(2, len(mapper.features))
 
         mapper_pipelines = map(lambda x: x[1], mapper.features)
 
         self.assertItemsEqual([None, None], mapper_pipelines)
 
-    def test_Automater_initializer(self):
+    def test_initializer(self):
         # Base case: No variables
         auto = Automater()
         self.assertEqual({'numerical_vars': list(), 'categorical_vars': list(),
@@ -101,6 +101,7 @@ class test_Automater(unittest.TestCase):
         auto = Automater(numerical_vars=data['numerical_vars'], categorical_vars=data['categorical_vars'],
                          datetime_vars=data['datetime_vars'])
 
+        self.assertEqual(False, auto.fitted)
         self.assertEqual(response, auto._variable_type_dict)
 
         response_variable_list = [item for sublist in response.values() for item in sublist]
@@ -121,6 +122,8 @@ class test_Automater(unittest.TestCase):
                           categorical_vars=data['categorical_vars'],
                           datetime_vars=data['datetime_vars'])
 
+        # TODO Test that df_out is captured correctly
+
     def test_fit(self):
         iris_df = self.iris_dataframe()
 
@@ -137,10 +140,28 @@ class test_Automater(unittest.TestCase):
         # Assert that transformation pipline has been built / trained
         self.assertEqual([['sepal_length']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
 
-
     def test_transform(self):
         iris_df = self.iris_dataframe()
 
+        # Single numerical variable, df_out = False
+        iris_numerical_cols = ['sepal_length']
+        auto = Automater(numerical_vars=iris_numerical_cols, df_out=False)
+        auto.fit(iris_df)
+
+        transformed = auto.transform(iris_df)
+        self.assertEqual((150, 1), transformed.shape)
+
+        # Single numerical variable, df_out = True
+        iris_numerical_cols = ['sepal_length']
+        auto = Automater(numerical_vars=iris_numerical_cols, df_out=True)
+        auto.fit(iris_df)
+
+        transformed = auto.transform(iris_df)
+        self.assertEqual(150, len(transformed.index))
+        self.assertEqual((150, 1), transformed.shape)
+        self.assertEqual(['sepal_length'], transformed.columns)
+
+        print
 
     def test_create_input_nub_numerical(self):
         iris_df = self.iris_dataframe()
@@ -153,7 +174,8 @@ class test_Automater(unittest.TestCase):
         # One variable
         iris_numerical_cols = ['sepal_length']
         variable_type_dict = {'numerical_vars': iris_numerical_cols}
-        input_layers, input_nub = Automater(numerical_vars=iris_numerical_cols)._create_input_nub(variable_type_dict, iris_df)
+        input_layers, input_nub = Automater(numerical_vars=iris_numerical_cols)._create_input_nub(variable_type_dict,
+                                                                                                  iris_df)
         self.assertEqual(1, len(input_layers))
 
         # Multiple numeric variables
@@ -164,7 +186,6 @@ class test_Automater(unittest.TestCase):
         self.assertEqual(4, len(input_layers))
 
         pass
-
 
     @staticmethod
     def iris_dataframe():
