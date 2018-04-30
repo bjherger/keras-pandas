@@ -3,7 +3,8 @@ import logging
 import unittest
 
 import pandas
-from keras.layers import Concatenate
+from keras import Model
+from keras.layers import Concatenate, Dense
 
 from auto_dl import lib
 from auto_dl.Automater import Automater
@@ -161,7 +162,6 @@ class test_Automater(unittest.TestCase):
         self.assertEqual((150, 1), transformed.shape)
         self.assertEqual(['sepal_length'], transformed.columns)
 
-        print
 
     def test_create_input_nub_numerical(self):
         iris_df = self.iris_dataframe()
@@ -185,7 +185,37 @@ class test_Automater(unittest.TestCase):
                                                                                                   iris_df)
         self.assertEqual(4, len(input_layers))
 
+
+
+    def test_numerical_whole(self):
+        # St up data set
+        iris = self.iris_dataframe()
+        iris_numerical_cols = ['sepal_length', 'petal_length']
+
+        # Create auto
+        auto = Automater(numerical_vars=iris_numerical_cols)
+
+        # Train auto
+        auto.fit(iris)
+
+        # Extract input_nub from auto
+        input_nub = auto.input_nub
+
+        # Extract output_nub from auto
+        output_nub = auto.output_nub
+
+        # Create DL model
+        x = input_nub
+        x = Dense(30)(x)
+        x = output_nub(x)
+
+        print Model(inputs=auto.input_layers, outputs=x)
+
+        # TODO Train DL model
+
         pass
+
+
 
     @staticmethod
     def iris_dataframe():

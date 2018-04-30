@@ -1,7 +1,7 @@
 import copy
 import logging
 
-from keras.layers import Concatenate
+from keras.layers import Concatenate, Dense
 from sklearn_pandas import DataFrameMapper
 
 import lib
@@ -40,7 +40,12 @@ class Automater(object):
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
 
         # TODO
+        self.input_layers = None
         self.input_nub = None
+
+
+
+        self.output_nub = None
 
         # TODO
         self._datetime_expansion_method_dict = None
@@ -53,10 +58,11 @@ class Automater(object):
 
 
 
-    def fit(self, input_dataframe):
+    def fit(self, input_dataframe, y=None):
         # TODO Validate input dataframe
 
         # Fit _sklearn_pandas_mapper with input dataframe
+        # TODO Allow users to fit on dataframes that do not contain y variable
         self._sklearn_pandas_mapper.fit(input_dataframe)
 
         # Transform input dataframe, for use to create input layers
@@ -64,9 +70,13 @@ class Automater(object):
 
         # Initialize & set input layers
         input_layers, input_nub = self._create_input_nub(self._variable_type_dict, input_dataframe)
+        self.input_layers = input_layers
         self.input_nub = input_nub
 
+
         # TODO Initialize & set output layer(s)
+        if y is not None:
+            self.output_nub = self._create_output_nub(self._variable_type_dict, input_dataframe, y=y)
 
         # Set self.fitted to True
         self.fitted = True
@@ -173,6 +183,37 @@ class Automater(object):
         input_nub = Concatenate(input_nub_tips, name='concatenate_inputs')
 
         return input_layers, input_nub
+
+    def _create_output_nub(self, _variable_type_dict, input_dataframe, y):
+        logging.info('Creating output nub, for variable: {}'.format(y))
+
+        # Find which variable type for response variable
+        response_variable_types = filter(lambda (key, value): y in value, _variable_type_dict.items())
+        logging.info('Found response variable type(s)'.format(response_variable_types))
+        if len(y) <1:
+            raise ValueError('Response variable: {} is not in provided variable type lists'.format(y))
+        elif len(y) > 1:
+            raise ValueError('Response variable: {} appears in more than one provided variable type lists'.format(
+                y))
+
+        response_variable_type = response_variable_types[0]
+
+        output_nub = None
+
+        if response_variable_type == 'numerical_vars':
+            # Create Dense layer w/ single node
+            output_nub = Dense(units=1, activation='linear')
+        else:
+            raise NotImplementedError('Output layer for variable type: {} not yet implemented'.format(response_variable_type))
+
+        return output_nub
+
+
+
+        # TODO Create appropriate output layer
+
+        # TODO Return output layer
+
 
     def _create_sklearn_pandas_mapper(self, _variable_type_dict, df_out):
 
