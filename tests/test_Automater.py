@@ -196,7 +196,7 @@ class test_Automater(unittest.TestCase):
         auto = Automater(numerical_vars=iris_numerical_cols)
 
         # Train auto
-        auto.fit(iris)
+        auto.fit(iris, y='sepal_length')
 
         # Extract input_nub from auto
         input_nub = auto.input_nub

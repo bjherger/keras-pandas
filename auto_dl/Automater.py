@@ -44,7 +44,6 @@ class Automater(object):
         self.input_nub = None
 
 
-
         self.output_nub = None
 
         # TODO
@@ -76,6 +75,7 @@ class Automater(object):
 
         # TODO Initialize & set output layer(s)
         if y is not None:
+
             self.output_nub = self._create_output_nub(self._variable_type_dict, input_dataframe, y=y)
 
         # Set self.fitted to True
@@ -178,9 +178,16 @@ class Automater(object):
                 input_layers.append(variable_input)
                 input_nub_tips.append(variable_input_nub_tip)
 
-        # TODO Concatenate nub tips
-        logging.info('Creating input_nub, by concatenating input_nub_tips: {}'.format(input_nub_tips))
-        input_nub = Concatenate(input_nub_tips, name='concatenate_inputs')
+        # Concatenate nub tips
+        if len(input_nub_tips) > 1:
+            logging.info('Creating input_nub, by concatenating input_nub_tips: {}'.format(input_nub_tips))
+            input_nub = Concatenate(name='concatenate_inputs')(input_nub_tips)
+        elif len(input_nub_tips) == 1:
+            logging.info('Only one variable input: {}. Return that input nub, instead of concatenating'.format(input_nub_tips[0]))
+            input_nub = input_nub_tips[0]
+        else:
+            logging.warn('No inputs provided for model. Returning None for input nub.')
+            input_nub = None
 
         return input_layers, input_nub
 
@@ -189,10 +196,11 @@ class Automater(object):
 
         # Find which variable type for response variable
         response_variable_types = filter(lambda (key, value): y in value, _variable_type_dict.items())
+        response_variable_types = map(lambda (key, value): key, response_variable_types)
         logging.info('Found response variable type(s)'.format(response_variable_types))
-        if len(y) <1:
+        if len(response_variable_types) <1:
             raise ValueError('Response variable: {} is not in provided variable type lists'.format(y))
-        elif len(y) > 1:
+        elif len(response_variable_types) > 1:
             raise ValueError('Response variable: {} appears in more than one provided variable type lists'.format(
                 y))
 
