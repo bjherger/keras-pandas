@@ -4,7 +4,7 @@ import unittest
 
 import pandas
 from keras import Model, losses
-from keras.layers import Concatenate, Dense
+from keras.layers import Dense
 
 from auto_dl import lib
 from auto_dl.Automater import Automater
@@ -12,7 +12,7 @@ from auto_dl.Automater import Automater
 logging.getLogger().setLevel(logging.DEBUG)
 
 
-class test_Automater(unittest.TestCase):
+class test_automater(unittest.TestCase):
 
     def test_check_variable_lists_are_valid(self):
         # Base case: No variables

@@ -1,17 +1,17 @@
 import copy
 import logging
-import pandas
 
 from keras.layers import Concatenate, Dense
 from sklearn_pandas import DataFrameMapper
 
-import lib
 import constants
+import lib
 
 
 class Automater(object):
+
     def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
-                 non_transformed_vars=list(), response_var = None, df_out=False):
+                 non_transformed_vars=list(), response_var=None, df_out=False):
 
         self.response_var = response_var
         self.fitted = False
@@ -27,10 +27,8 @@ class Automater(object):
         lib.check_variable_list_are_valid(self._variable_type_dict)
 
         # Create list of user provided input variables
-        self._user_provided_input_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
-
-        # TODO
-        self._output_variables = None
+        self._user_provided_input_variables = [item for sublist in self._variable_type_dict.values() for item in
+                                               sublist]
 
         # Create transformation pipeline from defaults
         self.sklearn_mapper_pipelines = copy.deepcopy(constants.default_sklearn_mapper_pipelines)
@@ -41,11 +39,9 @@ class Automater(object):
         # Create input variable type handler
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
 
-        # TODO
+        # Initialize \Keras nubs
         self.input_layers = None
         self.input_nub = None
-
-
         self.output_nub = None
 
         # TODO
@@ -56,8 +52,6 @@ class Automater(object):
 
         # TODO
         self._variable_transformer_dict = None
-
-
 
     def fit(self, input_dataframe, y=None):
         # TODO Validate input dataframe
@@ -75,10 +69,8 @@ class Automater(object):
         self.input_layers = input_layers
         self.input_nub = input_nub
 
-
         # TODO Initialize & set output layer(s)
         if y is not None:
-
             self.output_nub = self._create_output_nub(self._variable_type_dict, input_dataframe, y=y)
 
         # Set self.fitted to True
@@ -107,7 +99,6 @@ class Automater(object):
                 X = transformed_df.as_matrix()
                 y = None
             return X, y
-
 
     def fit_transform(self, dataframe):
         # TODO
@@ -199,7 +190,8 @@ class Automater(object):
             logging.info('Creating input_nub, by concatenating input_nub_tips: {}'.format(input_nub_tips))
             input_nub = Concatenate(name='concatenate_inputs')(input_nub_tips)
         elif len(input_nub_tips) == 1:
-            logging.info('Only one variable input: {}. Return that input nub, instead of concatenating'.format(input_nub_tips[0]))
+            logging.info('Only one variable input: {}. Return that input nub, instead of concatenating'.format(
+                input_nub_tips[0]))
             input_nub = input_nub_tips[0]
         else:
             logging.warn('No inputs provided for model. Returning None for input nub.')
@@ -214,7 +206,7 @@ class Automater(object):
         response_variable_types = filter(lambda (key, value): y in value, _variable_type_dict.items())
         response_variable_types = map(lambda (key, value): key, response_variable_types)
         logging.info('Found response variable type(s)'.format(response_variable_types))
-        if len(response_variable_types) <1:
+        if len(response_variable_types) < 1:
             raise ValueError('Response variable: {} is not in provided variable type lists'.format(y))
         elif len(response_variable_types) > 1:
             raise ValueError('Response variable: {} appears in more than one provided variable type lists'.format(
@@ -222,22 +214,18 @@ class Automater(object):
 
         response_variable_type = response_variable_types[0]
 
-        output_nub = None
-
         if response_variable_type == 'numerical_vars':
             # Create Dense layer w/ single node
             output_nub = Dense(units=1, activation='linear')
         else:
-            raise NotImplementedError('Output layer for variable type: {} not yet implemented'.format(response_variable_type))
+            raise NotImplementedError(
+                'Output layer for variable type: {} not yet implemented'.format(response_variable_type))
 
         return output_nub
-
-
 
         # TODO Create appropriate output layer
 
         # TODO Return output layer
-
 
     def _create_sklearn_pandas_mapper(self, _variable_type_dict):
 
