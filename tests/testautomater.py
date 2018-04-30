@@ -12,7 +12,7 @@ from auto_dl.Automater import Automater
 logging.getLogger().setLevel(logging.DEBUG)
 
 
-class test_automater(unittest.TestCase):
+class TestAutomater(unittest.TestCase):
 
     def test_check_variable_lists_are_valid(self):
         # Base case: No variables

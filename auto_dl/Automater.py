@@ -26,7 +26,7 @@ class Automater(object):
         self._variable_type_dict['non_transformed_vars'] = non_transformed_vars
         lib.check_variable_list_are_valid(self._variable_type_dict)
 
-        # Create list of user provided input variables
+        # Create list of user provided input variables, by flattening values from _variable_type_dict
         self._user_provided_input_variables = [item for sublist in self._variable_type_dict.values() for item in
                                                sublist]
 
