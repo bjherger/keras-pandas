@@ -1,5 +1,6 @@
 import copy
 import logging
+import pandas
 
 from keras.layers import Concatenate, Dense
 from sklearn_pandas import DataFrameMapper
@@ -10,8 +11,9 @@ import constants
 
 class Automater(object):
     def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
-                 non_transformed_vars=list(), df_out=False):
+                 non_transformed_vars=list(), response_var = None, df_out=False):
 
+        self.response_var = response_var
         self.fitted = False
         self.df_out = df_out
 
@@ -34,7 +36,7 @@ class Automater(object):
         self.sklearn_mapper_pipelines = copy.deepcopy(constants.default_sklearn_mapper_pipelines)
 
         # Create mapper, to transform input variables
-        self._sklearn_pandas_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict, self.df_out)
+        self._sklearn_pandas_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict)
 
         # Create input variable type handler
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
@@ -62,6 +64,7 @@ class Automater(object):
 
         # Fit _sklearn_pandas_mapper with input dataframe
         # TODO Allow users to fit on dataframes that do not contain y variable
+        logging.info('Fitting mapper w/ response_var: {}'.format(self.response_var))
         self._sklearn_pandas_mapper.fit(input_dataframe)
 
         # Transform input dataframe, for use to create input layers
@@ -91,10 +94,20 @@ class Automater(object):
         # TODO Expand variables, as necessary
 
         # TODO Transform expanded dataframe
-        transformed = self._sklearn_pandas_mapper.transform(dataframe)
+        transformed_df = self._sklearn_pandas_mapper.transform(dataframe)
+        logging.info('Created transformed_df, w/ columns: {}'.format(list(transformed_df.columns)))
 
-        # TODO Return transformed dataframe
-        return transformed
+        if self.df_out:
+            return transformed_df
+        else:
+            if self.response_var is not None:
+                X = transformed_df.drop(self.response_var, axis=1).as_matrix()
+                y = transformed_df[self.response_var].tolist()
+            else:
+                X = transformed_df.as_matrix()
+                y = None
+            return X, y
+
 
     def fit_transform(self, dataframe):
         # TODO
@@ -168,10 +181,13 @@ class Automater(object):
                 if variable not in self._user_provided_input_variables:
                     raise ValueError(
                         'Unknown input variable: {}, which is not in list of input variables'.format(variable))
-
-                if variable not in input_dataframe.columns:
+                elif variable not in input_dataframe.columns:
                     raise ValueError('Given variable: {} is not in transformed dataframe columns: {}'
                                      .format(variable, input_dataframe.columns))
+
+                if variable == self.response_var and self.response_var is not None:
+                    logging.info('Not creating an input layer for response variable: {}'.format(self.response_var))
+                    continue
 
                 # Apply handler to current variable, creating nub input and nub tip
                 variable_input, variable_input_nub_tip = variable_type_handler(variable, input_dataframe)
@@ -223,7 +239,7 @@ class Automater(object):
         # TODO Return output layer
 
 
-    def _create_sklearn_pandas_mapper(self, _variable_type_dict, df_out):
+    def _create_sklearn_pandas_mapper(self, _variable_type_dict):
 
         transformation_list = list()
 
@@ -241,6 +257,6 @@ class Automater(object):
                 transformation_list.append(([variable], default_pipeline))
 
         logging.info('Created transformation pipeline: {}'.format(transformation_list))
-        mapper = DataFrameMapper(transformation_list, df_out=df_out)
+        mapper = DataFrameMapper(transformation_list, df_out=True)
 
         return mapper

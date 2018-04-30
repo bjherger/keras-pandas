@@ -3,7 +3,7 @@ import logging
 import unittest
 
 import pandas
-from keras import Model
+from keras import Model, losses
 from keras.layers import Concatenate, Dense
 
 from auto_dl import lib
@@ -52,28 +52,28 @@ class test_Automater(unittest.TestCase):
     def test_create_sklearn_pandas_mapper_pipeline_length(self):
         # Base case: No variables
         data = {}
-        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
+        mapper = Automater()._create_sklearn_pandas_mapper(data)
         self.assertItemsEqual(list(), mapper.features)
 
         # A single numerical
         data = {'numerical_vars': ['n1']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
+        mapper = Automater()._create_sklearn_pandas_mapper(data)
         self.assertEqual(1, len(mapper.features))
 
         # Two numerical
         data = {'numerical_vars': ['n1', 'n2']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
+        mapper = Automater()._create_sklearn_pandas_mapper(data)
         self.assertEqual(2, len(mapper.features))
 
         # Two variables of different types
         data = {'numerical_vars': ['n1'],
                 'categorical_vars': ['c1']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
+        mapper = Automater()._create_sklearn_pandas_mapper(data)
         self.assertEqual(2, len(mapper.features))
 
         # Two varibles with default pipelines
         data = {'NO_DEFAULT_ASDFSDA': ['x1', 'x2']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data, df_out=False)
+        mapper = Automater()._create_sklearn_pandas_mapper(data)
         self.assertEqual(2, len(mapper.features))
 
         mapper_pipelines = map(lambda x: x[1], mapper.features)
@@ -132,11 +132,10 @@ class test_Automater(unittest.TestCase):
         iris_numerical_cols = ['sepal_length']
         auto = Automater(numerical_vars=iris_numerical_cols)
         auto.fit(iris_df)
-        self.assertEqual(iris_numerical_cols, auto._user_provided_input_variables)
-
-        self.assertTrue(auto.fitted)
 
         self.assertEqual(Automater, type(auto))
+        self.assertEqual(iris_numerical_cols, auto._user_provided_input_variables)
+        self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
         self.assertEqual([['sepal_length']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
@@ -144,24 +143,23 @@ class test_Automater(unittest.TestCase):
     def test_transform(self):
         iris_df = self.iris_dataframe()
 
-        # Single numerical variable, df_out = False
-        iris_numerical_cols = ['sepal_length']
+        # Two numerical variables, df_out = False
+        iris_numerical_cols = ['sepal_length', 'sepal_width']
         auto = Automater(numerical_vars=iris_numerical_cols, df_out=False)
         auto.fit(iris_df)
 
         transformed = auto.transform(iris_df)
-        self.assertEqual((150, 1), transformed.shape)
+        self.assertEqual((150, 2), transformed[0].shape)
 
-        # Single numerical variable, df_out = True
-        iris_numerical_cols = ['sepal_length']
+        # Two numerical variables, df_out = True
+        iris_numerical_cols = ['sepal_length', 'sepal_width']
         auto = Automater(numerical_vars=iris_numerical_cols, df_out=True)
         auto.fit(iris_df)
 
         transformed = auto.transform(iris_df)
         self.assertEqual(150, len(transformed.index))
-        self.assertEqual((150, 1), transformed.shape)
-        self.assertEqual(['sepal_length'], transformed.columns)
-
+        self.assertEqual((150, 2), transformed.shape)
+        self.assertItemsEqual(['sepal_length', 'sepal_width'], transformed.columns)
 
     def test_create_input_nub_numerical(self):
         iris_df = self.iris_dataframe()
@@ -185,18 +183,17 @@ class test_Automater(unittest.TestCase):
                                                                                                   iris_df)
         self.assertEqual(4, len(input_layers))
 
-
-
     def test_numerical_whole(self):
         # St up data set
         iris = self.iris_dataframe()
         iris_numerical_cols = ['sepal_length', 'petal_length']
 
         # Create auto
-        auto = Automater(numerical_vars=iris_numerical_cols)
+        auto = Automater(numerical_vars=iris_numerical_cols, response_var='sepal_length')
 
         # Train auto
         auto.fit(iris, y='sepal_length')
+        X, y = auto.transform(iris)
 
         # Extract input_nub from auto
         input_nub = auto.input_nub
@@ -209,13 +206,13 @@ class test_Automater(unittest.TestCase):
         x = Dense(30)(x)
         x = output_nub(x)
 
-        print Model(inputs=auto.input_layers, outputs=x)
+        model = Model(inputs=auto.input_layers, outputs=x)
+        model.compile(optimizer='Adam', loss=losses.mean_squared_error)
 
-        # TODO Train DL model
+        # Train DL model
+        model.fit(X, y)
 
         pass
-
-
 
     @staticmethod
     def iris_dataframe():
