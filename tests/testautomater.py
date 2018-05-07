@@ -86,7 +86,7 @@ class TestAutomater(unittest.TestCase):
         self.assertEqual({'numerical_vars': list(), 'categorical_vars': list(),
                           'boolean_vars': list(), 'datetime_vars': list(),
                           'non_transformed_vars': list()}, auto._variable_type_dict, )
-        self.assertItemsEqual(list(), auto._user_provided_input_variables)
+        self.assertItemsEqual(list(), auto._user_provided_variables)
 
         # Common use case: Variables in each
         data = {
@@ -106,7 +106,7 @@ class TestAutomater(unittest.TestCase):
         self.assertEqual(response, auto._variable_type_dict)
 
         response_variable_list = [item for sublist in response.values() for item in sublist]
-        self.assertItemsEqual(response_variable_list, auto._user_provided_input_variables)
+        self.assertItemsEqual(response_variable_list, auto._user_provided_variables)
 
         # Overlapping variable lists
         data = {
@@ -134,7 +134,7 @@ class TestAutomater(unittest.TestCase):
         auto.fit(iris_df)
 
         self.assertEqual(Automater, type(auto))
-        self.assertEqual(iris_numerical_cols, auto._user_provided_input_variables)
+        self.assertEqual(iris_numerical_cols, auto._user_provided_variables)
         self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
@@ -186,14 +186,16 @@ class TestAutomater(unittest.TestCase):
     def test_numerical_whole(self):
         # St up data set
         iris = self.iris_dataframe()
+        iris_train = iris[:100]
+        iris_test = iris[101:]
         iris_numerical_cols = ['sepal_length', 'petal_length']
 
         # Create auto
         auto = Automater(numerical_vars=iris_numerical_cols, response_var='sepal_length')
 
         # Train auto
-        auto.fit(iris, y='sepal_length')
-        X, y = auto.transform(iris)
+        auto.fit(iris_train, y='sepal_length')
+        X_train, y_train = auto.transform(iris_train)
 
         # Extract input_nub from auto
         input_nub = auto.input_nub
@@ -210,7 +212,12 @@ class TestAutomater(unittest.TestCase):
         model.compile(optimizer='Adam', loss=losses.mean_squared_error)
 
         # Train DL model
-        model.fit(X, y)
+        model.fit(X_train, y_train)
+
+        # Transform test set
+        iris_test = iris_test.drop('sepal_length', axis=1)
+        X_test, y_test = auto.transform(iris_test)
+        model.predict(X_test)
 
         pass
 

@@ -27,8 +27,8 @@ class Automater(object):
         lib.check_variable_list_are_valid(self._variable_type_dict)
 
         # Create list of user provided input variables, by flattening values from _variable_type_dict
-        self._user_provided_input_variables = [item for sublist in self._variable_type_dict.values() for item in
-                                               sublist]
+        self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in
+                                         sublist]
 
         # Create transformation pipeline from defaults
         self.sklearn_mapper_pipelines = copy.deepcopy(constants.default_sklearn_mapper_pipelines)
@@ -39,7 +39,7 @@ class Automater(object):
         # Create input variable type handler
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
 
-        # Initialize \Keras nubs
+        # Initialize Keras nubs
         self.input_layers = None
         self.input_nub = None
         self.output_nub = None
@@ -61,7 +61,7 @@ class Automater(object):
         logging.info('Fitting mapper w/ response_var: {}'.format(self.response_var))
         self._sklearn_pandas_mapper.fit(input_dataframe)
 
-        # Transform input dataframe, for use to create input layers
+        # Transform input dataframe, for use to create Keras input layers
         self._sklearn_pandas_mapper.transform(input_dataframe)
 
         # Initialize & set input layers
@@ -79,20 +79,39 @@ class Automater(object):
         return self
 
     def transform(self, dataframe):
-        # TODO
 
-        # TODO Check variables
+        # Reference var
+        response_var_filled = False
+
+        # Check for missing _user_provided_variables
+        missing_vars = set(self._user_provided_variables).difference(dataframe.columns)
+
+        # Check if response_var is set, and is listed in missing vars
+        if self.response_var is not None and self.response_var in missing_vars:
+            logging.warn('Filling response var: {} with None, for transformation'.format(self.response_var))
+            missing_vars.remove(self.response_var)
+            dataframe[self.response_var] = None
+            response_var_filled = True
+
+        # Check if any remaining _user_provided_variables are missing
+        if len(missing_vars) > 0:
+            raise ValueError('Provided dataframe is missing variables: {}'.format(missing_vars))
 
         # TODO Expand variables, as necessary
 
-        # TODO Transform expanded dataframe
+        # Transform dataframe w/ SKLearn-pandas
         transformed_df = self._sklearn_pandas_mapper.transform(dataframe)
         logging.info('Created transformed_df, w/ columns: {}'.format(list(transformed_df.columns)))
+
+        # Remove 'response var', which was filled w/ None values
+        if response_var_filled:
+            logging.warn('Removing filled response var: {}'.format(self.response_var))
+            transformed_df = transformed_df.drop(self.response_var, axis=1)
 
         if self.df_out:
             return transformed_df
         else:
-            if self.response_var is not None:
+            if self.response_var is not None and response_var_filled is False:
                 X = transformed_df.drop(self.response_var, axis=1).as_matrix()
                 y = transformed_df[self.response_var].tolist()
             else:
@@ -169,7 +188,7 @@ class Automater(object):
             for variable in variable_list:
                 logging.debug('Creating input nub for variable type: {}, variable: {}'.format(variable_type, variable))
 
-                if variable not in self._user_provided_input_variables:
+                if variable not in self._user_provided_variables:
                     raise ValueError(
                         'Unknown input variable: {}, which is not in list of input variables'.format(variable))
                 elif variable not in input_dataframe.columns:
