@@ -46,7 +46,7 @@ class TestNumeric(unittest.TestCase):
         transformed = auto.transform(iris_df)
         self.assertEqual(150, len(transformed.index))
         self.assertEqual((150, 2), transformed.shape)
-        self.assertItemsEqual(['sepal_length', 'sepal_width'], transformed.columns)
+        self.assertItemsEqual(iris_numerical_cols, transformed.columns)
 
     def test_create_input_nub_numerical(self):
         iris_df = self.iris_dataframe()
