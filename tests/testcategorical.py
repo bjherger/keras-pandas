@@ -14,7 +14,7 @@ class TestCategorical(unittest.TestCase):
 
         # One variable
         mushroom_categorical_cols = ['odor']
-        auto = Automater(numerical_vars=mushroom_categorical_cols)
+        auto = Automater(categorical_vars=mushroom_categorical_cols)
         auto.fit(test_df)
 
         self.assertEqual(Automater, type(auto))
@@ -22,7 +22,7 @@ class TestCategorical(unittest.TestCase):
         self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
-        self.assertEqual([['sepal_length']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
+        self.assertEqual([['odor']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
 
     def test_transform(self):
         test_df = self.mushroom_dataframe()

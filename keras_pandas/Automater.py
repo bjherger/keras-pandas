@@ -62,10 +62,10 @@ class Automater(object):
         self._sklearn_pandas_mapper.fit(input_dataframe)
 
         # Transform input dataframe, for use to create Keras input layers
-        self._sklearn_pandas_mapper.transform(input_dataframe)
+        transformed_df = self._sklearn_pandas_mapper.transform(input_dataframe)
 
         # Initialize & set input layers
-        input_layers, input_nub = self._create_input_nub(self._variable_type_dict, input_dataframe)
+        input_layers, input_nub = self._create_input_nub(self._variable_type_dict, transformed_df)
         self.input_layers = input_layers
         self.input_nub = input_nub
 
