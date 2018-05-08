@@ -5,7 +5,7 @@ import pandas
 from keras import Model, losses
 from keras.layers import Dense
 
-from auto_dl.Automater import Automater
+from keras_pandas.Automater import Automater
 
 logging.getLogger().setLevel(logging.DEBUG)
 

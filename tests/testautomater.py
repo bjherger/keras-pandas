@@ -4,8 +4,8 @@ import unittest
 
 import pandas
 
-from auto_dl import lib
-from auto_dl.Automater import Automater
+from keras_pandas import lib
+from keras_pandas.Automater import Automater
 
 logging.getLogger().setLevel(logging.DEBUG)
 
