@@ -1,6 +1,3 @@
-import copy
-
-
 def check_variable_list_are_valid(variable_type_dict):
     """
 
