@@ -68,7 +68,7 @@ class TestCategorical(unittest.TestCase):
         variable_type_dict = {'numerical_vars': iris_numerical_cols}
         input_layers, input_nub = Automater(numerical_vars=iris_numerical_cols).\
             _create_input_nub(variable_type_dict, test_df)
-        self.assertEqual(4, len(input_layers))
+        self.assertEqual(3, len(input_layers))
 
     def test_numerical_whole(self):
         # St up data set
