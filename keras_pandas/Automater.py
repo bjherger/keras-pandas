@@ -59,7 +59,9 @@ class Automater(object):
         # Fit _sklearn_pandas_mapper with input dataframe
         # TODO Allow users to fit on dataframes that do not contain y variable
         logging.info('Fitting mapper w/ response_var: {}'.format(self.response_var))
+
         self._sklearn_pandas_mapper.fit(input_dataframe)
+        print(self._sklearn_pandas_mapper.transformed_names_)
 
         # Transform input dataframe, for use to create Keras input layers
         transformed_df = self._sklearn_pandas_mapper.transform(input_dataframe)

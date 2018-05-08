@@ -1,3 +1,5 @@
+import numpy
+
 import pandas
 import unittest
 
@@ -12,8 +14,8 @@ class TestCategorical(unittest.TestCase):
     def test_fit(self):
         test_df = self.mushroom_dataframe()
 
-        # One variable
-        mushroom_categorical_cols = ['odor']
+        # Two variables
+        mushroom_categorical_cols = ['odor', 'habitat']
         auto = Automater(categorical_vars=mushroom_categorical_cols)
         auto.fit(test_df)
 
@@ -22,7 +24,7 @@ class TestCategorical(unittest.TestCase):
         self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
-        self.assertEqual([['odor']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
+        self.assertEqual([['odor', 'habitat']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
 
     def test_transform(self):
         test_df = self.mushroom_dataframe()
@@ -72,17 +74,18 @@ class TestCategorical(unittest.TestCase):
 
     def test_numerical_whole(self):
         # St up data set
-        test_df = self.mushroom_dataframe()
-        iris_train = test_df[:6000]
-        iris_test = test_df[6001:]
+        mushroom_df = self.mushroom_dataframe()
+        msk = numpy.random.rand(len(mushroom_df)) < 0.8
+        mushroom_train = mushroom_df[msk]
+        mushroom_test = mushroom_df[~msk]
         iris_numerical_cols = ['odor', 'habitat', 'population', 'class']
 
         # Create auto
         auto = Automater(categorical_vars=iris_numerical_cols, response_var='class')
 
         # Train auto
-        auto.fit(iris_train, y='class')
-        X_train, y_train = auto.transform(iris_train)
+        auto.fit(mushroom_train, y='class')
+        X_train, y_train = auto.transform(mushroom_train)
 
         # Extract input_nub from auto
         input_nub = auto.input_nub
@@ -102,8 +105,8 @@ class TestCategorical(unittest.TestCase):
         model.fit(X_train, y_train)
 
         # Transform test set
-        iris_test = iris_test.drop('class', axis=1)
-        X_test, y_test = auto.transform(iris_test)
+        mushroom_test = mushroom_test.drop('class', axis=1)
+        X_test, y_test = auto.transform(mushroom_test)
         model.predict(X_test)
 
         pass
