@@ -35,8 +35,8 @@ class TestNumeric(unittest.TestCase):
         auto = Automater(numerical_vars=iris_numerical_cols, df_out=False)
         auto.fit(iris_df)
 
-        transformed = auto.transform(iris_df)
-        self.assertEqual((150, 2), transformed[0].shape)
+        (X,y) = auto.transform(iris_df)
+        self.assertEqual((150, ), X[0].shape)
 
         # Two numerical variables, df_out = True
         iris_numerical_cols = ['sepal_length', 'sepal_width']

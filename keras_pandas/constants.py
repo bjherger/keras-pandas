@@ -50,7 +50,7 @@ def input_nub_categorical_handler(variable, input_dataframe):
                  'and embedding_output_dim: {}'.format(variable, input_sequence_length, categorical_num_levels,
                                                        embedding_output_dim))
 
-    input_layer = keras.Input(shape=(input_sequence_length,), name='input_'.format(variable))
+    input_layer = keras.Input(shape=(input_sequence_length,), name='input_{}'.format(variable))
 
     embedding_layer = Embedding(input_dim=categorical_num_levels,
                                 output_dim=embedding_output_dim,

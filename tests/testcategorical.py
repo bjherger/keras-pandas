@@ -34,9 +34,9 @@ class TestCategorical(unittest.TestCase):
         auto = Automater(categorical_vars=test_columns, df_out=False)
         auto.fit(test_df)
 
-        transformed = auto.transform(test_df)
+        (X,y) = auto.transform(test_df)
         # TODO See what the correct shape is
-        self.assertEqual((8124, 2), transformed[0].shape)
+        self.assertEqual((8124, ), X[0].shape)
 
         # Two numerical variables, df_out = True
         test_columns = ['odor', 'habitat']

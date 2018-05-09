@@ -30,8 +30,7 @@ class Automater(object):
         lib.check_variable_list_are_valid(self._variable_type_dict)
 
         # Create list of user provided input variables, by flattening values from _variable_type_dict
-        self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in
-                                         sublist]
+        self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
 
         # Create transformation pipeline from defaults
         self.sklearn_mapper_pipelines = copy.deepcopy(constants.default_sklearn_mapper_pipelines)
@@ -46,6 +45,9 @@ class Automater(object):
         self.input_layers = None
         self.input_nub = None
         self.output_nub = None
+
+        # Initialize list of variables fed into Keras nubs
+        self.keras_input_variable_list = list()
 
         # TODO
         self._datetime_expansion_method_dict = None
@@ -114,11 +116,15 @@ class Automater(object):
         if self.df_out:
             return transformed_df
         else:
+            X = list()
+            for variable in self.keras_input_variable_list:
+                logging.info('Adding keras input variable: {} to X'.format(variable))
+                data = transformed_df[variable].values
+                X.append(data)
+
             if self.response_var is not None and response_var_filled is False:
-                X = transformed_df.drop(self.response_var, axis=1).as_matrix()
                 y = transformed_df[self.response_var].tolist()
             else:
-                X = transformed_df.as_matrix()
                 y = None
             return X, y
 
@@ -206,6 +212,7 @@ class Automater(object):
                 variable_input, variable_input_nub_tip = variable_type_handler(variable, input_dataframe)
                 input_layers.append(variable_input)
                 input_nub_tips.append(variable_input_nub_tip)
+                self.keras_input_variable_list.append(variable)
 
         # Concatenate nub tips
         if len(input_nub_tips) > 1:
@@ -239,6 +246,10 @@ class Automater(object):
         if response_variable_type == 'numerical_vars':
             # Create Dense layer w/ single node
             output_nub = Dense(units=1, activation='linear')
+
+        elif response_variable_type == 'categorical_vars':
+            # TODO Correct number of unites of categorical output
+            output_nub = Dense(units=1, activation='softmax')
         else:
             raise NotImplementedError(
                 'Output layer for variable type: {} not yet implemented'.format(response_variable_type))
