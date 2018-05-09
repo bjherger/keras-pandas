@@ -3,6 +3,7 @@ import logging
 
 import numpy
 from keras.layers import Concatenate, Dense
+from keras.utils import to_categorical
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import column_or_1d
 from sklearn_pandas import DataFrameMapper
@@ -123,7 +124,13 @@ class Automater(object):
                 X.append(data)
 
             if self.response_var is not None and response_var_filled is False:
+
                 y = transformed_df[self.response_var].tolist()
+
+                if self.response_var in self._variable_type_dict.get('categorical_vars', list()):
+                    logging.info('Response variable is a categorical variable. Creating categorical response. ')
+                    y = to_categorical(y)
+
             else:
                 y = None
             return X, y
@@ -248,8 +255,8 @@ class Automater(object):
             output_nub = Dense(units=1, activation='linear')
 
         elif response_variable_type == 'categorical_vars':
-            # TODO Correct number of unites of categorical output
-            output_nub = Dense(units=1, activation='softmax')
+            categorical_num_response_levels = len(set(input_dataframe[self.response_var]))
+            output_nub = Dense(units=categorical_num_response_levels, activation='softmax')
         else:
             raise NotImplementedError(
                 'Output layer for variable type: {} not yet implemented'.format(response_variable_type))
