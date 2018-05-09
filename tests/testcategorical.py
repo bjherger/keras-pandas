@@ -24,29 +24,29 @@ class TestCategorical(unittest.TestCase):
         self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
-        self.assertEqual([['odor', 'habitat']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
+        self.assertEqual([['odor'], ['habitat']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
 
     def test_transform(self):
         test_df = self.mushroom_dataframe()
 
         # Two numerical variables, df_out = False
         test_columns = ['odor', 'habitat']
-        auto = Automater(numerical_vars=test_columns, df_out=False)
+        auto = Automater(categorical_vars=test_columns, df_out=False)
         auto.fit(test_df)
 
         transformed = auto.transform(test_df)
         # TODO See what the correct shape is
-        self.assertEqual((150, 2), transformed[0].shape)
+        self.assertEqual((8124, 2), transformed[0].shape)
 
         # Two numerical variables, df_out = True
         test_columns = ['odor', 'habitat']
-        auto = Automater(numerical_vars=test_columns, df_out=True)
+        auto = Automater(categorical_vars=test_columns, df_out=True)
         auto.fit(test_df)
 
         transformed = auto.transform(test_df)
         # TODO See what correct shape and items are
-        self.assertEqual(150, len(transformed.index))
-        self.assertEqual((150, 2), transformed.shape)
+        self.assertEqual(8124, len(transformed.index))
+        self.assertEqual((8124, 2), transformed.shape)
         self.assertItemsEqual(test_columns, transformed.columns)
 
     def test_create_input_nub_numerical(self):

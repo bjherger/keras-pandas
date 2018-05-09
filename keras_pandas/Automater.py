@@ -86,7 +86,7 @@ class Automater(object):
         # Reference var
         response_var_filled = False
 
-        # Check for missing _user_provided_variables
+        # Check if any input variables are missing
         missing_vars = set(self._user_provided_variables).difference(dataframe.columns)
 
         # Check if response_var is set, and is listed in missing vars
