@@ -1,7 +1,10 @@
 import copy
 import logging
 
+import numpy
 from keras.layers import Concatenate, Dense
+from sklearn.preprocessing import LabelEncoder
+from sklearn.utils import column_or_1d
 from sklearn_pandas import DataFrameMapper
 
 import constants
@@ -59,9 +62,7 @@ class Automater(object):
         # Fit _sklearn_pandas_mapper with input dataframe
         # TODO Allow users to fit on dataframes that do not contain y variable
         logging.info('Fitting mapper w/ response_var: {}'.format(self.response_var))
-
         self._sklearn_pandas_mapper.fit(input_dataframe)
-        print(self._sklearn_pandas_mapper.transformed_names_)
 
         # Transform input dataframe, for use to create Keras input layers
         transformed_df = self._sklearn_pandas_mapper.transform(input_dataframe)
@@ -262,8 +263,8 @@ class Automater(object):
 
             for variable in variable_list:
                 logging.debug('Creating transformation for variable: {}'.format(variable))
-
-                transformation_list.append(([variable], default_pipeline))
+                variable_pipeline = map(copy.copy, default_pipeline)
+                transformation_list.append(([variable],variable_pipeline))
 
         logging.info('Created transformation pipeline: {}'.format(transformation_list))
         mapper = DataFrameMapper(transformation_list, df_out=True)

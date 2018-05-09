@@ -75,7 +75,7 @@ class TestCategorical(unittest.TestCase):
     def test_numerical_whole(self):
         # St up data set
         mushroom_df = self.mushroom_dataframe()
-        msk = numpy.random.rand(len(mushroom_df)) < 0.8
+        msk = numpy.random.rand(len(mushroom_df)) < 0.95
         mushroom_train = mushroom_df[msk]
         mushroom_test = mushroom_df[~msk]
         iris_numerical_cols = ['odor', 'habitat', 'population', 'class']
