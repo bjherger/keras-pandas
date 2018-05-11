@@ -1,5 +1,6 @@
 import copy
 import logging
+import pandas
 
 import numpy
 from keras.layers import Concatenate, Dense
@@ -91,12 +92,20 @@ class Automater(object):
 
     def transform(self, dataframe):
 
+        # Check if we have a response variable, and if it is available
+
+        if self.response_var is not None and self.response_var in dataframe.columns:
+            y_available = True
+        else:
+            y_available = False
+
         # Check if any input variables are missing
         missing_input_vars = set(self._user_provided_variables).difference(dataframe.columns)
 
         # Check if response_var is set, and is listed in missing vars
-        if self.response_var is not None and self.response_var in missing_input_vars:
-            logging.info('Response var not available in provided DF. Only transforming X data set, and not y')
+        if self.response_var is not None and y_available is False:
+            logging.info('Response variable is set, but unavailable in df to be transformed. Not transforming response '
+                         'variable')
             missing_input_vars.remove(self.response_var)
 
         # Check if any remaining _user_provided_variables are missing
@@ -105,22 +114,31 @@ class Automater(object):
 
         # TODO Expand variables, as necessary
 
-        # Transform input dataframe w/ input mapper
-        input_df_transformed = self.input_mapper.transform(dataframe)
-        logging.info('Created input_df_transformed, w/ columns: {}'.format(list(input_df_transformed.columns)))
+        # Create input variables df
+        input_variables = self.input_mapper.transform(dataframe)
+        logging.info('Created input_variables, w/ columns: {}'.format(list(input_variables.columns)))
+
+        # Create output variables df
+        if y_available:
+            output_variables = self.output_mapper.transform(dataframe)
+            logging.info('Created output_variables, w/ columns: {}'.format(list(output_variables.columns)))
 
         if self.df_out:
-            # TODO Update to have input and output variables
-            return input_df_transformed
+            # Join input and output dfs on index
+            if y_available:
+                df_out = input_variables.join(output_variables)
+            else:
+                df_out = input_variables
+            return df_out
         else:
 
             X = list()
             for variable in self.keras_input_variable_list:
                 logging.info('Adding keras input variable: {} to X'.format(variable))
-                data = input_df_transformed[variable].values
+                data = input_variables[variable].values
                 X.append(data)
-            # TODO Include logic for transforming response variable, if it is available
-
+            if y_available:
+                y = output_variables[self.response_var].values
             else:
                 y = None
             return X, y
