@@ -300,7 +300,8 @@ class Automater(object):
             logging.info('For variable type: {}, using default pipeline: {}'.format(variable_type, default_pipeline))
 
             for variable in variable_list:
-                logging.debug('Creating transformation for variable: {}'.format(variable))
+                logging.debug('Creating transformation for variable: {}, '
+                              'with default_pipeline: {}'.format(variable, default_pipeline))
                 variable_pipeline = map(copy.copy, default_pipeline)
                 transformation_list.append(([variable],variable_pipeline))
 

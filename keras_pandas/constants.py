@@ -5,13 +5,13 @@ import keras
 from keras.layers import Embedding, Flatten
 from sklearn.preprocessing import Imputer, StandardScaler, LabelEncoder
 
-default_sklearn_mapper_pipelines = defaultdict(lambda: None)
+default_sklearn_mapper_pipelines = defaultdict(lambda: list())
 
 default_sklearn_mapper_pipelines.update({
     'numerical_vars': [Imputer(strategy='mean'), StandardScaler()],
     'categorical_vars': [LabelEncoder()],
     'boolean_vars': [LabelEncoder()],
-    'non_transformed_vars': None
+    'non_transformed_vars': []
 })
 
 

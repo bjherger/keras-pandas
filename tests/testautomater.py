@@ -76,7 +76,7 @@ class TestAutomater(unittest.TestCase):
 
         mapper_pipelines = map(lambda x: x[1], mapper.features)
 
-        self.assertItemsEqual([None, None], mapper_pipelines)
+        self.assertItemsEqual([[], []], mapper_pipelines)
 
     def test_initializer(self):
         # Base case: No variables
