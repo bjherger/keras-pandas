@@ -84,7 +84,7 @@ class TestCategorical(unittest.TestCase):
         auto = Automater(categorical_vars=iris_numerical_cols, response_var='class')
 
         # Train auto
-        auto.fit(mushroom_train, y='class')
+        auto.fit(mushroom_train)
         X_train, y_train = auto.transform(mushroom_train)
 
         # Extract input_nub from auto

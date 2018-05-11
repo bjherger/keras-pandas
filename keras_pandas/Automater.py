@@ -33,10 +33,8 @@ class Automater(object):
         # Create list of user provided input variables, by flattening values from _variable_type_dict
         self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
 
-        # Create mapper, to transform input variables
+        # Create mappers, to transform input variables
         (self.input_mapper, self.output_mapper) = self._create_mappers(self._variable_type_dict)
-
-        # TODO Create output mapper
 
         # Create input variable type handler
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
@@ -58,30 +56,33 @@ class Automater(object):
         # TODO
         self._variable_transformer_dict = None
 
-    def fit(self, input_dataframe, y=None):
+    def fit(self, input_dataframe):
         # TODO Validate input dataframe
 
         # Fit input_mapper with input dataframe
-        # TODO Allow users to fit on dataframes that do not contain y variable
-        logging.info('Fitting mapper w/ response_var: {}'.format(self.response_var))
+        logging.info('Fitting input mapper')
         self.input_mapper.fit(input_dataframe)
 
         # Transform input dataframe, for use to create Keras input layers
-        input_df_transformed = self.input_mapper.transform(input_dataframe)
+        input_variables_df = self.input_mapper.transform(input_dataframe)
 
-        # TODO Fit output mapper
+        if self.response_var is not None:
+            # Fit output mapper
 
-        # TODO Transform output data
+            self.output_mapper.fit(input_dataframe)
+
+            # Transform output data
+            output_variables_df = self.output_mapper.transform(input_dataframe)
 
         # Initialize & set input layers
-        input_layers, input_nub = self._create_input_nub(self._variable_type_dict, input_df_transformed)
+        input_layers, input_nub = self._create_input_nub(self._variable_type_dict, input_variables_df)
         self.input_layers = input_layers
         self.input_nub = input_nub
 
         # Initialize & set output layer(s)
-        if y is not None:
+        if self.response_var is not None:
             # TODO Update to refer to correct method signature
-            self.output_nub = self._create_output_nub(self._variable_type_dict, input_dataframe, y=y)
+            self.output_nub = self._create_output_nub(self._variable_type_dict, output_variables_df=output_variables_df, y=self.response_var)
 
         # Set self.fitted to True
         self.fitted = True
@@ -245,8 +246,7 @@ class Automater(object):
 
         return input_layers, input_nub
 
-    def _create_output_nub(self, _variable_type_dict, input_dataframe, y):
-        # Update method signature to use output mapper
+    def _create_output_nub(self, _variable_type_dict, output_variables_df, y):
         logging.info('Creating output nub, for variable: {}'.format(y))
 
         # Find which variable type for response variable
@@ -266,7 +266,7 @@ class Automater(object):
             output_nub = Dense(units=1, activation='linear')
 
         elif response_variable_type == 'categorical_vars':
-            categorical_num_response_levels = len(set(input_dataframe[self.response_var]))
+            categorical_num_response_levels = len(set(output_variables_df[self.response_var]))
             output_nub = Dense(units=categorical_num_response_levels, activation='softmax')
         else:
             raise NotImplementedError(
@@ -274,9 +274,6 @@ class Automater(object):
 
         return output_nub
 
-        # TODO Create appropriate output layer
-
-        # TODO Return output layer
 
     def _create_mappers(self, _variable_type_dict):
         # TODO Rename to be input input_mapper
