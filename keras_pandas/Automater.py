@@ -91,21 +91,13 @@ class Automater(object):
 
     def transform(self, dataframe):
 
-        # TODO Remove response_var filled
-        # TODO Include logic for transforming response variable, if it is available
-        # Reference var
-        response_var_filled = False
-
         # Check if any input variables are missing
         missing_input_vars = set(self._user_provided_variables).difference(dataframe.columns)
 
         # Check if response_var is set, and is listed in missing vars
-        # TODO Include logic for transforming response variable, if it is available
         if self.response_var is not None and self.response_var in missing_input_vars:
-            logging.warn('Filling response var: {} with None, for transformation'.format(self.response_var))
+            logging.info('Response var not available in provided DF. Only transforming X data set, and not y')
             missing_input_vars.remove(self.response_var)
-            dataframe[self.response_var] = None
-            response_var_filled = True
 
         # Check if any remaining _user_provided_variables are missing
         if len(missing_input_vars) > 0:
@@ -117,30 +109,17 @@ class Automater(object):
         input_df_transformed = self.input_mapper.transform(dataframe)
         logging.info('Created input_df_transformed, w/ columns: {}'.format(list(input_df_transformed.columns)))
 
-        # Remove 'response var', which was filled w/ None values
-        # TODO Include logic for transforming response variable, if it is available
-        if response_var_filled:
-            logging.warn('Removing filled response var: {}'.format(self.response_var))
-            input_df_transformed = input_df_transformed.drop(self.response_var, axis=1)
-
         if self.df_out:
             # TODO Update to have input and output variables
             return input_df_transformed
         else:
-            # TODO Include logic for transforming response variable, if it is available
+
             X = list()
             for variable in self.keras_input_variable_list:
                 logging.info('Adding keras input variable: {} to X'.format(variable))
                 data = input_df_transformed[variable].values
                 X.append(data)
-
-            if self.response_var is not None and response_var_filled is False:
-
-                y = input_df_transformed[self.response_var].tolist()
-
-                if self.response_var in self._variable_type_dict.get('categorical_vars', list()):
-                    logging.info('Response variable is a categorical variable. Creating categorical response. ')
-                    y = to_categorical(y)
+            # TODO Include logic for transforming response variable, if it is available
 
             else:
                 y = None
