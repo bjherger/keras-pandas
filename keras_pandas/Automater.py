@@ -34,8 +34,7 @@ class Automater(object):
         self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
 
         # Create mapper, to transform input variables
-        # TODO Rename input mapper to be input mapper
-        self.input_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict, constants.default_sklearn_mapper_pipelines)
+        self.input_mapper = self._create_input_mapper(self._variable_type_dict, constants.default_sklearn_mapper_pipelines)
 
         # TODO Create output mapper
 
@@ -62,25 +61,24 @@ class Automater(object):
     def fit(self, input_dataframe, y=None):
         # TODO Validate input dataframe
 
-        # TODO Update to reference input mapper
-        # Fit _sklearn_pandas_mapper with input dataframe
+        # Fit input_mapper with input dataframe
         # TODO Allow users to fit on dataframes that do not contain y variable
         logging.info('Fitting mapper w/ response_var: {}'.format(self.response_var))
         self.input_mapper.fit(input_dataframe)
 
         # Transform input dataframe, for use to create Keras input layers
-        transformed_df = self.input_mapper.transform(input_dataframe)
+        input_df_transformed = self.input_mapper.transform(input_dataframe)
 
         # TODO Fit output mapper
 
         # TODO Transform output data
 
         # Initialize & set input layers
-        input_layers, input_nub = self._create_input_nub(self._variable_type_dict, transformed_df)
+        input_layers, input_nub = self._create_input_nub(self._variable_type_dict, input_df_transformed)
         self.input_layers = input_layers
         self.input_nub = input_nub
 
-        # TODO Initialize & set output layer(s)
+        # Initialize & set output layer(s)
         if y is not None:
             # TODO Update to refer to correct method signature
             self.output_nub = self._create_output_nub(self._variable_type_dict, input_dataframe, y=y)
@@ -98,49 +96,47 @@ class Automater(object):
         response_var_filled = False
 
         # Check if any input variables are missing
-        # TODO Update to reference missing input vars
-        missing_vars = set(self._user_provided_variables).difference(dataframe.columns)
+        missing_input_vars = set(self._user_provided_variables).difference(dataframe.columns)
 
         # Check if response_var is set, and is listed in missing vars
         # TODO Include logic for transforming response variable, if it is available
-        if self.response_var is not None and self.response_var in missing_vars:
+        if self.response_var is not None and self.response_var in missing_input_vars:
             logging.warn('Filling response var: {} with None, for transformation'.format(self.response_var))
-            missing_vars.remove(self.response_var)
+            missing_input_vars.remove(self.response_var)
             dataframe[self.response_var] = None
             response_var_filled = True
 
         # Check if any remaining _user_provided_variables are missing
-        if len(missing_vars) > 0:
-            raise ValueError('Provided dataframe is missing variables: {}'.format(missing_vars))
+        if len(missing_input_vars) > 0:
+            raise ValueError('Provided dataframe is missing variables: {}'.format(missing_input_vars))
 
         # TODO Expand variables, as necessary
 
-        # Transform dataframe w/ SKLearn-pandas
-        # TODO Update to reference input mapper
-        transformed_df = self.input_mapper.transform(dataframe)
-        logging.info('Created transformed_df, w/ columns: {}'.format(list(transformed_df.columns)))
+        # Transform input dataframe w/ input mapper
+        input_df_transformed = self.input_mapper.transform(dataframe)
+        logging.info('Created input_df_transformed, w/ columns: {}'.format(list(input_df_transformed.columns)))
 
         # Remove 'response var', which was filled w/ None values
         # TODO Include logic for transforming response variable, if it is available
         if response_var_filled:
             logging.warn('Removing filled response var: {}'.format(self.response_var))
-            transformed_df = transformed_df.drop(self.response_var, axis=1)
+            input_df_transformed = input_df_transformed.drop(self.response_var, axis=1)
 
 
         if self.df_out:
             # TODO Update to have input and output variables
-            return transformed_df
+            return input_df_transformed
         else:
             # TODO Include logic for transforming response variable, if it is available
             X = list()
             for variable in self.keras_input_variable_list:
                 logging.info('Adding keras input variable: {} to X'.format(variable))
-                data = transformed_df[variable].values
+                data = input_df_transformed[variable].values
                 X.append(data)
 
             if self.response_var is not None and response_var_filled is False:
 
-                y = transformed_df[self.response_var].tolist()
+                y = input_df_transformed[self.response_var].tolist()
 
                 if self.response_var in self._variable_type_dict.get('categorical_vars', list()):
                     logging.info('Response variable is a categorical variable. Creating categorical response. ')
@@ -283,7 +279,7 @@ class Automater(object):
 
         # TODO Return output layer
 
-    def _create_sklearn_pandas_mapper(self, _variable_type_dict, sklearn_mapper_pipelines):
+    def _create_input_mapper(self, _variable_type_dict, sklearn_mapper_pipelines):
         # TODO Rename to be input mapper
 
         transformation_list = list()
