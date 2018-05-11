@@ -37,7 +37,10 @@ class Automater(object):
         self.sklearn_mapper_pipelines = copy.deepcopy(constants.default_sklearn_mapper_pipelines)
 
         # Create mapper, to transform input variables
+        # TODO Rename input mapper to be input mapper
         self._sklearn_pandas_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict)
+
+        # TODO Create output mapper
 
         # Create input variable type handler
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
@@ -62,6 +65,7 @@ class Automater(object):
     def fit(self, input_dataframe, y=None):
         # TODO Validate input dataframe
 
+        # TODO Update to reference input mapper
         # Fit _sklearn_pandas_mapper with input dataframe
         # TODO Allow users to fit on dataframes that do not contain y variable
         logging.info('Fitting mapper w/ response_var: {}'.format(self.response_var))
@@ -70,6 +74,10 @@ class Automater(object):
         # Transform input dataframe, for use to create Keras input layers
         transformed_df = self._sklearn_pandas_mapper.transform(input_dataframe)
 
+        # TODO Fit output mapper
+
+        # TODO Transform output data
+
         # Initialize & set input layers
         input_layers, input_nub = self._create_input_nub(self._variable_type_dict, transformed_df)
         self.input_layers = input_layers
@@ -77,6 +85,7 @@ class Automater(object):
 
         # TODO Initialize & set output layer(s)
         if y is not None:
+            # TODO Update to refer to correct method signature
             self.output_nub = self._create_output_nub(self._variable_type_dict, input_dataframe, y=y)
 
         # Set self.fitted to True
@@ -86,13 +95,17 @@ class Automater(object):
 
     def transform(self, dataframe):
 
+        # TODO Remove response_var filled
+        # TODO Include logic for transforming response variable, if it is available
         # Reference var
         response_var_filled = False
 
         # Check if any input variables are missing
+        # TODO Update to reference missing input vars
         missing_vars = set(self._user_provided_variables).difference(dataframe.columns)
 
         # Check if response_var is set, and is listed in missing vars
+        # TODO Include logic for transforming response variable, if it is available
         if self.response_var is not None and self.response_var in missing_vars:
             logging.warn('Filling response var: {} with None, for transformation'.format(self.response_var))
             missing_vars.remove(self.response_var)
@@ -106,17 +119,22 @@ class Automater(object):
         # TODO Expand variables, as necessary
 
         # Transform dataframe w/ SKLearn-pandas
+        # TODO Update to reference input mapper
         transformed_df = self._sklearn_pandas_mapper.transform(dataframe)
         logging.info('Created transformed_df, w/ columns: {}'.format(list(transformed_df.columns)))
 
         # Remove 'response var', which was filled w/ None values
+        # TODO Include logic for transforming response variable, if it is available
         if response_var_filled:
             logging.warn('Removing filled response var: {}'.format(self.response_var))
             transformed_df = transformed_df.drop(self.response_var, axis=1)
 
+
         if self.df_out:
+            # TODO Update to have input and output variables
             return transformed_df
         else:
+            # TODO Include logic for transforming response variable, if it is available
             X = list()
             for variable in self.keras_input_variable_list:
                 logging.info('Adding keras input variable: {} to X'.format(variable))
@@ -236,6 +254,7 @@ class Automater(object):
         return input_layers, input_nub
 
     def _create_output_nub(self, _variable_type_dict, input_dataframe, y):
+        # Update method signature to use output mapper
         logging.info('Creating output nub, for variable: {}'.format(y))
 
         # Find which variable type for response variable
@@ -268,6 +287,7 @@ class Automater(object):
         # TODO Return output layer
 
     def _create_sklearn_pandas_mapper(self, _variable_type_dict):
+        # TODO Rename to be input mapper
 
         transformation_list = list()
 
@@ -288,3 +308,7 @@ class Automater(object):
         mapper = DataFrameMapper(transformation_list, df_out=True)
 
         return mapper
+
+    def _create_output_mapper(self, _variable_type_dict, response_variable):
+        # TODO Implement
+        pass
