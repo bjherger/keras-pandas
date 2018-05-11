@@ -34,7 +34,7 @@ class Automater(object):
         self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
 
         # Create mapper, to transform input variables
-        self.input_mapper = self._create_mappers(self._variable_type_dict)
+        (self.input_mapper, self.output_mapper) = self._create_mappers(self._variable_type_dict)
 
         # TODO Create output mapper
 
@@ -121,7 +121,6 @@ class Automater(object):
         if response_var_filled:
             logging.warn('Removing filled response var: {}'.format(self.response_var))
             input_df_transformed = input_df_transformed.drop(self.response_var, axis=1)
-
 
         if self.df_out:
             # TODO Update to have input and output variables
@@ -280,10 +279,11 @@ class Automater(object):
         # TODO Return output layer
 
     def _create_mappers(self, _variable_type_dict):
-        # TODO Rename to be input mapper
+        # TODO Rename to be input input_mapper
 
         sklearn_mapper_pipelines = constants.default_sklearn_mapper_pipelines
-        transformation_list = list()
+        input_transformation_list = list()
+        output_transformation_list = list()
 
         # Iterate through all variable types
         for (variable_type, variable_list) in _variable_type_dict.items():
@@ -297,10 +297,18 @@ class Automater(object):
                 logging.debug('Creating transformation for variable: {}, '
                               'with default_pipeline: {}'.format(variable, default_pipeline))
                 variable_pipeline = map(copy.copy, default_pipeline)
-                transformation_list.append(([variable],variable_pipeline))
 
-        logging.info('Created transformation pipeline: {}'.format(transformation_list))
-        mapper = DataFrameMapper(transformation_list, df_out=True)
+                # Append to the correct list
+                if variable == self.response_var:
+                    logging.debug('Response var: {} is being added to output mapper'.format(variable))
+                    output_transformation_list.append(([variable], variable_pipeline))
+                else:
+                    logging.debug('Input var: {} is being added  to input mapper'.format(variable))
+                    input_transformation_list.append(([variable], variable_pipeline))
 
-        return mapper
+        logging.info('Creating input transformation pipeline: {}'.format(input_transformation_list))
+        logging.info('Creating output transformation pipeline: {}'.format(output_transformation_list))
+        input_mapper = DataFrameMapper(input_transformation_list, df_out=True)
+        output_mapper = DataFrameMapper(output_transformation_list, df_out=True)
 
+        return input_mapper, output_mapper

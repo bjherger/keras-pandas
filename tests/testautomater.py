@@ -58,7 +58,7 @@ class TestAutomater(unittest.TestCase):
         # A single numerical
         data = {'numerical_vars': ['n1']}
         input_mapper, output_mapper = Automater()._create_mappers(data)
-        self.assertEqual(1, len(output_mapper.features))
+        self.assertEqual(1, len(input_mapper.features))
 
         # Two numerical
         data = {'numerical_vars': ['n1', 'n2']}
