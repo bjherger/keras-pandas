@@ -34,7 +34,7 @@ class Automater(object):
         self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
 
         # Create mapper, to transform input variables
-        self.input_mapper = self._create_input_mapper(self._variable_type_dict, constants.default_sklearn_mapper_pipelines)
+        self.input_mapper = self._create_mappers(self._variable_type_dict)
 
         # TODO Create output mapper
 
@@ -279,9 +279,10 @@ class Automater(object):
 
         # TODO Return output layer
 
-    def _create_input_mapper(self, _variable_type_dict, sklearn_mapper_pipelines):
+    def _create_mappers(self, _variable_type_dict):
         # TODO Rename to be input mapper
 
+        sklearn_mapper_pipelines = constants.default_sklearn_mapper_pipelines
         transformation_list = list()
 
         # Iterate through all variable types
@@ -303,6 +304,3 @@ class Automater(object):
 
         return mapper
 
-    def _create_output_mapper(self, _variable_type_dict, response_variable):
-        # TODO Implement
-        pass
