@@ -99,7 +99,7 @@ class TestCategorical(unittest.TestCase):
         x = output_nub(x)
 
         model = Model(inputs=auto.input_layers, outputs=x)
-        model.compile(optimizer='Adam', loss=losses.categorical_crossentropy)
+        model.compile(optimizer='Adam', loss=losses.sparse_categorical_crossentropy)
 
         # Train DL model
         model.fit(X_train, y_train)

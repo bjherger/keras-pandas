@@ -5,7 +5,7 @@ import pandas
 import numpy
 from keras.layers import Concatenate, Dense
 from keras.utils import to_categorical
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.utils import column_or_1d
 from sklearn_pandas import DataFrameMapper
 
@@ -212,16 +212,15 @@ class Automater(object):
             for variable in variable_list:
                 logging.debug('Creating input nub for variable type: {}, variable: {}'.format(variable_type, variable))
 
-                if variable not in self._user_provided_variables:
+                if variable == self.response_var and self.response_var is not None:
+                    logging.info('Not creating an input layer for response variable: {}'.format(self.response_var))
+                    continue
+                elif variable not in self._user_provided_variables:
                     raise ValueError(
                         'Unknown input variable: {}, which is not in list of input variables'.format(variable))
                 elif variable not in input_dataframe.columns:
                     raise ValueError('Given variable: {} is not in transformed dataframe columns: {}'
                                      .format(variable, input_dataframe.columns))
-
-                if variable == self.response_var and self.response_var is not None:
-                    logging.info('Not creating an input layer for response variable: {}'.format(self.response_var))
-                    continue
 
                 # Apply handler to current variable, creating nub input and nub tip
                 variable_input, variable_input_nub_tip = variable_type_handler(variable, input_dataframe)
@@ -295,6 +294,7 @@ class Automater(object):
                 # Append to the correct list
                 if variable == self.response_var:
                     logging.debug('Response var: {} is being added to output mapper'.format(variable))
+
                     output_transformation_list.append(([variable], variable_pipeline))
                 else:
                     logging.debug('Input var: {} is being added  to input mapper'.format(variable))
