@@ -33,12 +33,9 @@ class Automater(object):
         # Create list of user provided input variables, by flattening values from _variable_type_dict
         self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
 
-        # Create transformation pipeline from defaults
-        self.sklearn_mapper_pipelines = copy.deepcopy(constants.default_sklearn_mapper_pipelines)
-
         # Create mapper, to transform input variables
         # TODO Rename input mapper to be input mapper
-        self._sklearn_pandas_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict)
+        self.input_mapper = self._create_sklearn_pandas_mapper(self._variable_type_dict, constants.default_sklearn_mapper_pipelines)
 
         # TODO Create output mapper
 
@@ -69,10 +66,10 @@ class Automater(object):
         # Fit _sklearn_pandas_mapper with input dataframe
         # TODO Allow users to fit on dataframes that do not contain y variable
         logging.info('Fitting mapper w/ response_var: {}'.format(self.response_var))
-        self._sklearn_pandas_mapper.fit(input_dataframe)
+        self.input_mapper.fit(input_dataframe)
 
         # Transform input dataframe, for use to create Keras input layers
-        transformed_df = self._sklearn_pandas_mapper.transform(input_dataframe)
+        transformed_df = self.input_mapper.transform(input_dataframe)
 
         # TODO Fit output mapper
 
@@ -120,7 +117,7 @@ class Automater(object):
 
         # Transform dataframe w/ SKLearn-pandas
         # TODO Update to reference input mapper
-        transformed_df = self._sklearn_pandas_mapper.transform(dataframe)
+        transformed_df = self.input_mapper.transform(dataframe)
         logging.info('Created transformed_df, w/ columns: {}'.format(list(transformed_df.columns)))
 
         # Remove 'response var', which was filled w/ None values
@@ -286,7 +283,7 @@ class Automater(object):
 
         # TODO Return output layer
 
-    def _create_sklearn_pandas_mapper(self, _variable_type_dict):
+    def _create_sklearn_pandas_mapper(self, _variable_type_dict, sklearn_mapper_pipelines):
         # TODO Rename to be input mapper
 
         transformation_list = list()
@@ -296,7 +293,7 @@ class Automater(object):
             logging.info('Working variable type: {}, with variable list: {}'.format(variable_type, variable_list))
 
             # Extract default transformation pipeline
-            default_pipeline = self.sklearn_mapper_pipelines[variable_type]
+            default_pipeline = sklearn_mapper_pipelines[variable_type]
             logging.info('For variable type: {}, using default pipeline: {}'.format(variable_type, default_pipeline))
 
             for variable in variable_list:

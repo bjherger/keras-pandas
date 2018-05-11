@@ -25,7 +25,7 @@ class TestNumeric(unittest.TestCase):
         self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
-        self.assertEqual([['sepal_length']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
+        self.assertEqual([['sepal_length']], map(lambda x: x[0], auto.input_mapper.built_features))
 
     def test_transform(self):
         iris_df = self.iris_dataframe()

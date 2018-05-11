@@ -24,7 +24,7 @@ class TestCategorical(unittest.TestCase):
         self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
-        self.assertEqual([['odor'], ['habitat']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
+        self.assertEqual([['odor'], ['habitat']], map(lambda x: x[0], auto.input_mapper.built_features))
 
     def test_transform(self):
         test_df = self.mushroom_dataframe()
