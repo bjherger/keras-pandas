@@ -51,12 +51,6 @@ class Automater(object):
         # TODO
         self._datetime_expansion_method_dict = None
 
-        # TODO
-        self._embedding_size_function = None
-
-        # TODO
-        self._variable_transformer_dict = None
-
     def fit(self, input_dataframe):
         # TODO Validate input dataframe
 
@@ -144,16 +138,7 @@ class Automater(object):
             return X, y
 
     def fit_transform(self, dataframe):
-        # TODO
-        pass
-
-    def set_embedding_size_function(self, embedding_size_function):
-        # TODO
-        pass
-
-    def set_embedding_size(self, variable, embedding_size):
-        # TODO
-        pass
+        return self.fit(dataframe).transform(dataframe)
 
     def get_transformers(self):
         # TODO
@@ -272,7 +257,6 @@ class Automater(object):
 
 
     def _create_mappers(self, _variable_type_dict):
-        # TODO Rename to be input input_mapper
 
         sklearn_mapper_pipelines = constants.default_sklearn_mapper_pipelines
         input_transformation_list = list()

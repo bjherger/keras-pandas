@@ -69,7 +69,7 @@ class TestCategorical(unittest.TestCase):
         self.assertEqual((8124, 2), transformed.shape)
         self.assertItemsEqual(test_columns, transformed.columns)
 
-        # TODO Test w/ response var unavailable.
+        # Test w/ response var unavailable.
         test_columns = ['odor']
         test_df = train_df[test_columns]
         transformed = auto.transform(test_df)
