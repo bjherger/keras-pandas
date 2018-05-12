@@ -25,7 +25,7 @@ class TestNumeric(unittest.TestCase):
         self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
-        self.assertEqual([['sepal_length']], map(lambda x: x[0], auto._sklearn_pandas_mapper.built_features))
+        self.assertEqual([['sepal_length']], map(lambda x: x[0], auto.input_mapper.built_features))
 
     def test_transform(self):
         iris_df = self.iris_dataframe()
@@ -35,8 +35,8 @@ class TestNumeric(unittest.TestCase):
         auto = Automater(numerical_vars=iris_numerical_cols, df_out=False)
         auto.fit(iris_df)
 
-        transformed = auto.transform(iris_df)
-        self.assertEqual((150, 2), transformed[0].shape)
+        (X,y) = auto.transform(iris_df)
+        self.assertEqual((150, ), X[0].shape)
 
         # Two numerical variables, df_out = True
         iris_numerical_cols = ['sepal_length', 'sepal_width']
@@ -81,7 +81,7 @@ class TestNumeric(unittest.TestCase):
         auto = Automater(numerical_vars=iris_numerical_cols, response_var='sepal_length')
 
         # Train auto
-        auto.fit(iris_train, y='sepal_length')
+        auto.fit(iris_train)
         X_train, y_train = auto.transform(iris_train)
 
         # Extract input_nub from auto
