@@ -6,6 +6,7 @@ import pandas
 
 from keras_pandas import lib
 from keras_pandas.Automater import Automater
+from keras_pandas import constants
 
 logging.getLogger().setLevel(logging.DEBUG)
 
@@ -50,33 +51,34 @@ class TestAutomater(unittest.TestCase):
     def test_create_sklearn_pandas_mapper_pipeline_length(self):
         # Base case: No variables
         data = {}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
-        self.assertItemsEqual(list(), mapper.features)
+        input_mapper, output_mapper = Automater()._create_mappers(data)
+        self.assertItemsEqual(list(), input_mapper.features)
+        self.assertItemsEqual(list(), output_mapper.features)
 
         # A single numerical
         data = {'numerical_vars': ['n1']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
-        self.assertEqual(1, len(mapper.features))
+        input_mapper, output_mapper = Automater()._create_mappers(data)
+        self.assertEqual(1, len(input_mapper.features))
 
         # Two numerical
         data = {'numerical_vars': ['n1', 'n2']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
-        self.assertEqual(2, len(mapper.features))
+        input_mapper, output_mapper = Automater()._create_mappers(data)
+        self.assertEqual(2, len(input_mapper.features))
 
         # Two variables of different types
         data = {'numerical_vars': ['n1'],
                 'categorical_vars': ['c1']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
-        self.assertEqual(2, len(mapper.features))
+        input_mapper, output_mapper = Automater()._create_mappers(data)
+        self.assertEqual(2, len(input_mapper.features))
 
         # Two varibles with default pipelines
         data = {'NO_DEFAULT_ASDFSDA': ['x1', 'x2']}
-        mapper = Automater()._create_sklearn_pandas_mapper(data)
-        self.assertEqual(2, len(mapper.features))
+        input_mapper, output_mapper = Automater()._create_mappers(data)
+        self.assertEqual(2, len(input_mapper.features))
 
-        mapper_pipelines = map(lambda x: x[1], mapper.features)
+        mapper_pipelines = map(lambda x: x[1], input_mapper.features)
 
-        self.assertItemsEqual([None, None], mapper_pipelines)
+        self.assertItemsEqual([[], []], mapper_pipelines)
 
     def test_initializer(self):
         # Base case: No variables
