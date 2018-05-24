@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 setup(
     name='keras-pandas',
     description='test',
-    version='0.2.0',  # Update the version number for new releases
+    version='1.0.0',  # Update the version number for new releases
     url='https://github.com/bjherger/keras-pandas',
     author='Brendan Herger',
     author_email='13herger@gmail.com',
