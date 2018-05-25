@@ -4,7 +4,7 @@ from keras import Model
 from keras.layers import Dense
 
 from keras_pandas.Automater import Automater
-from keras_pandas.lib import load_mushrooms, load_titanic
+from keras_pandas.lib import load_titanic
 
 
 def main():
