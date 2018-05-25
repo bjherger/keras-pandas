@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=Keras-Pandas
+set SPHINXPROJ=keras-pandas
 
 if "%1" == "" goto help
 

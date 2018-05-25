@@ -1,9 +1,9 @@
-.. Keras-Pandas documentation master file, created by
-   sphinx-quickstart on Thu May 17 13:42:05 2018.
+.. keras-pandas documentation master file, created by
+   sphinx-quickstart on Fri May 25 14:48:27 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Keras-Pandas's documentation!
+Welcome to keras-pandas's documentation!
 ========================================
 
 .. toctree::

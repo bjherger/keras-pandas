@@ -9,7 +9,7 @@ Getting data into keras can be:
  - Time consuming
  - Difficult for those new to Keras
 
-keras-pandas overcomes these issues by (automatically) providing:
+`keras-pandas` overcomes these issues by (automatically) providing:
 
  - A cleaned, transformed and correctly formatted `X` and `y`
  - A smart baseline 'input nub', without the hassle of worrying about input shapes or data types
