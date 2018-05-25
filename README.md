@@ -149,8 +149,12 @@ The best bug reports are Pull Requests. The second best bug reports are new issu
 
 This framework uses `unittest` for unit testing. Tests can be run by calling:
 
-```python
-python -m unittest discover -s tests -t tests
+
+
+```bash
+cd tests/
+
+python -m unittest discover -s . -t .
 ```
 
 ### Style guide
