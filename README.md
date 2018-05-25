@@ -1,10 +1,22 @@
-# keras-pandas
+# `keras-pandas`
 
-keras-pandas allows us to rapidly get a baseline model an iterate, by (automatically) providing:
+**tl;dr:** `keras-pandas helps users rapidly build and iterate on deep learning models. It providing a 
+batteries-included solution for data transformation, data input layers and a data output layer.
+
+Getting data into keras can be:
+
+ - Tedious
+ - Time consuming
+ - Difficult for those new to Keras
+
+keras-pandas overcomes these issues by (automatically) providing:
 
  - A cleaned, transformed and correctly formatted `X` and `y`
  - A smart baseline 'input nub', without the hassle of worrying about input shapes or data types
  - A smart baseline output layer
+ 
+With these resources, it's possible to rapidly build and iterate on deep learning models, by providing a batteries 
+included solution for data transformation, data input and data output.  
 
 ## Quick Start
 
@@ -49,8 +61,6 @@ model.compile(optimizer='Adam', loss='sparse_categorical_crossentropy', metrics=
 # Train model
 model.fit(X, y, epochs=10, validation_split=.5)
 ``` 
-
-
 
 ## Usage
 
