@@ -65,7 +65,8 @@ pip install -U keras-pandas
 ### Creating an Automater
 
 The core feature of `keras-pandas` is the Automater, which accepts lists of variable types (all optional), and a 
-response variable (optional, for supervised problems).
+response variable (optional, for supervised problems). Together, all of these variables are the `user_input_variables`, 
+which may be different than the variables fed into Keras. 
 
 As a side note, the response variable must be in one of the variable type lists (e.g. `survived` is in `categorical_vars`)
 
@@ -104,7 +105,7 @@ In this case, an output nub will not be auto-generated
 ### Fitting the Automater
 
 Before use, the `Automator` must be fit. The `fit()` method accepts a pandas DataFrame, which must contain all of the 
-columns listed upon initialization.
+columns listed during initialization.
 
 ```python
 auto.fit(observations)
@@ -112,20 +113,48 @@ auto.fit(observations)
 
 ### Transforming data
 
-TODO
+Now, we can use our `Automater` to transform the dataset, from a pandas DataFrame to numpy objects properly formatted
+for Keras's input and output layers. 
+
+```python
+X, y = auto.transform(observations)
+```
+
+This will return two objects:
+
+  - `X`: An array, containing numpy object for each Keras input. This is generally one Keras input for each user 
+  input variable. 
+  - `y`: A numpy object, containing the response variable (if one was provided) 
 
 ### Using input / output nubs
 
-TODO
+Setting up correctly formatted, heuristically 'good' input and output layers is often
+
+ - Tedious
+ - Time consuming
+ - Difficult for those new to Keras
+ 
+With this in mind, `keras-pandas` provides correctly formatted input and output 'nubs'. 
+
+The input nub is correctly formatted to accept the output from `auto.transform()`. It contains one Keras Input layer 
+for each generated input, may contain addition layers, and has all input piplines joined with a `Concatenate` layer. 
+
+The output layer is correctly formatted to accept the response variable numpy object.  
 
 ## Contributing
 
+The best bug reports are Pull Requests. The second best bug reports are new issues on this repo. 
+
 ### Test
 
-TODO
+This framework uses `unittest` for unit testing. Tests can be run by calling:
+
+```python
+python -m unittest discover -s tests -t tests
+```
 
 ### Style guide
 
-TODO
+This codebase should follow [Google's Python Style Guide](https://google.github.io/styleguide/pyguide.html). 
 
 
