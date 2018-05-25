@@ -86,8 +86,11 @@ class Automater(object):
 
     def transform(self, dataframe):
 
-        # Check if we have a response variable, and if it is available
+        # Check if fitted yet
+        if not self.fitted:
+            raise ValueError('Cannot transform without being fitted first. Call fit() method before transform() method')
 
+        # Check if we have a response variable, and if it is available
         if self.response_var is not None and self.response_var in dataframe.columns:
             y_available = True
         else:
