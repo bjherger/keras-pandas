@@ -1,0 +1,244 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>&lt;no title&gt; &#8212; keras-pandas 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p># Backlog</p>
+<blockquote>
+<div><ul class="simple">
+<li>Interface: Need to determine options (SKLearn transformer, custom interface, etc)</li>
+<li>Interface: Need to outline functionality</li>
+<li>Boolean: Need to determine if it’ll be handled as numerical or categorical</li>
+<li>Pip installable: Need to determine level of effort</li>
+</ul>
+</div></blockquote>
+<p># Interface: Need to determine options (SKLearn transformer, custom interface, etc)</p>
+<p>Options:</p>
+<blockquote>
+<div><ul class="simple">
+<li>SKLearn transformer</li>
+<li>Pandas-SKLearn style module</li>
+<li>Custom module</li>
+</ul>
+</div></blockquote>
+<p>Requirements:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Be able to expand one column to many columns (datetime)</li>
+<li>Abilityt o use SKLearn transformers</li>
+</ul>
+</div></blockquote>
+<p>## SKLearn transformer</p>
+<blockquote>
+<div><ul class="simple">
+<li>Inputs would have to be Numpy arrays</li>
+<li>Inputs can be Numpy arrays</li>
+<li>Tighter integration to SKLearn infrastructure</li>
+</ul>
+</div></blockquote>
+<p>## Pandas-SKLearn style module</p>
+<blockquote>
+<div><ul class="simple">
+<li>Can have pandas dataframe inputs</li>
+<li>Can have multipel column inputs</li>
+<li>Can apply multiple transformations to the same column (many to one relationship)</li>
+<li>Can not apply transformations to some columns</li>
+<li>Can use default transformer</li>
+</ul>
+</div></blockquote>
+<p>## Custom module</p>
+<blockquote>
+<div><ul class="simple">
+<li>Can sit on top of Pandas-SKLearn</li>
+<li>Can mimic SKLearn <cite>fit</cite> and <cite>transform</cite> interface</li>
+</ul>
+</div></blockquote>
+<p>#  Need to determine if it’ll be handled as numerical or categorical</p>
+<p>## Numerical</p>
+<blockquote>
+<div><ul class="simple">
+<li>Less compute time</li>
+<li>Reduced complexity</li>
+</ul>
+</div></blockquote>
+<p>## Categorical</p>
+<blockquote>
+<div><ul class="simple">
+<li>Embedding representing different values</li>
+</ul>
+</div></blockquote>
+<p># Pip installable: Need to determine level of effort</p>
+<p>## Lit review</p>
+<blockquote>
+<div><ul class="simple">
+<li>PMOTW: Setuptools</li>
+<li>Common library: setuptools</li>
+<li>PMOTW: distutils</li>
+<li>Common library: distutils</li>
+<li>Blog review</li>
+</ul>
+</div></blockquote>
+<p>## PMOTW: Setuptools</p>
+<blockquote>
+<div><ul class="simple">
+<li>Unavailable</li>
+</ul>
+</div></blockquote>
+<p>## [Common library: setuptools](<a class="reference external" href="https://setuptools.readthedocs.io/en/latest/">https://setuptools.readthedocs.io/en/latest/</a>)</p>
+<blockquote>
+<div><ul class="simple">
+<li>Designed to facilitate packaging Python projects</li>
+<li>Enhancement to distutils</li>
+</ul>
+</div></blockquote>
+<p>Highlights</p>
+<blockquote>
+<div><ul class="simple">
+<li>Dependency resolution &amp; downloading</li>
+<li>Create eggs</li>
+<li>Automatically create wrapper scripts &amp; .exe files</li>
+<li>[Decent getting started guide](<a class="reference external" href="https://setuptools.readthedocs.io/en/latest/setuptools.html#basic-use">https://setuptools.readthedocs.io/en/latest/setuptools.html#basic-use</a>)</li>
+</ul>
+</div></blockquote>
+<p>Superset of of distutils</p>
+<p>## PMOTW: distutils</p>
+<blockquote>
+<div><ul class="simple">
+<li>Unavailable</li>
+</ul>
+</div></blockquote>
+<p>## [Common library: distutils](<a class="reference external" href="https://docs.python.org/2/distutils/">https://docs.python.org/2/distutils/</a>)</p>
+<p>[Intro](<a class="reference external" href="https://docs.python.org/2/distutils/introduction.html">https://docs.python.org/2/distutils/introduction.html</a>)</p>
+<blockquote>
+<div><ul class="simple">
+<li>Setup script</li>
+<li>Source distribution</li>
+<li>Binary distributions</li>
+</ul>
+</div></blockquote>
+<p>Setup script</p>
+<blockquote>
+<div><ul class="simple">
+<li>Handles packaging</li>
+<li>Not aware of package managers</li>
+</ul>
+</div></blockquote>
+<p>[PyPi](<a class="reference external" href="https://docs.python.org/2/distutils/packageindex.html#pypi-overview">https://docs.python.org/2/distutils/packageindex.html#pypi-overview</a>)</p>
+<blockquote>
+<div><ul class="simple">
+<li>Registering</li>
+<li>Upload</li>
+</ul>
+</div></blockquote>
+<p>## Blogs</p>
+<blockquote>
+<div><ul class="simple">
+<li>[Marthall](<a class="reference external" href="https://marthall.github.io/blog/how-to-package-a-python-app/">https://marthall.github.io/blog/how-to-package-a-python-app/</a>)</li>
+<li>[so](<a class="reference external" href="https://stackoverflow.com/questions/9411494/how-do-i-create-a-pip-installable-project">https://stackoverflow.com/questions/9411494/how-do-i-create-a-pip-installable-project</a>)</li>
+</ul>
+</div></blockquote>
+<p>## [Marthall](<a class="reference external" href="https://marthall.github.io/blog/how-to-package-a-python-app/">https://marthall.github.io/blog/how-to-package-a-python-app/</a>)</p>
+<blockquote>
+<div><ul class="simple">
+<li>Strong, convenient walk through</li>
+</ul>
+</div></blockquote>
+<p>## [so](<a class="reference external" href="https://stackoverflow.com/questions/9411494/how-do-i-create-a-pip-installable-project">https://stackoverflow.com/questions/9411494/how-do-i-create-a-pip-installable-project</a>)</p>
+<blockquote>
+<div><ul class="simple">
+<li>Rambling</li>
+</ul>
+</div></blockquote>
+<p>## [Scott Torborg](<a class="reference external" href="http://python-packaging.readthedocs.io/en/latest/">http://python-packaging.readthedocs.io/en/latest/</a>)</p>
+<ul class="simple">
+<li>Strong advanced discussion</li>
+<li>How to declare dependencies</li>
+</ul>
+<p>## [PyPI docs](<a class="reference external" href="https://packaging.python.org/tutorials/distributing-packages/#uploading-your-project-to-pypi">https://packaging.python.org/tutorials/distributing-packages/#uploading-your-project-to-pypi</a>)</p>
+<p>## [twine quickstart](<a class="reference external" href="https://packaging.python.org/tutorials/distributing-packages/">https://packaging.python.org/tutorials/distributing-packages/</a>)</p>
+<p># Decisions</p>
+<blockquote>
+<div><ul class="simple">
+<li>Interface: Will use custom interface, similar to SKLearn, with Pandas-SKLearn under the hood.</li>
+<li>Pip installable: Will move forward w/ setuptools</li>
+</ul>
+</div></blockquote>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Brendan Herger.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/planning/POC_notes.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
