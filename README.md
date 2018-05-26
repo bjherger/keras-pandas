@@ -1,6 +1,6 @@
 # keras-pandas
 
-**tl;dr:** `keras-pandas helps users rapidly build and iterate on deep learning models. It providing a 
+**tl;dr:** keras-pandas helps users rapidly build and iterate on deep learning models. It providing a 
 batteries-included solution for data transformation, data input layers and a data output layer.
 
 Getting data into keras can be:

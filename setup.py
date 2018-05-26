@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from setuptools import setup, find_packages
 
 # Set up requirements
@@ -12,15 +14,19 @@ setup(
     name='keras-pandas',
     description='Easy and rapid deep learning',
     long_description=long_description,
-    long_description_content_type='text/markdown',
-    version='1.1.0',
+    long_description_content_type="text/markdown",
+    version='1.1.1',
     url='https://github.com/bjherger/keras-pandas',
     author='Brendan Herger',
     author_email='13herger@gmail.com',
     license='MIT',
     packages=find_packages(),
     install_requires=required,
-    zip_safe=False
+    project_urls=OrderedDict((
+        ('Documentation', ''),
+        ('Code', 'https://github.com/bjherger/keras-pandas'),
+        ('Issue tracker', 'https://github.com/bjherger/keras-pandas/issues'),
+    )),
 )
 
 
