@@ -159,16 +159,24 @@ The best bug reports are Pull Requests. The second best bug reports are new issu
 
 This framework uses `unittest` for unit testing. Tests can be run by calling:
 
-
-
 ```bash
 cd tests/
 
 python -m unittest discover -s . -t .
 ```
-
 ### Style guide
 
 This codebase should follow [Google's Python Style Guide](https://google.github.io/styleguide/pyguide.html). 
 
+### Generating documentation
 
+This codebase uses [sphinx](http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html)'s 
+[autodoc](http://www.sphinx-doc.org/en/master/ext/autodoc.html) feature. To generate new documentation, to reflect 
+updated documentation, run:
+
+```bash
+cd docs
+
+make html
+
+```  
