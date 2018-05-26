@@ -30,7 +30,8 @@ sys.path.insert(0, os.path.abspath('../keras_pandas'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc'
+    'sphinx.ext.autodoc',
+    'm2r'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -165,6 +166,3 @@ texinfo_documents = [
 ]
 
 
-source_parsers = {
-   '.md': 'recommonmark.parser.CommonMarkParser',
-}
