@@ -8,8 +8,15 @@ import requests
 def check_variable_list_are_valid(variable_type_dict):
     """
 
-    :param variable_type_dict:
-    :return:
+    Checks that the provided variable_type_dict is valid, by:
+
+     - Confirming there is no overlap between all variable lists
+
+    :param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
+    variables
+    :type variable_type_dict: {str:[str]}
+    :return: True, if there is no overlap
+    :rtype: bool
     """
     for outer_key, outer_value in variable_type_dict.items():
         for inner_key, inner_value in variable_type_dict.items():
@@ -68,6 +75,12 @@ def download_file(url, local_file_path, filename):
     return local_file_path
 
 def load_mushrooms():
+    """
+    Load the mushrooms data set, as a pandas DataFrame
+
+    :return: A DataFrame, containing the mushroom dataset
+    :rtype: pandas.DataFrame
+    """
     # Extract the data
     file_path = download_file(
         'https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data',
@@ -83,6 +96,11 @@ def load_mushrooms():
     return observations
 
 def load_titanic():
+    """
+    Load the titanic data set, as a pandas DataFrame
+    :return: A DataFrame, containing the titanic dataset
+    :rtype: pandas.DataFrame
+    """
     file_path = download_file('http://web.stanford.edu/class/archive/cs/cs109/cs109.1166/stuff/titanic.csv',
                               '~/.keras-pandas/example_datasets/', filename='titanic.csv')
 

@@ -230,11 +230,27 @@ class Automater(object):
 
         return input_layers, input_nub
 
-    def _create_output_nub(self, _variable_type_dict, output_variables_df, y):
+    def _create_output_nub(self, variable_type_dict, output_variables_df, y):
+        """"
+        Generate a 'nub', appropriate for use as an output / final Keras layer.
+
+        The structure of this nub will depend on the y variable's data type
+
+        :param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
+        variables
+        :type variable_type_dict: {str:[str]}
+        :param output_variables_df: A dataframe containing the output variable. This is necessary for some data types
+        (e.g. a categorical output needs to know how levels the categorical variable has)
+        :type output_variables_df: pandas.DataFrame
+        :param y: The name of the response variable
+        :type y: str
+        :return: A single Keras layer
+        :rtype: keras.engine.Layer
+        """
         logging.info('Creating output nub, for variable: {}'.format(y))
 
         # Find which variable type for response variable
-        response_variable_types = filter(lambda (key, value): y in value, _variable_type_dict.items())
+        response_variable_types = filter(lambda (key, value): y in value, variable_type_dict.items())
         response_variable_types = map(lambda (key, value): key, response_variable_types)
         logging.info('Found response variable type(s)'.format(response_variable_types))
         if len(response_variable_types) < 1:
@@ -259,14 +275,22 @@ class Automater(object):
         return output_nub
 
 
-    def _create_mappers(self, _variable_type_dict):
+    def _create_mappers(self, variable_type_dict):
+        """
+        Creates two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
+        :param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
+        variables
+        :type variable_type_dict: {str:[str]}
+        :return: Two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
+        :rtype: (DataFrameMapper, DataFrameMapper)
+        """
 
         sklearn_mapper_pipelines = constants.default_sklearn_mapper_pipelines
         input_transformation_list = list()
         output_transformation_list = list()
 
         # Iterate through all variable types
-        for (variable_type, variable_list) in _variable_type_dict.items():
+        for (variable_type, variable_list) in variable_type_dict.items():
             logging.info('Working variable type: {}, with variable list: {}'.format(variable_type, variable_list))
 
             # Extract default transformation pipeline
