@@ -23,7 +23,7 @@ setup(
     packages=find_packages(),
     install_requires=required,
     project_urls=OrderedDict((
-        ('Documentation', ''),
+        ('Documentation', 'https://github.com/bjherger/keras-pandas'),
         ('Code', 'https://github.com/bjherger/keras-pandas'),
         ('Issue tracker', 'https://github.com/bjherger/keras-pandas/issues'),
     )),
