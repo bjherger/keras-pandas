@@ -6,6 +6,9 @@ bleach==1.5.0
 certifi==2018.4.16
 chardet==3.0.4
 click==6.7
+configparser==3.5.0
+docutils==0.14
+entrypoints==0.2.3
 enum34==1.1.6
 Flask==0.12.2
 funcsigs==1.0.2
@@ -18,8 +21,10 @@ idna==2.6
 itsdangerous==0.24
 Jinja2==2.10
 Keras==2.1.5
+m2r==0.1.14
 Markdown==2.6.11
 MarkupSafe==1.0
+mistune==0.8.3
 mock==2.0.0
 more-itertools==4.1.0
 numpy==1.14.2
@@ -37,8 +42,8 @@ scipy==1.0.1
 six==1.11.0
 sklearn==0.0
 sklearn-pandas==1.6.0
-tensorboard==1.7.0
-tensorflow==1.7.0
+tensorboard==1.8.0
+tensorflow==1.8.0
 termcolor==1.1.0
 urllib3==1.22
 Werkzeug==0.14.1
