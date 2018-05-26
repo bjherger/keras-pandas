@@ -5,6 +5,7 @@ import keras
 from keras.layers import Embedding, Flatten
 from sklearn.preprocessing import Imputer, StandardScaler, LabelEncoder
 
+
 default_sklearn_mapper_pipelines = defaultdict(lambda: list())
 
 default_sklearn_mapper_pipelines.update({

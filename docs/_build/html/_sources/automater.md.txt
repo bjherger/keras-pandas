@@ -1,0 +1,16 @@
+TEST TEST
+
+# Automater
+
+ - one
+ - two
+
+
+.. automodule:: Automater
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :special-members:
+    :private-members:
+
+
