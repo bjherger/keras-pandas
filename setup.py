@@ -18,7 +18,7 @@ setup(
     description='Easy and rapid deep learning',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version=version,
+    version='1.1.3',
     url='https://github.com/bjherger/keras-pandas',
     author='Brendan Herger',
     author_email='13herger@gmail.com',
