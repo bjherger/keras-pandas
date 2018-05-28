@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from setuptools import setup, find_packages
 
-import keras_pandas
+__version__ = '1.1.3'
 
 # Add README as long description
 with open("README.md", "r") as fh:
@@ -17,7 +17,7 @@ setup(
     description='Easy and rapid deep learning',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version=keras_pandas.__version__,
+    version=__version__,
     url='https://github.com/bjherger/keras-pandas',
     author='Brendan Herger',
     author_email='13herger@gmail.com',
