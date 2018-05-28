@@ -22,4 +22,8 @@ build/
 /*.egg-info
 
 # pyirc file
-.pyirc 
+.pyirc
+
+# Sphinx documentation specific files
+
+docs/_build

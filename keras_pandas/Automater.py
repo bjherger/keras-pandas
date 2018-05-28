@@ -48,7 +48,7 @@ class Automater(object):
         # Initialize list of variables fed into Keras nubs
         self.keras_input_variable_list = list()
 
-        # TODO
+        # Set up datetime expansion method
         self._datetime_expansion_method_dict = None
 
     def fit(self, input_dataframe):
@@ -278,7 +278,7 @@ class Automater(object):
     def _create_mappers(self, variable_type_dict):
         """
         Creates two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
-        
+
         :param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
         variables
         :type variable_type_dict: {str:[str]}
