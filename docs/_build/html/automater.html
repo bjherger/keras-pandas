@@ -197,9 +197,16 @@
 <dl class="method">
 <dt id="Automater.Automater._create_mappers">
 <code class="descname">_create_mappers</code><span class="sig-paren">(</span><em>variable_type_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#Automater.Automater._create_mappers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
-:param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
-variables
+<dd><p>Creates two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable_type_dict</strong> – A dictionary, with keys describing variables types, and values listing particular</td>
+</tr>
+</tbody>
+</table>
+<p>variables
 :type variable_type_dict: {str:[str]}
 :return: Two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
 :rtype: (DataFrameMapper, DataFrameMapper)</p>
@@ -208,8 +215,7 @@ variables
 <dl class="method">
 <dt id="Automater.Automater._create_output_nub">
 <code class="descname">_create_output_nub</code><span class="sig-paren">(</span><em>variable_type_dict</em>, <em>output_variables_df</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#Automater.Automater._create_output_nub" title="Permalink to this definition">¶</a></dt>
-<dd><p>”
-Generate a ‘nub’, appropriate for use as an output / final Keras layer.</p>
+<dd><p>Generate a ‘nub’, appropriate for use as an output / final Keras layer.</p>
 <p>The structure of this nub will depend on the y variable’s data type</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

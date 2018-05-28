@@ -36,6 +36,7 @@ def check_variable_list_are_valid(variable_type_dict):
 def download_file(url, local_file_path, filename):
     """
     Download the file at `url` in chunks, to the location at `local_file_path`
+
     :param url: URL to a file to be downloaded
     :type url: str
     :param local_file_path: Path to download the file to
@@ -98,6 +99,7 @@ def load_mushrooms():
 def load_titanic():
     """
     Load the titanic data set, as a pandas DataFrame
+
     :return: A DataFrame, containing the titanic dataset
     :rtype: pandas.DataFrame
     """

@@ -231,7 +231,7 @@ class Automater(object):
         return input_layers, input_nub
 
     def _create_output_nub(self, variable_type_dict, output_variables_df, y):
-        """"
+        """
         Generate a 'nub', appropriate for use as an output / final Keras layer.
 
         The structure of this nub will depend on the y variable's data type
@@ -278,6 +278,7 @@ class Automater(object):
     def _create_mappers(self, variable_type_dict):
         """
         Creates two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
+        
         :param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
         variables
         :type variable_type_dict: {str:[str]}
