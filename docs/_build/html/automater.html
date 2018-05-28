@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="constants" href="lib.html" />
-    <link rel="prev" title="Welcome to keras-pandas’s documentation!" href="index.html" /> 
+    <link rel="next" title="lib" href="lib.html" />
+    <link rel="prev" title="keras-pandas" href="index.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -85,9 +85,25 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">keras-pandas</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#usage">Usage</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contributing">Contributing</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#test">Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#style-guide">Style guide</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#generating-documentation">Generating documentation</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Automater</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lib.html">lib</a></li>
+<li class="toctree-l4"><a class="reference internal" href="constants.html">constants</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Automater</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib.html">constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="constants.html">lib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib.html">lib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">constants</a></li>
 </ul>
 
             
@@ -180,13 +196,39 @@
 
 <dl class="method">
 <dt id="Automater.Automater._create_mappers">
-<code class="descname">_create_mappers</code><span class="sig-paren">(</span><em>_variable_type_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#Automater.Automater._create_mappers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">_create_mappers</code><span class="sig-paren">(</span><em>variable_type_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#Automater.Automater._create_mappers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
+:param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
+variables
+:type variable_type_dict: {str:[str]}
+:return: Two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
+:rtype: (DataFrameMapper, DataFrameMapper)</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="Automater.Automater._create_output_nub">
-<code class="descname">_create_output_nub</code><span class="sig-paren">(</span><em>_variable_type_dict</em>, <em>output_variables_df</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#Automater.Automater._create_output_nub" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">_create_output_nub</code><span class="sig-paren">(</span><em>variable_type_dict</em>, <em>output_variables_df</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#Automater.Automater._create_output_nub" title="Permalink to this definition">¶</a></dt>
+<dd><p>”
+Generate a ‘nub’, appropriate for use as an output / final Keras layer.</p>
+<p>The structure of this nub will depend on the y variable’s data type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable_type_dict</strong> – A dictionary, with keys describing variables types, and values listing particular</td>
+</tr>
+</tbody>
+</table>
+<p>variables
+:type variable_type_dict: {str:[str]}
+:param output_variables_df: A dataframe containing the output variable. This is necessary for some data types
+(e.g. a categorical output needs to know how levels the categorical variable has)
+:type output_variables_df: pandas.DataFrame
+:param y: The name of the response variable
+:type y: str
+:return: A single Keras layer
+:rtype: keras.engine.Layer</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="Automater.Automater._datetime_expansion_">
@@ -235,10 +277,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="lib.html" class="btn btn-neutral float-right" title="constants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="lib.html" class="btn btn-neutral float-right" title="lib" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Welcome to keras-pandas’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="keras-pandas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
