@@ -5,7 +5,6 @@ import keras
 from keras.layers import Embedding, Flatten
 from sklearn.preprocessing import Imputer, StandardScaler, LabelEncoder
 
-
 default_sklearn_mapper_pipelines = defaultdict(lambda: list())
 
 default_sklearn_mapper_pipelines.update({
@@ -26,13 +25,12 @@ def input_nub_numeric_handler(variable, input_dataframe):
     else:
         input_sequence_length = 1
 
-
-
     # Create input_layer layer
     input_layer = keras.Input(shape=(input_sequence_length,), dtype='float32', name='input_{}'.format(variable))
 
     # Return, in format of input_layer, last variable-specific layer
     return input_layer, input_layer
+
 
 def input_nub_categorical_handler(variable, input_dataframe):
     # Get transformed data for shaping

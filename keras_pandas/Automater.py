@@ -1,12 +1,9 @@
 import copy
 import logging
-import pandas
 
-import numpy
+import pandas
+from keras.engine import Layer
 from keras.layers import Concatenate, Dense
-from keras.utils import to_categorical
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-from sklearn.utils import column_or_1d
 from sklearn_pandas import DataFrameMapper
 
 import constants
@@ -40,16 +37,13 @@ class Automater(object):
         # Create input variable type handler
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
 
-        # Initialize Keras nubs
+        # Initialize Keras nubs & layers
         self.input_layers = None
         self.input_nub = None
         self.output_nub = None
 
         # Initialize list of variables fed into Keras nubs
         self.keras_input_variable_list = list()
-
-        # Set up datetime expansion method
-        self._datetime_expansion_method_dict = None
 
     def fit(self, input_dataframe):
         # TODO Validate input dataframe
@@ -77,27 +71,48 @@ class Automater(object):
         # Initialize & set output layer(s)
         if self.response_var is not None:
             # TODO Update to refer to correct method signature
-            self.output_nub = self._create_output_nub(self._variable_type_dict, output_variables_df=output_variables_df, y=self.response_var)
+            self.output_nub = self._create_output_nub(self._variable_type_dict, output_variables_df=output_variables_df,
+                                                      y=self.response_var)
 
         # Set self.fitted to True
         self.fitted = True
 
         return self
 
-    def transform(self, dataframe):
+    def transform(self, input_dataframe, df_out=None):
+        """
+
+         - Validate that the provided `input_dataframe` contains the required input columns
+         - Transform the keras input columns
+         - Transform the response variable, if it is present
+         - Format the data for return
+
+        :param input_dataframe: A pandas dataframe, containing all keras input layers
+        :type input_dataframe: pandas.DataFrame
+        :return: Either a pandas dataframe (if `df_out = True`), or a numpy object (if `df_out = False`). This object
+        will contain:
+
+         - The transformed input variables
+         - The transformed output variables (if the output variable is present in `input_dataframe`
+
+        """
 
         # Check if fitted yet
         if not self.fitted:
             raise ValueError('Cannot transform without being fitted first. Call fit() method before transform() method')
 
+        # Check df_out state
+        if df_out is None:
+            df_out = self.df_out
+
         # Check if we have a response variable, and if it is available
-        if self.response_var is not None and self.response_var in dataframe.columns:
+        if self.response_var is not None and self.response_var in input_dataframe.columns:
             y_available = True
         else:
             y_available = False
 
         # Check if any input variables are missing
-        missing_input_vars = set(self._user_provided_variables).difference(dataframe.columns)
+        missing_input_vars = set(self._user_provided_variables).difference(input_dataframe.columns)
 
         # Check if response_var is set, and is listed in missing vars
         if self.response_var is not None and y_available is False:
@@ -112,15 +127,15 @@ class Automater(object):
         # TODO Expand variables, as necessary
 
         # Create input variables df
-        input_variables = self.input_mapper.transform(dataframe)
+        input_variables = self.input_mapper.transform(input_dataframe)
         logging.info('Created input_variables, w/ columns: {}'.format(list(input_variables.columns)))
 
         # Create output variables df
         if y_available:
-            output_variables = self.output_mapper.transform(dataframe)
+            output_variables = self.output_mapper.transform(input_dataframe)
             logging.info('Created output_variables, w/ columns: {}'.format(list(output_variables.columns)))
 
-        if self.df_out:
+        if df_out:
             # Join input and output dfs on index
             if y_available:
                 df_out = input_variables.join(output_variables)
@@ -140,8 +155,12 @@ class Automater(object):
                 y = None
             return X, y
 
-    def fit_transform(self, dataframe):
-        return self.fit(dataframe).transform(dataframe)
+    def fit_transform(self, input_dataframe):
+        """
+        Perform a `fit`, and then a `transform`. See `transform` for return documentation
+
+        """
+        return self.fit(input_dataframe).transform(input_dataframe)
 
     def get_transformers(self):
         # TODO
@@ -163,14 +182,27 @@ class Automater(object):
         # TODO
         pass
 
-    def _datetime_expansion_(self, dataframe):
-        # TODO
-        pass
+    def _create_input_nub(self, variable_type_dict, input_dataframe):
+        """
+        Generate a 'nub', appropriate for use as an input (and possibly additional Keras layers). Each Keras input
+            variable has on input pipeline, with:
 
-    def _create_input_nub(self, _variable_type_dict, input_dataframe):
+         - One  Input (required)
+         - Possible additional layers (optional, such as embedding layers for text)
+
+        All input pipelines are then joined with a Concatenate layer
+
+        :param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
+            variables
+        :type variable_type_dict: {str:[str]}
+        :param input_dataframe: A pandas dataframe, containing all keras input layers
+        :type input_dataframe: pandas.DataFrame
+        :return: A Keras layer, which can be fed into future layers
+        :rtype: ([keras,Input], Layer)
+        """
 
         logging.info('Beginning creation of input nubs and input nub tips for _variable_type_dict: {}'.format(
-            _variable_type_dict))
+            variable_type_dict))
 
         # Set up reference variables
 
@@ -183,7 +215,7 @@ class Automater(object):
 
         # Iterate through variable types
         # TODO Iterate through handled variable types, rather than given variable types. Ordering could matter.
-        for (variable_type, variable_list) in _variable_type_dict.items():
+        for (variable_type, variable_list) in variable_type_dict.items():
             logging.info('Creating input nubs for variable_type: {}'.format(variable_type))
 
             if len(variable_list) <= 0:
@@ -244,8 +276,8 @@ class Automater(object):
         :type output_variables_df: pandas.DataFrame
         :param y: The name of the response variable
         :type y: str
-        :return: A single Keras layer
-        :rtype: keras.engine.Layer
+        :return: A single Keras layer, correctly formatted to output the response variable provided
+        :rtype: Layer
         """
         logging.info('Creating output nub, for variable: {}'.format(y))
 
@@ -273,7 +305,6 @@ class Automater(object):
                 'Output layer for variable type: {} not yet implemented'.format(response_variable_type))
 
         return output_nub
-
 
     def _create_mappers(self, variable_type_dict):
         """
