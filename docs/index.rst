@@ -3,14 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. mdinclude:: ../README.md
+Index
+========================================
 
+Welcome to keras-pandas! I'd recommend that you start with the keras-pandas section & Quick Start.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   index
+   intro
    automater
    lib
    constants
