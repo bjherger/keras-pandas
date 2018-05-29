@@ -47,7 +47,6 @@ class Automater(object):
 
     def fit(self, input_dataframe):
         """
-
         Get the data and layers ready for use
 
          - Train the input transformation pipelines
@@ -58,7 +57,7 @@ class Automater(object):
 
         :param input_dataframe:
         :return: self, now in a fitted state. The Automater now has initialized input layers, output layer(s) (if
-        response variable is present), and can be used for the transform step
+            response variable is present), and can be used for the transform step
         :rtype: Automater
         """
         # TODO Validate input dataframe
@@ -106,10 +105,8 @@ class Automater(object):
         :param input_dataframe: A pandas dataframe, containing all keras input layers
         :type input_dataframe: pandas.DataFrame
         :return: Either a pandas dataframe (if `df_out = True`), or a numpy object (if `df_out = False`). This object
-        will contain:
-
-         - The transformed input variables
-         - The transformed output variables (if the output variable is present in `input_dataframe`
+            will contain: the transformed input variables, and the transformed output variables (if the output variable
+            is present in `input_dataframe`
 
         """
 
@@ -200,8 +197,9 @@ class Automater(object):
 
     def _create_input_nub(self, variable_type_dict, input_dataframe):
         """
+
         Generate a 'nub', appropriate for use as an input (and possibly additional Keras layers). Each Keras input
-            variable has on input pipeline, with:
+        variable has on input pipeline, with:
 
          - One  Input (required)
          - Possible additional layers (optional, such as embedding layers for text)

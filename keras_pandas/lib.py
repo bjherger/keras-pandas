@@ -7,13 +7,12 @@ import requests
 
 def check_variable_list_are_valid(variable_type_dict):
     """
-
     Checks that the provided variable_type_dict is valid, by:
 
      - Confirming there is no overlap between all variable lists
 
     :param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
-    variables
+        variables
     :type variable_type_dict: {str:[str]}
     :return: True, if there is no overlap
     :rtype: bool
