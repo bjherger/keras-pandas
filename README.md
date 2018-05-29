@@ -1,28 +1,21 @@
 # keras-pandas
 
-**tl;dr:** keras-pandas helps users rapidly build and iterate on deep learning models. It providing a 
-batteries-included solution for data transformation, data input layers and a data output layer.
+**tl;dr:** keras-pandas helps users rapidly build and iterate on deep learning models. 
 
-Getting data into keras can be:
-
- - Tedious
- - Time consuming
- - Difficult for those new to Keras
-
-`keras-pandas` overcomes these issues by (automatically) providing:
+Getting data into keras can be tedious, time consuming, and difficult for those new to Keras. `keras-pandas` overcomes 
+these issues by (automatically) providing:
 
  - A cleaned, transformed and correctly formatted `X` and `y`
  - A smart baseline 'input nub', without the hassle of worrying about input shapes or data types
  - A smart baseline output layer
  
-With these resources, it's possible to rapidly build and iterate on deep learning models, by providing a batteries 
-included solution for data transformation, data input and data output.  
+With these resources, it's possible to rapidly build and iterate on deep learning models, and focus on the parts of 
+modeling that you enjoy!
 
 ## Quick Start
 
-Let's say we're looking at the [titanic data set](https://www.kaggle.com/c/titanic/data), and wanted to train a model. 
-This data set is particularly fun because this data set contains a mix of variables types, and features a lot of null 
-values. 
+Let's build a model with the [titanic data set](https://www.kaggle.com/c/titanic/data. This data set is particularly 
+fun because this data set contains a mix of variables types, and features a lot of null values. 
 
 We could install `keras-pandas`
 
@@ -33,14 +26,12 @@ pip install -U keras-pandas
 And then run the following snippet to create and train a model:
 
 ```python
-# Import a few things
 from keras import Model
 from keras.layers import Dense
 
 from keras_pandas.Automater import Automater
 from keras_pandas.lib import load_titanic
 
-# Load the data set
 observations = load_titanic()
 
 # Transform the data set, using keras_pandas
@@ -83,12 +74,14 @@ As a side note, the response variable must be in one of the variable type lists 
 #### One variable type
 
 If you only have one variable type, only use that variable type!
+
 ```python
 categorical_vars = ['pclass', 'sex', 'survived']
 auto = Automater(categorical_vars=categorical_vars, response_var='survived')
 ```
 
 #### Multiple variable types
+
 If you have multiple variable types, throw them all in!
 
 ```python
@@ -101,7 +94,7 @@ auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_var
 #### No `response_var`
 
 If all variables are always available, and / or your problems space doesn't have a single response variable, you can 
-omit the response variable
+omit the response variable.
 
 ```python
 categorical_vars = ['pclass', 'sex', 'survived']
