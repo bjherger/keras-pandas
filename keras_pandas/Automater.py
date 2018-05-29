@@ -280,7 +280,7 @@ class Automater(object):
         Creates two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
 
         :param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
-        variables
+            variables
         :type variable_type_dict: {str:[str]}
         :return: Two sklearn-pandas mappers, one for the input variables, and another for the output variable(s)
         :rtype: (DataFrameMapper, DataFrameMapper)
