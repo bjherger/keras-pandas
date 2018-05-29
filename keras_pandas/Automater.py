@@ -237,10 +237,10 @@ class Automater(object):
         The structure of this nub will depend on the y variable's data type
 
         :param variable_type_dict: A dictionary, with keys describing variables types, and values listing particular
-        variables
+            variables
         :type variable_type_dict: {str:[str]}
         :param output_variables_df: A dataframe containing the output variable. This is necessary for some data types
-        (e.g. a categorical output needs to know how levels the categorical variable has)
+            (e.g. a categorical output needs to know how levels the categorical variable has)
         :type output_variables_df: pandas.DataFrame
         :param y: The name of the response variable
         :type y: str
