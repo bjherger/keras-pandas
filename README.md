@@ -1,13 +1,13 @@
 # keras-pandas
 
-**tl;dr:** keras-pandas helps users rapidly build and iterate on deep learning models. 
+**tl;dr:** keras-pandas allows users to rapidly build and iterate on deep learning models. 
 
-Getting data into keras can be tedious, time consuming, and difficult for those new to Keras. `keras-pandas` overcomes 
-these issues by (automatically) providing:
+Getting data formatted and into keras can be tedious, time consuming, and difficult, whether your a veteran or new to 
+Keras. `keras-pandas` overcomes these issues by (automatically) providing:
 
- - A cleaned, transformed and correctly formatted `X` and `y`
- - A smart baseline 'input nub', without the hassle of worrying about input shapes or data types
- - A smart baseline output layer
+ - A cleaned, transformed and correctly formatted `X` and `y` (good for keras, sklearn or any other ML platform)
+ - An 'input nub', without the hassle of worrying about input shapes or data types
+ - An output layer, correctly formatted for the kind of response variable provided
  
 With these resources, it's possible to rapidly build and iterate on deep learning models, and focus on the parts of 
 modeling that you enjoy!
@@ -15,9 +15,9 @@ modeling that you enjoy!
 ## Quick Start
 
 Let's build a model with the [titanic data set](https://www.kaggle.com/c/titanic/data. This data set is particularly 
-fun because this data set contains a mix of variables types, and features a lot of null values. 
+fun because this data set contains a mix of categorical and numerical data types, and features a lot of null values. 
 
-We could install `keras-pandas`
+We'll `keras-pandas`
 
 ```bash
 pip install -U keras-pandas
@@ -32,6 +32,7 @@ from keras.layers import Dense
 from keras_pandas.Automater import Automater
 from keras_pandas.lib import load_titanic
 
+# Load the titanic data set, as a pandas dataframe
 observations = load_titanic()
 
 # Transform the data set, using keras_pandas
@@ -120,7 +121,7 @@ Now, we can use our `Automater` to transform the dataset, from a pandas DataFram
 for Keras's input and output layers. 
 
 ```python
-X, y = auto.transform(observations)
+X, y = auto.transform(observations, df_out=False)
 ```
 
 This will return two objects:
@@ -146,7 +147,14 @@ The output layer is correctly formatted to accept the response variable numpy ob
 
 ## Contributing
 
-The best bug reports are Pull Requests. The second best bug reports are new issues on this repo. 
+If you're interested in helping out, all open tasks are listed the GitHub Issues tab. The issues tagged with 
+`first issue` are a good place to start if your new to the project or new to open source projects. 
+
+If you're interested in a new major feature, please feel free to reach out to me
+
+### Bug reports
+
+The best bug reports are Pull Requests. The second best bug reports are new issues on this repo.
 
 ### Test
 
@@ -173,3 +181,8 @@ cd docs
 make html
 
 ```  
+
+## Contact
+
+Hey, I'm Brendan Herger, avaiable at [https://www.hergertarian.com/](https://www.hergertarian.com/). Please feel free 
+to reach out to me at `13herger <at> gmail <dot> com`
