@@ -46,6 +46,21 @@ class Automater(object):
         self.keras_input_variable_list = list()
 
     def fit(self, input_dataframe):
+        """
+
+        Get the data and layers ready for use
+
+         - Train the input transformation pipelines
+         - Create the keras input layers
+         - Train the output transformation pipeline(s) (optional, only if there is a response variable)
+         - Create the output layer(s) (optional, only if there is a response variable)
+         - Set `self.fitted` to `True`
+
+        :param input_dataframe:
+        :return: self, now in a fitted state. The Automater now has initialized input layers, output layer(s) (if
+        response variable is present), and can be used for the transform step
+        :rtype: Automater
+        """
         # TODO Validate input dataframe
 
         # Fit input_mapper with input dataframe
@@ -64,13 +79,14 @@ class Automater(object):
             output_variables_df = self.output_mapper.transform(input_dataframe)
 
         # Initialize & set input layers
+        # TODO Only create nubs if they do not exist yet (?)
         input_layers, input_nub = self._create_input_nub(self._variable_type_dict, input_variables_df)
         self.input_layers = input_layers
         self.input_nub = input_nub
 
         # Initialize & set output layer(s)
         if self.response_var is not None:
-            # TODO Update to refer to correct method signature
+            # TODO Only create output nub if it doesn't exist yet (?)
             self.output_nub = self._create_output_nub(self._variable_type_dict, output_variables_df=output_variables_df,
                                                       y=self.response_var)
 
