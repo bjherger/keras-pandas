@@ -3,6 +3,7 @@ from collections import defaultdict
 
 import numpy
 from gensim.utils import simple_preprocess
+from keras.preprocessing.sequence import pad_sequences
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
@@ -15,7 +16,8 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         # Create a dictionary, with default value 0 (corresponding to UNK token)
         self.token_index_lookup = defaultdict(int)
         self.token_index_lookup['UNK'] = 0
-        self.next_token_index = 1
+        self.token_index_lookup['__PAD__'] = 1
+        self.next_token_index = 2
 
         pass
 
@@ -43,16 +45,17 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
     def transform(self, X):
 
-        # TODO Preprocess & tokenize
+        # Undo Numpy formatting
+        observations = map(lambda x: x[0], X)
 
-        # TODO Convert tokens to indices
+        # Convert to embedding format
+        observations = map(self.process_string, observations)
 
-        # TODO Pad embedding length
+        # Redo numpy formatting
+        observations = map(lambda x: numpy.array(x), observations)
 
-        # TODO Format for outgoing
-        # X = map(lambda x: [x], observation_series)
-        # X = numpy.ndarray(X)
-        pass
+        return numpy.matrix(observations)
+
 
     def generate_embedding_sequence_length(self, observation_series):
         logging.info('Generating embedding_sequence_length')
@@ -61,3 +64,37 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         logging.info('Generated embedding_sequence_length: {}'.format(embedding_sequence_length))
 
         return embedding_sequence_length
+
+    def process_string(self, input_string):
+        logging.debug('Processing string: {}'.format(input_string))
+
+        # Convert to tokens
+        tokens = simple_preprocess(input_string)
+        logging.debug('Tokens: {}'.format(tokens))
+
+        # Convert to indices
+        indices = map(lambda x: self.token_index_lookup[x], tokens)
+        logging.debug('Indices: {}'.format(indices))
+
+        # Pad indices
+        padding_index = self.token_index_lookup['__PAD__']
+        padding_length = self.embedding_sequence_length
+        padded_indices = self.pad(indices, length=padding_length, pad_char=padding_index)
+        logging.info('Padded indices: {}'.format(padded_indices))
+
+        return padded_indices
+
+    @staticmethod
+    def pad(iterable, length, pad_char):
+
+        if isinstance(iterable, str):
+            iterable = list(iterable)
+
+        if len(iterable) == length:
+            return iterable
+        elif len(iterable) > length:
+            return iterable[:length]
+        else:
+            padding_len = length - len(iterable)
+            padding = [pad_char] * padding_len
+            return iterable + padding
