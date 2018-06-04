@@ -2,12 +2,13 @@ import logging
 import unittest
 
 import numpy
-from keras.engine import Layer
-from keras_pandas.Automater import Automater
+from keras import losses, Model
+from keras.layers import Dense
 
 from keras_pandas import lib
+from keras_pandas.Automater import Automater
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
 
 class TestText(unittest.TestCase):
@@ -35,7 +36,7 @@ class TestText(unittest.TestCase):
         auto.fit(data)
 
         (X, y) = auto.transform(data)
-        
+
         # TODO Find correct shape
         self.assertEqual((887, 4), X[0].shape)
         self.assertTrue(numpy.array_equal([2, 3, 4, 5], X[0][0]))
@@ -55,4 +56,37 @@ class TestText(unittest.TestCase):
         self.assertEqual(1, len(auto.input_layers))
 
     def test_whole(self):
+        data = lib.load_titanic()
+
+        msk = numpy.random.rand(len(data)) < 0.95
+        data_train = data[msk]
+        data_test = data[~msk]
+
+        text_vars = ['name']
+        categorical_vars = ['survived']
+
+        # Create auto
+        auto = Automater(text_vars=text_vars, categorical_vars=categorical_vars, response_var='survived')
+
+        # Train auto
+        auto.fit(data_train)
+        X_train, y_train = auto.transform(data)
+
+        # Create model
+
+        x = auto.input_nub
+        x = Dense(30, activation='relu')(x)
+        x = auto.output_nub(x)
+
+        model = Model(inputs=auto.input_layers, outputs=x)
+        model.compile(optimizer='Adam', loss=losses.sparse_categorical_crossentropy)
+
+        # Train DL model
+        model.fit(X_train, y_train)
+
+        # Transform test set
+        data_test = data_test.drop('survived', axis=1)
+        X_test, y_test = auto.transform(data_test)
+        model.predict(X_test)
+
         pass

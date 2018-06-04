@@ -79,7 +79,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         padding_index = self.token_index_lookup['__PAD__']
         padding_length = self.embedding_sequence_length
         padded_indices = self.pad(indices, length=padding_length, pad_char=padding_index)
-        logging.info('Padded indices: {}'.format(padded_indices))
+        logging.debug('Padded indices: {}'.format(padded_indices))
 
         return padded_indices
 
