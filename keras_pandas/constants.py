@@ -66,7 +66,22 @@ def input_nub_categorical_handler(variable, input_dataframe):
 
 
 def input_nub_text_handler(variable, input_dataframe):
+    """
+    Create an input nub for text data, by:
+
+     - Finding all derived variables. With a variable `name` and sequence length of 4, there would be 4 derived
+     variables, `name_0` through `name_4`
+     - Creating an appropriately shaped input layer, embedding layer, and all future layers
+     - Return both the input layer and last layer (both are necessary for creating a model)
+
+    :param variable: Name of the variable
+    :type variable: str
+    :param input_dataframe: A dataframe, containing either the specified variable, or derived variables
+    :type input_dataframe: pandas.DataFrame
+    :return: A tuple containing the input layer, and the last layer of the nub
+    """
     logging.info('Creating text input nub for variable: {}'.format(variable))
+
     # Get transformed data for shaping
     if variable in input_dataframe.columns:
         variable_list = [variable]
@@ -77,24 +92,30 @@ def input_nub_text_handler(variable, input_dataframe):
     logging.info('Text var has variable / derived variable list: {}'.format(variable_list))
     transformed = input_dataframe[variable_list].as_matrix()
 
-    # Set up dimensions for input_layer layer
+    # Set up sequence length for input_layer layer
     if len(transformed.shape) >= 2:
         input_sequence_length = int(transformed.shape[1])
     else:
         input_sequence_length = 1
 
+    # Get the vocab size (number of rows in the embedding)
     vocab_size = int(numpy.max(transformed)) + 1
+
+    # Determine the embedding output size (number of columns in the embedding)
+    # TODO There must be a better heuristic
     embedding_output_dim = 200
 
     logging.info('Creating embedding for text_var: {}, with input_sequence_length: {}, vocab size: {}, '
                  'and embedding_output_dim: {}'.format(variable, input_sequence_length, vocab_size,
                                                        embedding_output_dim))
 
+    # Create & stack layers
     input_layer = keras.Input(shape=(input_sequence_length,), name='input_{}'.format(variable))
 
     embedding_layer = Embedding(input_dim=vocab_size,
                                 output_dim=embedding_output_dim,
                                 input_length=input_sequence_length, name='embedding_{}'.format(variable))
+
     x = embedding_layer(input_layer)
     x = Bidirectional(LSTM(128, name='lstm_{}'.format(variable)), name='bidirectiona_lstm_{}'.format(variable))(x)
 

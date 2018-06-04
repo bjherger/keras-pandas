@@ -7,6 +7,20 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 
 class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
+    """
+    Converts text into padded sequences. The output of this transformation is consistent with the required format
+    for Keras embedding layers
+
+    For example `'the fat man`' might be transformed into `[2, 0, 27, 1, 1, 1]`, if the `embedding_sequence_length` is
+    6.
+
+    There are a few sentinel values used by this layer:
+
+     - `0` is used for the UNK token (tokens which were not seen during training)
+     - `1` is used for the padding token (to fill out sequences that shorter than `embedding_sequence_length`)
+
+    """
+
     def __init__(self, embedding_sequence_length=None):
         # TODO Allow for UNK 'dropout' rate
 
