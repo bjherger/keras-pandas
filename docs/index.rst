@@ -16,4 +16,5 @@ Welcome to keras-pandas! I'd recommend that you start with the keras-pandas sect
    automater
    lib
    constants
+   transformations
 

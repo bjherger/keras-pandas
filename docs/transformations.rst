@@ -1,9 +1,9 @@
 
-constants
+transformations
 ========================================
 
 
-.. automodule:: constants
+.. automodule:: transformations
     :members:
     :undoc-members:
     :show-inheritance:

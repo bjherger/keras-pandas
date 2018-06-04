@@ -84,7 +84,7 @@ class TestAutomater(unittest.TestCase):
         # Base case: No variables
         auto = Automater()
         self.assertEqual({'numerical_vars': list(), 'categorical_vars': list(),
-                          'boolean_vars': list(), 'datetime_vars': list(),
+                          'boolean_vars': list(), 'datetime_vars': list(), 'text_vars': list(),
                           'non_transformed_vars': list()}, auto._variable_type_dict, )
         self.assertItemsEqual(list(), auto._user_provided_variables)
 
