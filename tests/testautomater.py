@@ -98,6 +98,7 @@ class TestAutomater(unittest.TestCase):
         response = copy.deepcopy(data)
         response['boolean_vars'] = list()
         response['non_transformed_vars'] = list()
+        response['text_vars'] = list()
 
         auto = Automater(numerical_vars=data['numerical_vars'], categorical_vars=data['categorical_vars'],
                          datetime_vars=data['datetime_vars'])
