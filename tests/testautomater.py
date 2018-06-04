@@ -8,7 +8,7 @@ from keras_pandas import lib
 from keras_pandas.Automater import Automater
 from keras_pandas import constants
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
 
 class TestAutomater(unittest.TestCase):

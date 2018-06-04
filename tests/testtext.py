@@ -2,6 +2,7 @@ import logging
 import unittest
 
 import numpy
+import pandas
 from keras import losses, Model
 from keras.layers import Dense
 
@@ -37,12 +38,18 @@ class TestText(unittest.TestCase):
 
         (X, y) = auto.transform(data)
 
-        # TODO Find correct shape
+        # Find correct shape
         self.assertEqual((887, 4), X[0].shape)
+
+        # Test output values
         self.assertTrue(numpy.array_equal([2, 3, 4, 5], X[0][0]))
         self.assertEqual(None, y)
 
-        # TODO Test output values
+        # Test with unseen terms
+        test_data = pandas.DataFrame(data=['Brendan Herger'], columns=['name'])
+        (X, y) = auto.transform(test_data)
+        self.assertTrue(numpy.array_equal([[0, 0, 1, 1]], X[0]))
+
         pass
 
     def test_create_input_nub(self):

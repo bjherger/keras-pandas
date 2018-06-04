@@ -7,7 +7,7 @@ from sklearn_pandas import DataFrameMapper
 from keras_pandas import lib
 from keras_pandas.transformations import EmbeddingVectorizer
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
 
 class TestEmbeddingVectorizer(unittest.TestCase):

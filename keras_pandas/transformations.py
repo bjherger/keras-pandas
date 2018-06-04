@@ -123,13 +123,19 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         :rtype: []
         """
 
+        # If input_sequence is a string, convert to to an explicit list
         if isinstance(input_sequence, str):
             input_sequence = list(input_sequence)
 
+        # If the input_sequence is the correct length, return it
         if len(input_sequence) == length:
             return input_sequence
+
+        # If the input_sequence is too long, truncate it
         elif len(input_sequence) > length:
             return input_sequence[:length]
+
+        # If the input_sequence is too short, extend it w/ the pad_car
         else:
             padding_len = length - len(input_sequence)
             padding = [pad_char] * padding_len
