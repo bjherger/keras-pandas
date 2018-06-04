@@ -79,6 +79,18 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         return embedding_sequence_length
 
     def process_string(self, input_string):
+        """
+        Turn a string into padded sequences, consisten with Keras's Embedding layer
+
+         - Simple preprocess & tokenize
+         - Convert tokens to indices
+         - Pad sequence to be the correct length
+
+        :param input_string: A string, to be converted into a padded sequence of token indices
+        :type input_string: str
+        :return: A padded, fixed-length array of token indices
+        :rtype: [int]
+        """
         logging.debug('Processing string: {}'.format(input_string))
 
         # Convert to tokens
@@ -98,16 +110,27 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         return padded_indices
 
     @staticmethod
-    def pad(iterable, length, pad_char):
+    def pad(input_sequence, length, pad_char):
+        """
+        Pad the given iterable, so that it is the correct length.
 
-        if isinstance(iterable, str):
-            iterable = list(iterable)
+        :param input_sequence: Any iterable object
+        :param length: The desired length of the output.
+        :type length: int
+        :param pad_char: The character or int to be added to short sequences
+        :type pad_char: str or int
+        :return: A sequence, of len `length`
+        :rtype: []
+        """
 
-        if len(iterable) == length:
-            return iterable
-        elif len(iterable) > length:
-            return iterable[:length]
+        if isinstance(input_sequence, str):
+            input_sequence = list(input_sequence)
+
+        if len(input_sequence) == length:
+            return input_sequence
+        elif len(input_sequence) > length:
+            return input_sequence[:length]
         else:
-            padding_len = length - len(iterable)
+            padding_len = length - len(input_sequence)
             padding = [pad_char] * padding_len
-            return iterable + padding
+            return input_sequence + padding
