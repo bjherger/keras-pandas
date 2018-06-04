@@ -7,7 +7,7 @@ lib
     :members:
     :undoc-members:
     :show-inheritance:
-    :special-members:
+    :special-members: __init__
     :private-members:
 
 

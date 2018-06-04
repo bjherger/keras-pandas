@@ -7,7 +7,7 @@ from sklearn_pandas import DataFrameMapper
 from keras_pandas import lib
 from keras_pandas.transformations import EmbeddingVectorizer
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
 
 class TestEmbeddingVectorizer(unittest.TestCase):
@@ -54,10 +54,10 @@ class TestEmbeddingVectorizer(unittest.TestCase):
 
         transformation_list = [(['name'], [EmbeddingVectorizer(embedding_sequence_length=12)])]
 
-        mapper = DataFrameMapper(transformation_list, df_out=False)
+        mapper = DataFrameMapper(transformation_list, df_out=True)
 
         mapper.fit(data)
 
         data_transformed = mapper.transform(data)
 
-        assert_array_equal([[2, 3, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1]], data_transformed[0,:])
+        assert_array_equal([2, 3, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1], data_transformed.values[0,:])

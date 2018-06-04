@@ -8,7 +8,7 @@ from keras_pandas import lib
 from keras_pandas.Automater import Automater
 from keras_pandas import constants
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
 
 class TestAutomater(unittest.TestCase):
@@ -84,7 +84,7 @@ class TestAutomater(unittest.TestCase):
         # Base case: No variables
         auto = Automater()
         self.assertEqual({'numerical_vars': list(), 'categorical_vars': list(),
-                          'boolean_vars': list(), 'datetime_vars': list(),
+                          'boolean_vars': list(), 'datetime_vars': list(), 'text_vars': list(),
                           'non_transformed_vars': list()}, auto._variable_type_dict, )
         self.assertItemsEqual(list(), auto._user_provided_variables)
 
@@ -98,6 +98,7 @@ class TestAutomater(unittest.TestCase):
         response = copy.deepcopy(data)
         response['boolean_vars'] = list()
         response['non_transformed_vars'] = list()
+        response['text_vars'] = list()
 
         auto = Automater(numerical_vars=data['numerical_vars'], categorical_vars=data['categorical_vars'],
                          datetime_vars=data['datetime_vars'])

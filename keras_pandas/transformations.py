@@ -3,11 +3,24 @@ from collections import defaultdict
 
 import numpy
 from gensim.utils import simple_preprocess
-from keras.preprocessing.sequence import pad_sequences
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
 class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
+    """
+    Converts text into padded sequences. The output of this transformation is consistent with the required format
+    for Keras embedding layers
+
+    For example `'the fat man`' might be transformed into `[2, 0, 27, 1, 1, 1]`, if the `embedding_sequence_length` is
+    6.
+
+    There are a few sentinel values used by this layer:
+
+     - `0` is used for the UNK token (tokens which were not seen during training)
+     - `1` is used for the padding token (to fill out sequences that shorter than `embedding_sequence_length`)
+
+    """
+
     def __init__(self, embedding_sequence_length=None):
         # TODO Allow for UNK 'dropout' rate
 
@@ -66,6 +79,18 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         return embedding_sequence_length
 
     def process_string(self, input_string):
+        """
+        Turn a string into padded sequences, consisten with Keras's Embedding layer
+
+         - Simple preprocess & tokenize
+         - Convert tokens to indices
+         - Pad sequence to be the correct length
+
+        :param input_string: A string, to be converted into a padded sequence of token indices
+        :type input_string: str
+        :return: A padded, fixed-length array of token indices
+        :rtype: [int]
+        """
         logging.debug('Processing string: {}'.format(input_string))
 
         # Convert to tokens
@@ -80,21 +105,38 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         padding_index = self.token_index_lookup['__PAD__']
         padding_length = self.embedding_sequence_length
         padded_indices = self.pad(indices, length=padding_length, pad_char=padding_index)
-        logging.info('Padded indices: {}'.format(padded_indices))
+        logging.debug('Padded indices: {}'.format(padded_indices))
 
         return padded_indices
 
     @staticmethod
-    def pad(iterable, length, pad_char):
+    def pad(input_sequence, length, pad_char):
+        """
+        Pad the given iterable, so that it is the correct length.
 
-        if isinstance(iterable, str):
-            iterable = list(iterable)
+        :param input_sequence: Any iterable object
+        :param length: The desired length of the output.
+        :type length: int
+        :param pad_char: The character or int to be added to short sequences
+        :type pad_char: str or int
+        :return: A sequence, of len `length`
+        :rtype: []
+        """
 
-        if len(iterable) == length:
-            return iterable
-        elif len(iterable) > length:
-            return iterable[:length]
+        # If input_sequence is a string, convert to to an explicit list
+        if isinstance(input_sequence, str):
+            input_sequence = list(input_sequence)
+
+        # If the input_sequence is the correct length, return it
+        if len(input_sequence) == length:
+            return input_sequence
+
+        # If the input_sequence is too long, truncate it
+        elif len(input_sequence) > length:
+            return input_sequence[:length]
+
+        # If the input_sequence is too short, extend it w/ the pad_car
         else:
-            padding_len = length - len(iterable)
+            padding_len = length - len(input_sequence)
             padding = [pad_char] * padding_len
-            return iterable + padding
+            return input_sequence + padding

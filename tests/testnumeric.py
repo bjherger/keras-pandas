@@ -7,7 +7,7 @@ from keras.layers import Dense
 
 from keras_pandas.Automater import Automater
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
 
 class TestNumeric(unittest.TestCase):

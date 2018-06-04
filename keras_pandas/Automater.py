@@ -13,7 +13,7 @@ import lib
 class Automater(object):
 
     def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
-                 non_transformed_vars=list(), response_var=None, df_out=False):
+                 text_vars=list(),non_transformed_vars=list(), response_var=None, df_out=False):
 
         self.response_var = response_var
         self.fitted = False
@@ -25,6 +25,7 @@ class Automater(object):
         self._variable_type_dict['categorical_vars'] = categorical_vars
         self._variable_type_dict['boolean_vars'] = boolean_vars
         self._variable_type_dict['datetime_vars'] = datetime_vars
+        self._variable_type_dict['text_vars'] = text_vars
         self._variable_type_dict['non_transformed_vars'] = non_transformed_vars
         lib.check_variable_list_are_valid(self._variable_type_dict)
 
@@ -160,7 +161,15 @@ class Automater(object):
             X = list()
             for variable in self.keras_input_variable_list:
                 logging.info('Adding keras input variable: {} to X'.format(variable))
-                data = input_variables[variable].values
+                if variable in input_variables.columns:
+                    data = input_variables[variable].values
+                else:
+                    logging.info('Checking for derived variables')
+                    variable_name_prefix = variable + '_'
+                    derived_variable_list = filter(lambda x: x.startswith(variable_name_prefix),
+                                                   input_variables.columns)
+                    logging.debug('Derived variable list: {}'.format(derived_variable_list))
+                    data = input_variables[derived_variable_list].values
                 X.append(data)
             if y_available:
                 y = output_variables[self.response_var].values
@@ -253,7 +262,12 @@ class Automater(object):
                     raise ValueError(
                         'Unknown input variable: {}, which is not in list of input variables'.format(variable))
                 elif variable not in input_dataframe.columns:
-                    raise ValueError('Given variable: {} is not in transformed dataframe columns: {}'
+
+                    # Check for derived variable (e.g. `name` is turned into `name_0` and `name_1`
+                    variable_name_prefix = variable + '_'
+                    derived_variable_list = filter(lambda x: x.startswith(variable_name_prefix), input_dataframe.columns)
+                    if len(derived_variable_list) <= 0:
+                        raise ValueError('Given variable: {} is not in transformed dataframe columns: {}'
                                      .format(variable, input_dataframe.columns))
 
                 # Apply handler to current variable, creating nub input and nub tip

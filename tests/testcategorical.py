@@ -78,6 +78,7 @@ class TestCategorical(unittest.TestCase):
         self.assertItemsEqual(test_columns, transformed.columns)
 
     def test_create_input_nub_numerical(self):
+        # TODO rename function, there is no numerical input
         train_df = self.mushroom_dataframe()
 
         # Zero variables
@@ -101,6 +102,7 @@ class TestCategorical(unittest.TestCase):
         self.assertEqual(3, len(input_layers))
 
     def test_numerical_whole(self):
+        # TODO Rename, this is categorical whole
         # St up data set
         mushroom_df = self.mushroom_dataframe()
         msk = numpy.random.rand(len(mushroom_df)) < 0.95
