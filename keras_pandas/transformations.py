@@ -3,7 +3,6 @@ from collections import defaultdict
 
 import numpy
 from gensim.utils import simple_preprocess
-from keras.preprocessing.sequence import pad_sequences
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
