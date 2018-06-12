@@ -10,7 +10,7 @@ import constants
 import lib
 
 
-class Automater(object):
+class Automater(object) :
 
     def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
                  text_vars=list(),non_transformed_vars=list(), response_var=None, df_out=False):
