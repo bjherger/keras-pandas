@@ -14,7 +14,7 @@ modeling that you enjoy!
 
 ## Quick Start
 
-Let's build a model with the [titanic data set](https://www.kaggle.com/c/titanic/data. This data set is particularly 
+Let's build a model with the [titanic data set](https://www.kaggle.com/c/titanic/data). This data set is particularly 
 fun because this data set contains a mix of categorical and numerical data types, and features a lot of null values. 
 
 We'll `keras-pandas`
