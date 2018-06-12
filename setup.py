@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from setuptools import setup, find_packages
 
-__version__ = '1.2.3'
+__version__ = '1.2.4'
 
 # Add README as long description
 with open("README.md", "r") as fh:
@@ -25,9 +25,10 @@ setup(
     packages=find_packages(),
     install_requires=required,
     project_urls=OrderedDict((
-        ('Documentation', 'https://github.com/bjherger/keras-pandas'),
+        ('Documentation', 'http://keras-pandas.readthedocs.io/en/latest/intro.html'),
         ('Code', 'https://github.com/bjherger/keras-pandas'),
         ('Issue tracker', 'https://github.com/bjherger/keras-pandas/issues'),
+        ('Author\'s website', 'https://www.hergertarian.com/')
     )),
 )
 

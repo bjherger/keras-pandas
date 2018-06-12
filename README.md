@@ -12,6 +12,13 @@ Keras. `keras-pandas` overcomes these issues by (automatically) providing:
 With these resources, it's possible to rapidly build and iterate on deep learning models, and focus on the parts of 
 modeling that you enjoy!
 
+For more info, check out the:
+
+ - [Code](https://github.com/bjherger/keras-pandas)
+ - [Documentation](http://keras-pandas.readthedocs.io/en/latest/intro.html)
+ - [Issue tracker](https://github.com/bjherger/keras-pandas/issues)
+ - [Author's website](https://www.hergertarian.com/)
+
 ## Quick Start
 
 Let's build a model with the [titanic data set](https://www.kaggle.com/c/titanic/data). This data set is particularly 
