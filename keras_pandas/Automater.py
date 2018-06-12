@@ -10,10 +10,10 @@ import constants
 import lib
 
 
-class Automater(object) :
+class Automater(object):
 
     def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
-                 text_vars=list(),non_transformed_vars=list(), response_var=None, df_out=False):
+                 text_vars=list(), non_transformed_vars=list(), response_var=None, df_out=False):
 
         self.response_var = response_var
         self.fitted = False
@@ -265,10 +265,11 @@ class Automater(object) :
 
                     # Check for derived variable (e.g. `name` is turned into `name_0` and `name_1`
                     variable_name_prefix = variable + '_'
-                    derived_variable_list = filter(lambda x: x.startswith(variable_name_prefix), input_dataframe.columns)
+                    derived_variable_list = filter(lambda x: x.startswith(variable_name_prefix),
+                                                   input_dataframe.columns)
                     if len(derived_variable_list) <= 0:
                         raise ValueError('Given variable: {} is not in transformed dataframe columns: {}'
-                                     .format(variable, input_dataframe.columns))
+                                         .format(variable, input_dataframe.columns))
 
                 # Apply handler to current variable, creating nub input and nub tip
                 variable_input, variable_input_nub_tip = variable_type_handler(variable, input_dataframe)

@@ -15,20 +15,28 @@ def main():
     # Transform the data set, using keras_pandas
     categorical_vars = ['pclass', 'sex', 'survived']
     numerical_vars = ['age', 'siblings_spouses_aboard', 'parents_children_aboard', 'fare']
+    text_vars = ['name']
 
-    auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_vars, response_var='survived')
+    auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_vars, text_vars=text_vars,
+                     response_var='survived')
     X, y = auto.fit_transform(observations)
 
-    # Create model
+    # Start model with provided input nub
     x = auto.input_nub
-    x = Dense(30)(x)
+
+    # Fill in your own hidden layers
+    x = Dense(32)(x)
+    x = Dense(32, activation='relu')(x)
+    x = Dense(32)(x)
+
+    # End model with provided output nub
     x = auto.output_nub(x)
 
     model = Model(inputs=auto.input_layers, outputs=x)
     model.compile(optimizer='Adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
     # Train model
-    model.fit(X, y, epochs=10, validation_split=.5)
+    model.fit(X, y, epochs=4, validation_split=.2)
 
     pass
 
