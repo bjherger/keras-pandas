@@ -36,10 +36,10 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
     def fit(self, X, y=None):
         # Format text for processing, by creating a list of strings
-        observation_series = map(lambda x: x[0], X)
+        observation_series = list(map(lambda x: x[0], X))
 
         # Preprocess & tokenize
-        observation_series = map(simple_preprocess, observation_series)
+        observation_series = list(map(simple_preprocess, observation_series))
 
         # Generate embedding_sequence_length, if necessary
         if self.embedding_sequence_length is None:
@@ -59,20 +59,20 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
     def transform(self, X):
 
         # Undo Numpy formatting
-        observations = map(lambda x: x[0], X)
+        observations = list(map(lambda x: x[0], X))
 
         # Convert to embedding format
-        observations = map(self.process_string, observations)
+        observations = list(map(self.process_string, observations))
 
         # Redo numpy formatting
-        observations = map(lambda x: numpy.array(x), observations)
+        observations = list(map(lambda x: numpy.array(x), observations))
 
         return numpy.matrix(observations)
 
 
     def generate_embedding_sequence_length(self, observation_series):
         logging.info('Generating embedding_sequence_length')
-        lengths = map(len, observation_series)
+        lengths = list(map(len, observation_series))
         embedding_sequence_length = int(numpy.median(lengths))
         logging.info('Generated embedding_sequence_length: {}'.format(embedding_sequence_length))
 
@@ -98,7 +98,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         logging.debug('Tokens: {}'.format(tokens))
 
         # Convert to indices
-        indices = map(lambda x: self.token_index_lookup[x], tokens)
+        indices = list(map(lambda x: self.token_index_lookup[x], tokens))
         logging.debug('Indices: {}'.format(indices))
 
         # Pad indices
@@ -139,4 +139,4 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         else:
             padding_len = length - len(input_sequence)
             padding = [pad_char] * padding_len
-            return input_sequence + padding
+            return list(input_sequence) + list(padding)

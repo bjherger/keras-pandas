@@ -106,6 +106,6 @@ def load_titanic():
                               '~/.keras-pandas/example_datasets/', filename='titanic.csv')
 
     observations = pandas.read_csv(file_path)
-    observations.columns = map(lambda x: x.lower().replace(' ', '_').replace('/', '_'), observations.columns)
+    observations.columns = list(map(lambda x: x.lower().replace(' ', '_').replace('/', '_'), observations.columns))
 
     return observations

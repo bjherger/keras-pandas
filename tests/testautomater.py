@@ -52,8 +52,8 @@ class TestAutomater(unittest.TestCase):
         # Base case: No variables
         data = {}
         input_mapper, output_mapper = Automater()._create_mappers(data)
-        self.assertItemsEqual(list(), input_mapper.features)
-        self.assertItemsEqual(list(), output_mapper.features)
+        self.assertCountEqual(list(), input_mapper.features)
+        self.assertCountEqual(list(), output_mapper.features)
 
         # A single numerical
         data = {'numerical_vars': ['n1']}
@@ -76,9 +76,8 @@ class TestAutomater(unittest.TestCase):
         input_mapper, output_mapper = Automater()._create_mappers(data)
         self.assertEqual(2, len(input_mapper.features))
 
-        mapper_pipelines = map(lambda x: x[1], input_mapper.features)
-
-        self.assertItemsEqual([[], []], mapper_pipelines)
+        mapper_pipelines = list(map(lambda x: list(x[1]), input_mapper.features))
+        self.assertCountEqual([[], []], mapper_pipelines)
 
     def test_initializer(self):
         # Base case: No variables
@@ -86,7 +85,7 @@ class TestAutomater(unittest.TestCase):
         self.assertEqual({'numerical_vars': list(), 'categorical_vars': list(),
                           'boolean_vars': list(), 'datetime_vars': list(), 'text_vars': list(),
                           'non_transformed_vars': list()}, auto._variable_type_dict, )
-        self.assertItemsEqual(list(), auto._user_provided_variables)
+        self.assertCountEqual(list(), auto._user_provided_variables)
 
         # Common use case: Variables in each
         data = {
@@ -107,7 +106,7 @@ class TestAutomater(unittest.TestCase):
         self.assertEqual(response, auto._variable_type_dict)
 
         response_variable_list = [item for sublist in response.values() for item in sublist]
-        self.assertItemsEqual(response_variable_list, auto._user_provided_variables)
+        self.assertCountEqual(response_variable_list, auto._user_provided_variables)
 
         # Overlapping variable lists
         data = {

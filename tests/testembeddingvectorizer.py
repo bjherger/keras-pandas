@@ -39,7 +39,7 @@ class TestEmbeddingVectorizer(unittest.TestCase):
         padding_len = 220
         padded_data = EmbeddingVectorizer.pad(data, padding_len, 0)
         self.assertEqual(padding_len, len(padded_data))
-        self.assertEqual(range(2, 5) + [0] * 217, padded_data)
+        self.assertEqual(list(range(2, 5)) + [0] * 217, padded_data)
 
     def test_empty_strings(self):
         data = lib.load_titanic()
