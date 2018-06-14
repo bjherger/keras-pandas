@@ -6,8 +6,7 @@ from keras.engine import Layer
 from keras.layers import Concatenate, Dense
 from sklearn_pandas import DataFrameMapper
 
-import constants
-import lib
+from keras_pandas import constants, lib
 
 
 class Automater(object):
@@ -166,8 +165,8 @@ class Automater(object):
                 else:
                     logging.info('Checking for derived variables')
                     variable_name_prefix = variable + '_'
-                    derived_variable_list = filter(lambda x: x.startswith(variable_name_prefix),
-                                                   input_variables.columns)
+                    derived_variable_list = list(filter(lambda x: x.startswith(variable_name_prefix),
+                                                   input_variables.columns))
                     logging.debug('Derived variable list: {}'.format(derived_variable_list))
                     data = input_variables[derived_variable_list].values
                 X.append(data)
@@ -265,8 +264,8 @@ class Automater(object):
 
                     # Check for derived variable (e.g. `name` is turned into `name_0` and `name_1`
                     variable_name_prefix = variable + '_'
-                    derived_variable_list = filter(lambda x: x.startswith(variable_name_prefix),
-                                                   input_dataframe.columns)
+                    derived_variable_list = list(filter(lambda x: x.startswith(variable_name_prefix),
+                                                   input_dataframe.columns))
                     if len(derived_variable_list) <= 0:
                         raise ValueError('Given variable: {} is not in transformed dataframe columns: {}'
                                          .format(variable, input_dataframe.columns))
@@ -311,8 +310,8 @@ class Automater(object):
         logging.info('Creating output nub, for variable: {}'.format(y))
 
         # Find which variable type for response variable
-        response_variable_types = filter(lambda (key, value): y in value, variable_type_dict.items())
-        response_variable_types = map(lambda (key, value): key, response_variable_types)
+        response_variable_types = list(filter(lambda i: y in i[1], variable_type_dict.items()))
+        response_variable_types = list(map(lambda i: i[0], response_variable_types))
         logging.info('Found response variable type(s)'.format(response_variable_types))
         if len(response_variable_types) < 1:
             raise ValueError('Response variable: {} is not in provided variable type lists'.format(y))
@@ -361,7 +360,7 @@ class Automater(object):
             for variable in variable_list:
                 logging.debug('Creating transformation for variable: {}, '
                               'with default_pipeline: {}'.format(variable, default_pipeline))
-                variable_pipeline = map(copy.copy, default_pipeline)
+                variable_pipeline = list(map(copy.copy, default_pipeline))
 
                 # Append to the correct list
                 if variable == self.response_var:

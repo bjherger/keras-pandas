@@ -24,7 +24,7 @@ class TestCategorical(unittest.TestCase):
         self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
-        self.assertEqual([['odor'], ['habitat']], map(lambda x: x[0], auto.input_mapper.built_features))
+        self.assertEqual([['odor'], ['habitat']], list(map(lambda x: x[0], auto.input_mapper.built_features)))
 
     def test_transform_no_response(self):
         train_df = self.mushroom_dataframe()
@@ -46,7 +46,7 @@ class TestCategorical(unittest.TestCase):
         transformed = auto.transform(train_df)
         self.assertEqual(8124, len(transformed.index))
         self.assertEqual((8124, 2), transformed.shape)
-        self.assertItemsEqual(test_columns, transformed.columns)
+        self.assertCountEqual(test_columns, transformed.columns)
 
     def test_transform_with_response(self):
         train_df = self.mushroom_dataframe()
@@ -67,7 +67,7 @@ class TestCategorical(unittest.TestCase):
         transformed = auto.transform(train_df)
         self.assertEqual(8124, len(transformed.index))
         self.assertEqual((8124, 2), transformed.shape)
-        self.assertItemsEqual(test_columns, transformed.columns)
+        self.assertCountEqual(test_columns, transformed.columns)
 
         # Test w/ response var unavailable.
         test_columns = ['odor']
@@ -75,7 +75,7 @@ class TestCategorical(unittest.TestCase):
         transformed = auto.transform(test_df)
         self.assertEqual(8124, len(transformed.index))
         self.assertEqual((8124, 1), transformed.shape)
-        self.assertItemsEqual(test_columns, transformed.columns)
+        self.assertCountEqual(test_columns, transformed.columns)
 
     def test_create_input_nub_numerical(self):
         # TODO rename function, there is no numerical input

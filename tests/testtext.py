@@ -26,7 +26,7 @@ class TestText(unittest.TestCase):
         self.assertEqual(text_vars, auto._user_provided_variables)
         self.assertTrue(auto.fitted)
 
-        self.assertEqual([['name']], map(lambda x: x[0], auto.input_mapper.built_features))
+        self.assertEqual([['name']], list(map(lambda x: x[0], auto.input_mapper.built_features)))
 
     def test_transform_no_response(self):
         data = lib.load_titanic()

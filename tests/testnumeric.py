@@ -25,7 +25,7 @@ class TestNumeric(unittest.TestCase):
         self.assertTrue(auto.fitted)
 
         # Assert that transformation pipline has been built / trained
-        self.assertEqual([['sepal_length']], map(lambda x: x[0], auto.input_mapper.built_features))
+        self.assertEqual([['sepal_length']], list(map(lambda x: x[0], auto.input_mapper.built_features)))
 
     def test_transform(self):
         iris_df = self.iris_dataframe()
@@ -46,7 +46,7 @@ class TestNumeric(unittest.TestCase):
         transformed = auto.transform(iris_df)
         self.assertEqual(150, len(transformed.index))
         self.assertEqual((150, 2), transformed.shape)
-        self.assertItemsEqual(iris_numerical_cols, transformed.columns)
+        self.assertCountEqual(iris_numerical_cols, transformed.columns)
 
     def test_create_input_nub_numerical(self):
         iris_df = self.iris_dataframe()

@@ -87,7 +87,7 @@ def input_nub_text_handler(variable, input_dataframe):
         variable_list = [variable]
     else:
         variable_name_prefix = variable + '_'
-        variable_list = filter(lambda x: x.startswith(variable_name_prefix), input_dataframe.columns)
+        variable_list = list(filter(lambda x: x.startswith(variable_name_prefix), input_dataframe.columns))
 
     logging.info('Text var has variable / derived variable list: {}'.format(variable_list))
     transformed = input_dataframe[variable_list].as_matrix()
