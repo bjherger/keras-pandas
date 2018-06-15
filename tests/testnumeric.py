@@ -6,11 +6,12 @@ from keras.layers import Dense
 
 from keras_pandas import lib
 from keras_pandas.Automater import Automater
+from tests.testbase import TestBase
 
 logging.getLogger().setLevel(logging.INFO)
 
 
-class TestNumeric(unittest.TestCase):
+class TestNumeric(TestBase):
 
     def test_fit(self):
         iris_df = lib.load_iris()

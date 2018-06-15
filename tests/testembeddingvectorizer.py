@@ -6,11 +6,12 @@ from sklearn_pandas import DataFrameMapper
 
 from keras_pandas import lib
 from keras_pandas.transformations import EmbeddingVectorizer
+from tests.testbase import TestBase
 
 logging.getLogger().setLevel(logging.INFO)
 
 
-class TestEmbeddingVectorizer(unittest.TestCase):
+class TestEmbeddingVectorizer(TestBase):
 
     def test_padding(self):
         # Empty string

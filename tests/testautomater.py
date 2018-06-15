@@ -4,11 +4,12 @@ import unittest
 
 from keras_pandas import lib
 from keras_pandas.Automater import Automater
+from tests.testbase import TestBase
 
 logging.getLogger().setLevel(logging.INFO)
 
 
-class TestAutomater(unittest.TestCase):
+class TestAutomater(TestBase):
 
     def test_check_variable_lists_are_valid(self):
         # Base case: No variables
@@ -104,7 +105,6 @@ class TestAutomater(unittest.TestCase):
 
         response_variable_list = [item for sublist in response.values() for item in sublist]
         self.assertCountEqual(response_variable_list, auto._user_provided_variables)
-
         # Overlapping variable lists
         data = {
             'numerical_vars': ['n1', 'n2', 'n3', 'x1'],

@@ -8,11 +8,12 @@ from keras.layers import Dense
 
 from keras_pandas import lib
 from keras_pandas.Automater import Automater
+from tests.testbase import TestBase
 
 logging.getLogger().setLevel(logging.INFO)
 
 
-class TestText(unittest.TestCase):
+class TestText(TestBase):
 
     def test_fit(self):
         data = lib.load_titanic()
