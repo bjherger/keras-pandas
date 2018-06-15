@@ -1,0 +1,6 @@
+{
+  "tests/testautomater.py": true, 
+  "tests/testcategorical.py": true, 
+  "tests/testnumeric.py": true, 
+  "tests/testtext.py": true
+}
