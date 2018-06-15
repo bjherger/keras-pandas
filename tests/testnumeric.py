@@ -1,10 +1,10 @@
 import logging
 import unittest
 
-import pandas
 from keras import Model, losses
 from keras.layers import Dense
 
+from keras_pandas import lib
 from keras_pandas.Automater import Automater
 
 logging.getLogger().setLevel(logging.INFO)
@@ -13,7 +13,7 @@ logging.getLogger().setLevel(logging.INFO)
 class TestNumeric(unittest.TestCase):
 
     def test_fit(self):
-        iris_df = self.iris_dataframe()
+        iris_df = lib.load_iris()
 
         # One variable
         iris_numerical_cols = ['sepal_length']
@@ -28,7 +28,7 @@ class TestNumeric(unittest.TestCase):
         self.assertEqual([['sepal_length']], list(map(lambda x: x[0], auto.input_mapper.built_features)))
 
     def test_transform(self):
-        iris_df = self.iris_dataframe()
+        iris_df = lib.load_iris()
 
         # Two numerical variables, df_out = False
         iris_numerical_cols = ['sepal_length', 'sepal_width']
@@ -49,7 +49,7 @@ class TestNumeric(unittest.TestCase):
         self.assertCountEqual(iris_numerical_cols, transformed.columns)
 
     def test_create_input_nub_numerical(self):
-        iris_df = self.iris_dataframe()
+        iris_df = lib.load_iris()
 
         # Zero variables
         variable_type_dict = {'numerical_vars': []}
@@ -72,7 +72,7 @@ class TestNumeric(unittest.TestCase):
 
     def test_numerical_whole(self):
         # St up data set
-        iris = self.iris_dataframe()
+        iris = lib.load_iris()
         iris_train = iris[:100]
         iris_test = iris[101:]
         iris_numerical_cols = ['sepal_length', 'petal_length']
@@ -107,8 +107,4 @@ class TestNumeric(unittest.TestCase):
         model.predict(X_test)
 
         pass
-
-    @staticmethod
-    def iris_dataframe():
-        return pandas.read_csv('test_data/iris.csv')
 

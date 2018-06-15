@@ -2,11 +2,8 @@ import copy
 import logging
 import unittest
 
-import pandas
-
 from keras_pandas import lib
 from keras_pandas.Automater import Automater
-from keras_pandas import constants
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -124,8 +121,3 @@ class TestAutomater(unittest.TestCase):
                           datetime_vars=data['datetime_vars'])
 
         # TODO Test that df_out is captured correctly
-
-
-    @staticmethod
-    def iris_dataframe():
-        return pandas.read_csv('test_data/iris.csv')

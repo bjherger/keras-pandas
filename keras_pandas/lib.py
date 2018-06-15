@@ -32,6 +32,7 @@ def check_variable_list_are_valid(variable_type_dict):
 
     return True
 
+
 def download_file(url, local_file_path, filename):
     """
     Download the file at `url` in chunks, to the location at `local_file_path`
@@ -74,6 +75,7 @@ def download_file(url, local_file_path, filename):
         r.close()
     return local_file_path
 
+
 def load_mushrooms():
     """
     Load the mushrooms data set, as a pandas DataFrame
@@ -95,6 +97,7 @@ def load_mushrooms():
                                           'ring-type', 'spore-print-color', 'population', 'habitat'])
     return observations
 
+
 def load_titanic():
     """
     Load the titanic data set, as a pandas DataFrame
@@ -107,5 +110,27 @@ def load_titanic():
 
     observations = pandas.read_csv(file_path)
     observations.columns = list(map(lambda x: x.lower().replace(' ', '_').replace('/', '_'), observations.columns))
+
+    return observations
+
+
+def load_iris():
+    file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data',
+                              '~/.keras-pandas/example_datasets/', filename='iris.csv')
+    observations = pandas.read_csv(file_path, names=['sepal_length', 'sepal_width', 'petal_length', 'petal_width',
+                                                     'class'])
+    return observations
+
+
+def load_mushroom():
+    file_path = download_file(
+        'https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data',
+        '~/.keras-pandas/example_datasets/', filename='agaricus-lepiota.csv')
+    observations = pandas.read_csv(file_path,
+                                   names=['class', 'cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor',
+                                          'gill-attachment', 'gill-spacing', 'gill-size', 'gill-color', 'stalk-shape',
+                                          'stalk-root', 'stalk-surface-above-ring', 'stalk-surface-below-ring',
+                                          'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type', 'veil-color',
+                                          'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat'])
 
     return observations

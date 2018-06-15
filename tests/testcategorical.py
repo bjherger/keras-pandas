@@ -6,13 +6,14 @@ import unittest
 from keras import Model, losses
 from keras.layers import Dense
 
+from keras_pandas import lib
 from keras_pandas.Automater import Automater
 
 
 class TestCategorical(unittest.TestCase):
 
     def test_fit(self):
-        train_df = self.mushroom_dataframe()
+        train_df = lib.load_mushroom()
 
         # Two variables
         mushroom_categorical_cols = ['odor', 'habitat']
@@ -27,7 +28,7 @@ class TestCategorical(unittest.TestCase):
         self.assertEqual([['odor'], ['habitat']], list(map(lambda x: x[0], auto.input_mapper.built_features)))
 
     def test_transform_no_response(self):
-        train_df = self.mushroom_dataframe()
+        train_df = lib.load_mushroom()
 
         # Two numerical variables, df_out = False
         test_columns = ['odor', 'habitat']
@@ -49,7 +50,7 @@ class TestCategorical(unittest.TestCase):
         self.assertCountEqual(test_columns, transformed.columns)
 
     def test_transform_with_response(self):
-        train_df = self.mushroom_dataframe()
+        train_df = lib.load_mushroom()
 
         # Two numerical variables, df_out = False
         test_columns = ['odor', 'habitat']
@@ -79,7 +80,7 @@ class TestCategorical(unittest.TestCase):
 
     def test_create_input_nub_numerical(self):
         # TODO rename function, there is no numerical input
-        train_df = self.mushroom_dataframe()
+        train_df = lib.load_mushroom()
 
         # Zero variables
         variable_type_dict = {'categorical_vars': []}
@@ -104,7 +105,7 @@ class TestCategorical(unittest.TestCase):
     def test_numerical_whole(self):
         # TODO Rename, this is categorical whole
         # St up data set
-        mushroom_df = self.mushroom_dataframe()
+        mushroom_df = lib.load_mushroom()
         msk = numpy.random.rand(len(mushroom_df)) < 0.95
         mushroom_train = mushroom_df[msk]
         mushroom_test = mushroom_df[~msk]
@@ -141,6 +142,3 @@ class TestCategorical(unittest.TestCase):
 
         pass
 
-    @staticmethod
-    def mushroom_dataframe():
-        return pandas.read_csv('test_data/mushrooms.csv')
