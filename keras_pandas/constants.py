@@ -47,7 +47,7 @@ def input_nub_categorical_handler(variable, input_dataframe):
         input_sequence_length = 1
 
     # TODO Convert below to numpy.max (?)
-    categorical_num_levels = int(max(transformed)) + 1
+    categorical_num_levels = int(max(transformed)) + 2
     embedding_output_dim = int(min((categorical_num_levels + 1) / 2, 50))
 
     logging.info('Creating embedding for cat_var: {}, with input_sequence_length: {}, categorical_num_levels: {}, '
@@ -99,7 +99,7 @@ def input_nub_text_handler(variable, input_dataframe):
         input_sequence_length = 1
 
     # Get the vocab size (number of rows in the embedding)
-    vocab_size = int(numpy.max(transformed)) + 1
+    vocab_size = int(numpy.max(transformed)) + 2
 
     # Determine the embedding output size (number of columns in the embedding)
     # TODO There must be a better heuristic
