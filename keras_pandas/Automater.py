@@ -37,13 +37,17 @@ class Automater(object):
         # Create input variable type handler
         self.input_nub_type_handlers = constants.default_input_nub_type_handlers
 
+        # Initialize list of variables fed into Keras nubs
+        self.keras_input_variable_list = list()
+
         # Initialize Keras nubs & layers
         self.input_layers = None
         self.input_nub = None
         self.output_nub = None
 
-        # Initialize list of variables fed into Keras nubs
-        self.keras_input_variable_list = list()
+        # Initialize suggested Keras loss
+        self.loss = None
+
 
     def fit(self, input_dataframe):
         """
@@ -88,6 +92,10 @@ class Automater(object):
             # TODO Only create output nub if it doesn't exist yet (?)
             self.output_nub = self._create_output_nub(self._variable_type_dict, output_variables_df=output_variables_df,
                                                       y=self.response_var)
+
+        # Initialize & set suggested loss
+        if self.loss is not None:
+            self.loss = self._suggest_loss(self._variable_type_dict, y=self.response_var)
 
         # Set self.fitted to True
         self.fitted = True
@@ -309,17 +317,11 @@ class Automater(object):
         """
         logging.info('Creating output nub, for variable: {}'.format(y))
 
-        # Find which variable type for response variable
+        # Find response variable's variable type
         response_variable_types = lib.get_variable_type(y, variable_type_dict, self.response_var)
-
-        logging.info('Found response variable type(s)'.format(response_variable_types))
-        if len(response_variable_types) < 1:
-            raise ValueError('Response variable: {} is not in provided variable type lists'.format(y))
-        elif len(response_variable_types) > 1:
-            raise ValueError('Response variable: {} appears in more than one provided variable type lists'.format(
-                y))
-
         response_variable_type = response_variable_types[0]
+        logging.info('Found response variable type'.format(response_variable_type))
+
 
         if response_variable_type == 'numerical_vars':
             # Create Dense layer w/ single node
@@ -377,3 +379,22 @@ class Automater(object):
         output_mapper = DataFrameMapper(output_transformation_list, df_out=True)
 
         return input_mapper, output_mapper
+
+    def _suggest_loss(self, variable_type_dict, y):
+        # Find response variable's variable type
+        logging.info('Finding suggested loss, for variable: {}'.format(y))
+
+        # Find response variable's variable type
+        response_variable_types = lib.get_variable_type(y, variable_type_dict, self.response_var)
+        response_variable_type = response_variable_types[0]
+        logging.info('Found response variable type'.format(response_variable_type))
+
+        # TODO Look up suggested loss
+        if response_variable_type in constants.default_suggested_losses:
+            suggested_loss = constants.default_suggested_losses[response_variable_type]
+        else:
+            raise ValueError('No default loss for variable {}, '
+                             'with variable_type: {}'.format(y, response_variable_type))
+
+        return suggested_loss
+
