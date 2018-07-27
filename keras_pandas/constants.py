@@ -3,6 +3,7 @@ from collections import defaultdict
 
 import keras
 import numpy
+from keras import losses
 from keras.layers import Embedding, Flatten, Bidirectional, LSTM
 from sklearn.preprocessing import Imputer, StandardScaler, LabelEncoder
 
@@ -17,6 +18,12 @@ default_sklearn_mapper_pipelines.update({
     'text_vars': [EmbeddingVectorizer()],
     'non_transformed_vars': []
 })
+
+default_suggested_losses = {
+    'numerical_vars': losses.mean_squared_error,
+    'categorical_vars': losses.sparse_categorical_crossentropy,
+    'boolean_vars': losses.sparse_categorical_crossentropy
+}
 
 
 def input_nub_numeric_handler(variable, input_dataframe):
