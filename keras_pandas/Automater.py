@@ -310,8 +310,8 @@ class Automater(object):
         logging.info('Creating output nub, for variable: {}'.format(y))
 
         # Find which variable type for response variable
-        response_variable_types = list(filter(lambda i: y in i[1], variable_type_dict.items()))
-        response_variable_types = list(map(lambda i: i[0], response_variable_types))
+        response_variable_types = lib.get_variable_type(y, variable_type_dict, self.response_var)
+
         logging.info('Found response variable type(s)'.format(response_variable_types))
         if len(response_variable_types) < 1:
             raise ValueError('Response variable: {} is not in provided variable type lists'.format(y))

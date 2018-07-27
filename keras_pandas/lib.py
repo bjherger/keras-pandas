@@ -33,6 +33,20 @@ def check_variable_list_are_valid(variable_type_dict):
     return True
 
 
+def get_variable_type(variable_name, variable_type_dict, response_var):
+    if variable_name is not response_var:
+        raise KeyError('Provided variable: {} not in response variable: {}'.format(variable_name,
+                                                                                             response_var))
+
+    # Filter to variable_types with the variable of interest
+    variable_type_tuples = list(filter(lambda i: variable_name in i[1], variable_type_dict.items()))
+
+    # Extract only the variable type
+    variable_types = list(map(lambda i: i[0], variable_type_tuples))
+
+    return variable_types
+
+
 def download_file(url, local_file_path, filename):
     """
     Download the file at `url` in chunks, to the location at `local_file_path`
