@@ -1,5 +1,7 @@
 # keras-pandas
 
+[![Build Status](https://travis-ci.org/bjherger/keras-pandas.svg?branch=master)](https://travis-ci.org/bjherger/keras-pandas)
+
 **tl;dr:** keras-pandas allows users to rapidly build and iterate on deep learning models. 
 
 Getting data formatted and into keras can be tedious, time consuming, and difficult, whether your a veteran or new to 
