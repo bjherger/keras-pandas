@@ -33,10 +33,10 @@ def check_variable_list_are_valid(variable_type_dict):
     return True
 
 
-def get_variable_type(variable_name, variable_type_dict, available_vars):
-    if variable_name not in available_vars:
-        raise KeyError('Provided variable: {} not in list of available variables: {}'.format(variable_name,
-                                                                                       available_vars))
+def get_variable_type(variable_name, variable_type_dict, response_var):
+    if variable_name is not response_var:
+        raise KeyError('Provided variable: {} not in response variable: {}'.format(variable_name,
+                                                                                             response_var))
 
     # Filter to variable_types with the variable of interest
     variable_type_tuples = list(filter(lambda i: variable_name in i[1], variable_type_dict.items()))

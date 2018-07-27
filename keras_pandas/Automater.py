@@ -310,7 +310,7 @@ class Automater(object):
         logging.info('Creating output nub, for variable: {}'.format(y))
 
         # Find which variable type for response variable
-        response_variable_types = lib.get_variable_type(y, variable_type_dict, self.keras_input_variable_list)
+        response_variable_types = lib.get_variable_type(y, variable_type_dict, self.response_var)
 
         logging.info('Found response variable type(s)'.format(response_variable_types))
         if len(response_variable_types) < 1:
