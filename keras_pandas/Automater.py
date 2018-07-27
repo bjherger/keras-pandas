@@ -94,7 +94,7 @@ class Automater(object):
                                                       y=self.response_var)
 
         # Initialize & set suggested loss
-        if self.loss is not None:
+        if self.response_var is not None:
             self.loss = self._suggest_loss(self._variable_type_dict, y=self.response_var)
 
         # Set self.fitted to True
@@ -392,6 +392,7 @@ class Automater(object):
         # TODO Look up suggested loss
         if response_variable_type in constants.default_suggested_losses:
             suggested_loss = constants.default_suggested_losses[response_variable_type]
+            logging.info('Suggesting loss: {}'.format(suggested_loss))
         else:
             raise ValueError('No default loss for variable {}, '
                              'with variable_type: {}'.format(y, response_variable_type))

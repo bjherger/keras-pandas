@@ -22,7 +22,7 @@ def main():
     x = auto.output_nub(x)
 
     model = Model(inputs=auto.input_layers, outputs=x)
-    model.compile(optimizer='Adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer='Adam', loss=auto.loss, metrics=['accuracy'])
 
     # Train model
     model.fit(X, y, epochs=10, validation_split=.5)
