@@ -1,7 +1,6 @@
 import logging
-import unittest
 
-from keras import Model, losses
+from keras import Model
 from keras.layers import Dense
 
 from keras_pandas import lib
@@ -97,7 +96,7 @@ class TestNumeric(TestBase):
         x = output_nub(x)
 
         model = Model(inputs=auto.input_layers, outputs=x)
-        model.compile(optimizer='Adam', loss=losses.mean_squared_error)
+        model.compile(optimizer='Adam', loss=auto.loss)
 
         # Train DL model
         model.fit(X_train, y_train)
