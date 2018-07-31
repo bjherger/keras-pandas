@@ -36,7 +36,7 @@ def check_variable_list_are_valid(variable_type_dict):
 def get_variable_type(variable_name, variable_type_dict, response_var):
     if variable_name is not response_var:
         raise KeyError('Provided variable: {} not in response variable: {}'.format(variable_name,
-                                                                                             response_var))
+                                                                                   response_var))
 
     # Filter to variable_types with the variable of interest
     variable_type_tuples = list(filter(lambda i: variable_name in i[1], variable_type_dict.items()))
@@ -146,5 +146,17 @@ def load_mushroom():
                                           'stalk-root', 'stalk-surface-above-ring', 'stalk-surface-below-ring',
                                           'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type', 'veil-color',
                                           'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat'])
+
+    return observations
+
+
+def load_lending_club():
+    logging.info('Loading lending club data')
+    file_path = download_file('https://resources.lendingclub.com/LoanStats3a.csv.zip',
+                              '~/.keras-pandas/example_datasets/',
+                              filename='lending_club.csv.zip')
+    logging.info('Reading data from filepath: {}'.format(file_path))
+
+    observations = pandas.read_csv(file_path, compression='zip', skiprows=1)
 
     return observations
