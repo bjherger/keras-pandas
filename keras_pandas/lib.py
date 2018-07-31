@@ -157,6 +157,13 @@ def load_lending_club():
                               filename='lending_club.csv.zip')
     logging.info('Reading data from filepath: {}'.format(file_path))
 
-    observations = pandas.read_csv(file_path, compression='zip', skiprows=1)
+    observations = pandas.read_csv(file_path, compression='zip', skiprows=1, skipfooter=4, skip_blank_lines=True)
+
+    # Coarse data transformations
+    for variable in ['int_rate', 'revol_util']:
+        observations[variable] = observations[variable].apply(lambda x: str(x).strip('%') if x else None)
+        observations[variable] = pandas.to_numeric(observations[variable], errors='coerce')
+
+    observations['emp_length'] = observations['emp_length'].fillna('None')
 
     return observations

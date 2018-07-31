@@ -1,6 +1,6 @@
 gensim==3.4.0
 h5py==2.7.1
-Keras==2.2.0
+Keras==2.1.5
 m2r==0.1.14
 Markdown==2.6.11
 pandas==0.22.0

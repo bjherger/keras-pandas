@@ -39,7 +39,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         observation_series = list(map(lambda x: x[0], X))
 
         # Preprocess & tokenize
-        observation_series = list(map(simple_preprocess, observation_series))
+        observation_series = list(map(lambda x: simple_preprocess(str(x)), observation_series))
 
         # Generate embedding_sequence_length, if necessary
         if self.embedding_sequence_length is None:
@@ -47,7 +47,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
         # Update index_lookup
         tokens = [val for sublist in observation_series for val in sublist]
-        logging.info('Fitting with tokens: {}'.format(tokens))
+        logging.debug('Fitting with tokens: {}'.format(tokens))
 
         for token in tokens:
             if token not in self.token_index_lookup:
@@ -94,7 +94,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         logging.debug('Processing string: {}'.format(input_string))
 
         # Convert to tokens
-        tokens = simple_preprocess(input_string)
+        tokens = simple_preprocess(str(input_string))
         logging.debug('Tokens: {}'.format(tokens))
 
         # Convert to indices

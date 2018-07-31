@@ -6,6 +6,7 @@ import numpy
 from keras import losses
 from keras.layers import Embedding, Flatten, Bidirectional, LSTM
 from sklearn.preprocessing import Imputer, StandardScaler, LabelEncoder
+from sklearn_pandas import CategoricalImputer
 
 from keras_pandas.transformations import EmbeddingVectorizer
 
