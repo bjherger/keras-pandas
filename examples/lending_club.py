@@ -52,7 +52,7 @@ def main():
     model.compile(optimizer='Adam', loss=auto.loss, metrics=['accuracy'])
 
     # Train model
-    logging.warn('Settle in! This training normally takes about 5-20 minutes on CPU')
+    logging.warning('Settle in! This training normally takes about 5-20 minutes on CPU')
     model.fit(X, y, epochs=1, validation_split=.2)
 
     pass
