@@ -27,7 +27,7 @@ def main():
                       'int_rate', 'revol_util']
     text_vars = ['desc', 'title']
 
-    for categorical_var in categorical_vars + text_vars:
+    for categorical_var in categorical_vars :
         observations[categorical_var] = observations[categorical_var].fillna('None')
         observations[categorical_var] = observations[categorical_var].apply(str)
 

@@ -36,17 +36,17 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
     def fit(self, X, y=None):
         # Format text for processing, by creating a list of strings
-        observation_series = list(map(lambda x: x[0], X))
+        observations = self.prepare_input(X)
 
         # Preprocess & tokenize
-        observation_series = list(map(lambda x: simple_preprocess(x), observation_series))
+        observations = list(map(lambda x: simple_preprocess(x), observations))
 
         # Generate embedding_sequence_length, if necessary
         if self.embedding_sequence_length is None:
-            self.embedding_sequence_length = self.generate_embedding_sequence_length(observation_series)
+            self.embedding_sequence_length = self.generate_embedding_sequence_length(observations)
 
         # Update index_lookup
-        tokens = [val for sublist in observation_series for val in sublist]
+        tokens = [val for sublist in observations for val in sublist]
         logging.debug('Fitting with tokens: {}'.format(tokens))
 
         for token in tokens:
@@ -58,8 +58,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
     def transform(self, X):
 
-        # Undo Numpy formatting
-        observations = list(map(lambda x: x[0], X))
+        observations = self.prepare_input(X)
 
         # Convert to embedding format
         observations = list(map(self.process_string, observations))
@@ -140,3 +139,11 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
             padding_len = length - len(input_sequence)
             padding = [pad_char] * padding_len
             return list(input_sequence) + list(padding)
+
+    @staticmethod
+    def prepare_input(X):
+        # Undo Numpy formatting
+        observations = list(map(lambda x: x[0], X))
+
+        observations = map(str, observations)
+        return observations
