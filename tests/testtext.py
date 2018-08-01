@@ -43,7 +43,7 @@ class TestText(TestBase):
         self.assertEqual((887, 4), X[0].shape)
 
         # Test output values
-        self.assertTrue(numpy.array_equal([2, 3, 4, 5], X[0][0]))
+        self.assertCountEqual([2, 3, 4, 5], list(X[0][0]))
         self.assertEqual(None, y)
 
         # Test with unseen terms
