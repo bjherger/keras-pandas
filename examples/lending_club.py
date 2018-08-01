@@ -10,7 +10,13 @@ from keras_pandas.lib import load_lending_club
 def main():
     logging.getLogger().setLevel(logging.INFO)
 
+    # Reference variables
+    test_run = True
+
     observations = load_lending_club()
+
+    if test_run:
+        observations = observations.sample(n=100)
 
     # Transform the data set, using keras_pandas
     categorical_vars = ['term', 'grade', 'sub_grade', 'emp_length', 'home_ownership', 'verification_status', 'issue_d',
@@ -28,6 +34,7 @@ def main():
 
     auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_vars, text_vars=text_vars,
                      response_var='loan_status')
+
     X, y = auto.fit_transform(observations)
 
     # Start model with provided input nub
