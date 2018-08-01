@@ -32,9 +32,9 @@ def main():
     x = auto.input_nub
 
     # Fill in your own hidden layers
-    x = Dense(32)(x)
-    x = Dense(64, activation='relu')(x)
-    x = Dense(32)(x)
+    x = Dense(8)(x)
+    x = Dense(16, activation='relu')(x)
+    x = Dense(8)(x)
 
     # End model with provided output nub
     x = auto.output_nub(x)
