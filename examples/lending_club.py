@@ -21,6 +21,9 @@ def main():
                       'int_rate', 'revol_util']
     text_vars = ['desc', 'title']
 
+    for categorical_var in categorical_vars:
+        observations[categorical_var] = observations[categorical_var].fillna('None')
+
     auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_vars, text_vars=text_vars,
                      response_var='loan_status')
     X, y = auto.fit_transform(observations)

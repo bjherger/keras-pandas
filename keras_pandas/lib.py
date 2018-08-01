@@ -164,6 +164,4 @@ def load_lending_club():
         observations[variable] = observations[variable].apply(lambda x: str(x).strip('%') if x else None)
         observations[variable] = pandas.to_numeric(observations[variable], errors='coerce')
 
-    observations['emp_length'] = observations['emp_length'].fillna('None')
-
     return observations
