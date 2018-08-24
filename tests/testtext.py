@@ -48,8 +48,8 @@ class TestText(TestBase):
 
         # Test with unseen terms
         test_data = pandas.DataFrame(data=['Brendan Herger'], columns=['name'])
-        (X, y) = auto.transform(test_data)
-        self.assertTrue(numpy.array_equal([[0, 0]], X[0]))
+        (X_test, y_test) = auto.transform(test_data)
+        self.assertTrue(numpy.array_equal([[0, 0]], X_test[0]))
 
         pass
 
