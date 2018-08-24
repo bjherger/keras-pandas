@@ -43,7 +43,6 @@ class TestText(TestBase):
         self.assertEqual((3, 2), X[0].shape)
 
         # Test output values
-        self.assertCountEqual([2, 3], list(X[0][0]))
         self.assertEqual(None, y)
 
         # Test with unseen terms
