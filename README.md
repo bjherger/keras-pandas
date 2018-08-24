@@ -168,3 +168,16 @@ The output layer is correctly formatted to accept the response variable numpy ob
 
 Hey, I'm Brendan Herger, avaiable at [https://www.hergertarian.com/](https://www.hergertarian.com/). Please feel free 
 to reach out to me at `13herger <at> gmail <dot> com`
+
+## Changelog
+
+### Development
+
+### 1.3.2
+
+ - Fixed poorly written text embedding index unit test (#52)
+ - Added license (#49)
+
+### Earlier
+
+ - Lots of things happened. Break things and move fast 

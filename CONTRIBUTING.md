@@ -22,6 +22,10 @@ python -m unittest discover -s . -t .
 
 This codebase should follow [Google's Python Style Guide](https://google.github.io/styleguide/pyguide.html). 
 
+## Changelog
+
+If you've changed any code, update the changelog on `README.md`
+
 ## Generating documentation
 
 This codebase uses [sphinx](http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html)'s 
