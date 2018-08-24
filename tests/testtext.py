@@ -30,7 +30,7 @@ class TestText(TestBase):
         self.assertEqual([['name']], list(map(lambda x: x[0], auto.input_mapper.built_features)))
 
     def test_transform_no_response(self):
-        data = lib.load_titanic()
+        data = pandas.DataFrame(data=['john clark', 'sue fox', 'mary lastname'], columns=['name'])
 
         # One variable
         text_vars = ['name']
@@ -40,16 +40,15 @@ class TestText(TestBase):
         (X, y) = auto.transform(data)
 
         # Find correct shape
-        self.assertEqual((887, 4), X[0].shape)
+        self.assertEqual((3, 2), X[0].shape)
 
         # Test output values
-        self.assertCountEqual([2, 3, 4, 5], list(X[0][0]))
         self.assertEqual(None, y)
 
         # Test with unseen terms
         test_data = pandas.DataFrame(data=['Brendan Herger'], columns=['name'])
-        (X, y) = auto.transform(test_data)
-        self.assertTrue(numpy.array_equal([[0, 0, 1, 1]], X[0]))
+        (X_test, y_test) = auto.transform(test_data)
+        self.assertTrue(numpy.array_equal([[0, 0]], X_test[0]))
 
         pass
 
