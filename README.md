@@ -173,6 +173,10 @@ to reach out to me at `13herger <at> gmail <dot> com`
 
 ### Development
 
+### 1.3.3
+
+ - Adding `Manifest.in`, with including files references in `setup.py` (#54) 
+
 ### 1.3.2
 
  - Fixed poorly written text embedding index unit test (#52)
