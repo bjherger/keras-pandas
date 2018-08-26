@@ -173,7 +173,7 @@ to reach out to me at `13herger <at> gmail <dot> com`
 
 ### Development
 
-### 1.3.3
+### 1.3.4
 
  - Adding `Manifest.in`, with including files references in `setup.py` (#54) 
 
