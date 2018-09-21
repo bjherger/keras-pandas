@@ -21,7 +21,7 @@ class TestEpochTransformer(TestBase):
 
         data = [['2018-09-12'], ['1970-01-01'], ['1776-07-04']]
         transformed = et.fit_transform(data)
-
-        self.assertEqual(0, transformed[1][0])
-        self.assertEqual(1536710400000000000, transformed[0][0])
-        self.assertEqual(3, len(transformed))
+        
+        self.assertEqual(0, transformed[0, 1])
+        self.assertEqual(1536710400000000000, transformed[0, 0])
+        self.assertEqual((1, 3), transformed.shape)

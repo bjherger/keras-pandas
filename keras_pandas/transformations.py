@@ -170,7 +170,6 @@ class EpochTransformer(TransformerMixin, BaseEstimator):
         observations = list(map(lambda x: numpy.array(x), observations))
         return numpy.matrix(observations)
 
-
     @staticmethod
     def prepare_input(X):
         # Undo Numpy formatting
