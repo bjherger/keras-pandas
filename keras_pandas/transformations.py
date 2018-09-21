@@ -2,6 +2,7 @@ import logging
 from collections import defaultdict
 
 import numpy
+import pandas
 from gensim.utils import simple_preprocess
 from sklearn.base import BaseEstimator, TransformerMixin
 
@@ -145,5 +146,35 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         # Undo Numpy formatting
         observations = list(map(lambda x: x[0], X))
 
-        observations = map(str, observations)
+        observations = list(map(str, observations))
+        return observations
+
+class EpochTransformer(TransformerMixin, BaseEstimator):
+
+    def __init__(self):
+        pass
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        observations = self.prepare_input(X)
+
+        # Convert to Pandas timestamp
+        observations = pandas.to_datetime(observations)
+
+        # Convert to seconds since epoch
+        observations = observations.astype(numpy.int64)
+
+        # Redo numpy formatting
+        observations = list(map(lambda x: numpy.array([x]), observations))
+        return observations
+
+
+    @staticmethod
+    def prepare_input(X):
+        # Undo Numpy formatting
+        observations = list(map(lambda x: x[0], X))
+
+        observations = list(map(str, observations))
         return observations
