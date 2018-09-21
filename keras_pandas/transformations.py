@@ -161,14 +161,14 @@ class EpochTransformer(TransformerMixin, BaseEstimator):
         observations = self.prepare_input(X)
 
         # Convert to Pandas timestamp
-        observations = pandas.to_datetime(observations)
+        observations = pandas.to_datetime(observations, errors='coerce')
 
         # Convert to seconds since epoch
         observations = observations.astype(numpy.int64)
 
         # Redo numpy formatting
-        observations = list(map(lambda x: numpy.array([x]), observations))
-        return observations
+        observations = list(map(lambda x: numpy.array(x), observations))
+        return numpy.matrix(observations)
 
 
     @staticmethod

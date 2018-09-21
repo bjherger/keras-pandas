@@ -17,7 +17,7 @@ default_sklearn_mapper_pipelines.update({
     'categorical_vars': [LabelEncoder()],
     'boolean_vars': [LabelEncoder()],
     'text_vars': [EmbeddingVectorizer()],
-    'timestamp_vars': [EpochTransformer],
+    'timestamp_vars': [EpochTransformer()],
     'non_transformed_vars': []
 })
 
@@ -147,5 +147,3 @@ default_input_nub_type_handlers.update({
     'text_vars': input_nub_text_handler,
     'timestamp_vars': input_nub_timestamp_handler
 })
-
-

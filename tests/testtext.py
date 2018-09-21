@@ -1,9 +1,8 @@
 import logging
-import unittest
 
 import numpy
 import pandas
-from keras import losses, Model
+from keras import Model
 from keras.layers import Dense
 
 from keras_pandas import lib
