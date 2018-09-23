@@ -5,7 +5,8 @@ import keras.backend as K
 
 
 class PoorMansFFT(Layer):
-    def __init__(self, initial_frequencies, **kwargs):
+    def __init__(self, initial_frequencies=['minutely', 'hourly', 'daily', 'weekly', 'monthly', 'quarterly', 'yearly'],
+                 **kwargs):
         # Initialize super
         super(PoorMansFFT, self).__init__(**kwargs)
 
