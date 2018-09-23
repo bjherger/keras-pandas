@@ -31,6 +31,9 @@ class Automater(object):
 
         # Create list of user provided input variables, by flattening values from _variable_type_dict
         self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
+        if (self.response_var is not None) and (self.response_var not in self._user_provided_variables):
+            raise ValueError('Response variable: {} is not in input variables'.format(response_var))
+
 
         # Create mappers, to transform input variables
         (self.input_mapper, self.output_mapper) = self._create_mappers(self._variable_type_dict)

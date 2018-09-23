@@ -165,3 +165,20 @@ def load_lending_club():
         observations[variable] = pandas.to_numeric(observations[variable], errors='coerce')
 
     return observations
+
+
+def load_air_quality():
+    logging.info('Loading air qualitydata')
+    file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/00360/AirQualityUCI.zip',
+                              '~/.keras-pandas/example_datasets/',
+                              filename='air_quality.zip')
+
+    filepath = os.path.join(file_path, 'AirQualityUCI.csv')
+
+    logging.info('Reading data from filepath: {}'.format(file_path))
+
+    observations = pandas.read_csv(file_path, compression='zip', skiprows=1, skipfooter=4, skip_blank_lines=True)
+
+    # Coarse data transformations
+
+    return observations
