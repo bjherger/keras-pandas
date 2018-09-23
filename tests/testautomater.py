@@ -82,7 +82,7 @@ class TestAutomater(TestBase):
         auto = Automater()
         self.assertEqual({'numerical_vars': list(), 'categorical_vars': list(),
                           'boolean_vars': list(), 'datetime_vars': list(), 'text_vars': list(),
-                          'non_transformed_vars': list()}, auto._variable_type_dict, )
+                          'timestamp_vars': list(), 'non_transformed_vars': list()}, auto._variable_type_dict)
         self.assertCountEqual(list(), auto._user_provided_variables)
 
         # Common use case: Variables in each
@@ -96,6 +96,7 @@ class TestAutomater(TestBase):
         response['boolean_vars'] = list()
         response['non_transformed_vars'] = list()
         response['text_vars'] = list()
+        response['timestamp_vars'] = list()
 
         auto = Automater(numerical_vars=data['numerical_vars'], categorical_vars=data['categorical_vars'],
                          datetime_vars=data['datetime_vars'])

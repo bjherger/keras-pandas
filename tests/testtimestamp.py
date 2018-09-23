@@ -1,6 +1,6 @@
 import logging
 
-from build.lib.keras_pandas.Automater import Automater
+from keras_pandas.Automater import Automater
 from keras_pandas import lib
 from tests.testbase import TestBase
 
