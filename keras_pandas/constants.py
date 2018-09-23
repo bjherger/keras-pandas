@@ -132,10 +132,10 @@ def input_nub_text_handler(variable, input_dataframe):
 
 
 def input_nub_timestamp_handler(variable, input_dataframe):
-    input_layer = keras.Input(shape=(1,), name='input_{}'.format(variable))
 
-    pmf = PoorMansFFT()
-    x = pmf(input_layer)
+    input_layer = keras.Input(shape=(1,), name='input_{}'.format(variable))
+    x = input_layer
+    x = PoorMansFFT()(x)
 
     return input_layer, x
 
