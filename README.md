@@ -173,6 +173,12 @@ to reach out to me at `13herger <at> gmail <dot> com`
 
 ### Development
 
+ - Nothing right now
+
+### 1.4.0
+
+ - Adding support for timestamp data type(#60)
+
 ### 1.3.4
 
  - Adding `Manifest.in`, with including files references in `setup.py` (#54) 
@@ -185,3 +191,7 @@ to reach out to me at `13herger <at> gmail <dot> com`
 ### Earlier
 
  - Lots of things happened. Break things and move fast 
+ 
+### X.X.X
+
+ - Description (#issue_number)

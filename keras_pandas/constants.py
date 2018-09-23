@@ -6,9 +6,9 @@ import numpy
 from keras import losses
 from keras.layers import Embedding, Flatten, Bidirectional, LSTM
 from sklearn.preprocessing import Imputer, StandardScaler, LabelEncoder
-from sklearn_pandas import CategoricalImputer
 
-from keras_pandas.transformations import EmbeddingVectorizer
+from keras_pandas.PoorMansFFT import PoorMansFFT
+from keras_pandas.transformations import EmbeddingVectorizer, EpochTransformer
 
 default_sklearn_mapper_pipelines = defaultdict(lambda: list())
 
@@ -17,6 +17,7 @@ default_sklearn_mapper_pipelines.update({
     'categorical_vars': [LabelEncoder()],
     'boolean_vars': [LabelEncoder()],
     'text_vars': [EmbeddingVectorizer()],
+    'timestamp_vars': [EpochTransformer()],
     'non_transformed_vars': []
 })
 
@@ -130,10 +131,19 @@ def input_nub_text_handler(variable, input_dataframe):
     return input_layer, x
 
 
+def input_nub_timestamp_handler(variable, input_dataframe):
+
+    input_layer = keras.Input(shape=(1,), name='input_{}'.format(variable))
+    x = input_layer
+    x = PoorMansFFT()(x)
+
+    return input_layer, x
+
 default_input_nub_type_handlers = dict()
 
 default_input_nub_type_handlers.update({
     'numerical_vars': input_nub_numeric_handler,
     'categorical_vars': input_nub_categorical_handler,
-    'text_vars': input_nub_text_handler
+    'text_vars': input_nub_text_handler,
+    'timestamp_vars': input_nub_timestamp_handler
 })
