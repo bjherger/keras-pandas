@@ -53,22 +53,23 @@ def main():
     # Train model
     logging.warning('Settle in! This training normally takes about 5-20 minutes on CPU')
     model.fit(X, y, epochs=1, validation_split=.2)
-    unscaled_preds = model.predict(X)
 
-    print('unscaled_preds: {}'.format(unscaled_preds))
+    # Make z-score scaled predictions
+    z_score_scaled_preds = model.predict(X)
+    print('z_score_scaled_preds: {}'.format(z_score_scaled_preds))
 
-    # Capture scaled predictions
+    # Convert scaled predictions to unscaled predictions
     response_transform_tuple = list(filter(lambda x: x[0][0] == auto.response_var, auto.output_mapper.built_features))[0]
     response_transform_pipeline = response_transform_tuple[1]
     response_scaler = response_transform_pipeline.named_steps['standardscaler']
     logging.info('Standard scaler trained for response_var. scale_: {}, mean_: {}, var_: {}'.
                  format(response_scaler.scale_, response_scaler.mean_, response_scaler.var_))
 
-    logging.info('Creating unscaled predictions')
-    unscaled_preds = model.predict(X)
-    scaled_preds = response_scaler.inverse_transform(unscaled_preds)
+    logging.info('Creating normally scaled predictions')
+    z_score_scaled_preds = model.predict(X)
+    native_scale_preds = response_scaler.inverse_transform(z_score_scaled_preds)
 
-    print('scaled_preds: {}'.format(scaled_preds))
+    print('native_scale_preds: {}'.format(native_scale_preds))
 
     pass
 
