@@ -1,5 +1,8 @@
 import logging
 import os
+import re
+import zipfile
+
 import pandas
 
 import requests
@@ -67,11 +70,12 @@ def download_file(url, local_file_path, filename):
 
     local_file_path = os.path.join(local_file_path, filename)
 
-    # Create connection to the stream
-    r = requests.get(url, stream=True)
-
     # Open output file
     if not os.path.exists(local_file_path):
+
+        # Create connection to the stream
+        r = requests.get(url, stream=True)
+
         with open(local_file_path, 'wb') as f:
 
             # Iterate through chunks of file
@@ -173,12 +177,17 @@ def load_air_quality():
                               '~/.keras-pandas/example_datasets/',
                               filename='air_quality.zip')
 
-    filepath = os.path.join(file_path, 'AirQualityUCI.csv')
+    logging.info('Extracting files from zip path: {}'.format(file_path))
+    # Extract zip to the same folder
+    with zipfile.ZipFile(file_path, 'r') as zip_ref:
+        zip_ref.extractall(os.path.dirname(file_path))
+
+    file_path = os.path.join(os.path.dirname(file_path), 'AirQualityUCI.csv')
 
     logging.info('Reading data from filepath: {}'.format(file_path))
 
-    observations = pandas.read_csv(file_path, compression='zip', skiprows=1, skipfooter=4, skip_blank_lines=True)
+    observations = pandas.read_csv(file_path, sep=';')
 
-    # Coarse data transformations
-
+    # Clean up variable names
+    observations.columns = list(map(lambda x: re.sub(r'[^a-zA-Z0-9]', '', x.lower()), observations.columns))
     return observations

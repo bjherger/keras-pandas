@@ -167,7 +167,7 @@ class EpochTransformer(TransformerMixin, BaseEstimator):
         observations = observations.astype(numpy.int64)
 
         # Redo numpy formatting
-        observations = list(map(lambda x: numpy.array(x), observations))
+        observations = list(map(lambda x: numpy.array([x]), observations))
         return numpy.matrix(observations)
 
     @staticmethod
