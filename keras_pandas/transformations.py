@@ -1,4 +1,5 @@
 import logging
+import sys
 from collections import defaultdict
 
 import numpy
@@ -165,6 +166,15 @@ class EpochTransformer(TransformerMixin, BaseEstimator):
 
         # Convert to seconds since epoch
         observations = observations.astype(numpy.int64)
+        print(observations[0])
+
+        # Convert from microsends to seconds
+        observations = observations / 1000000000
+
+        observations = observations - 1096761600
+
+        # Re-zero
+        # observations = observations - 1096761600
 
         # Redo numpy formatting
         observations = list(map(lambda x: numpy.array([x]), observations))

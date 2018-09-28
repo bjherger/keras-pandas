@@ -188,6 +188,15 @@ def load_air_quality():
 
     observations = pandas.read_csv(file_path, sep=';')
 
-    # Clean up variable names
     observations.columns = list(map(lambda x: re.sub(r'[^a-zA-Z0-9]', '', x.lower()), observations.columns))
+
+    # Subset to reasonable variables
+    observations = observations[['date', 'time', 'nmhcgt', 'no2gt']]
+
+    # Remove nulls
+    observations = observations.dropna()
+
+    # Clean up variable names
+
+
     return observations

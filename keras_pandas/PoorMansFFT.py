@@ -1,3 +1,5 @@
+import tensorflow
+
 import numpy
 from keras.engine import Layer, InputSpec
 
@@ -47,8 +49,8 @@ class PoorMansFFT(Layer):
         return outputs
 
     def compute_output_shape(self, input_shape):
-        # TODO shape checking
-        pass
+        return (None, len(self.initial_omegas) * 2)
+        # pass
 
     def get_config(self):
         # TODO Generate config with all init variables
