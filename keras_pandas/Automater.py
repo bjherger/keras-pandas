@@ -12,7 +12,7 @@ from keras_pandas import constants, lib
 class Automater(object):
 
     def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
-                 text_vars=list(), non_transformed_vars=list(), response_var=None, df_out=False):
+                 text_vars=list(), timestamp_vars=list(), non_transformed_vars=list(), response_var=None, df_out=False):
 
         self.response_var = response_var
         self.fitted = False
@@ -25,11 +25,15 @@ class Automater(object):
         self._variable_type_dict['boolean_vars'] = boolean_vars
         self._variable_type_dict['datetime_vars'] = datetime_vars
         self._variable_type_dict['text_vars'] = text_vars
+        self._variable_type_dict['timestamp_vars'] = timestamp_vars
         self._variable_type_dict['non_transformed_vars'] = non_transformed_vars
         lib.check_variable_list_are_valid(self._variable_type_dict)
 
         # Create list of user provided input variables, by flattening values from _variable_type_dict
         self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
+        if (self.response_var is not None) and (self.response_var not in self._user_provided_variables):
+            raise ValueError('Response variable: {} is not in input variables'.format(response_var))
+
 
         # Create mappers, to transform input variables
         (self.input_mapper, self.output_mapper) = self._create_mappers(self._variable_type_dict)
