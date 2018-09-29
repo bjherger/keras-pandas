@@ -67,26 +67,28 @@ def download_file(url, local_file_path, filename):
 
     local_file_path = os.path.join(local_file_path, filename)
 
-    # Create connection to the stream
-    r = requests.get(url, stream=True)
+
 
     # Open output file
     if not os.path.exists(local_file_path):
-        with open(local_file_path, 'wb') as f:
+        with open(local_file_path, 'wb') as open_file:
+
+            # Create connection to the stream
+            request = requests.get(url, stream=True)
 
             # Iterate through chunks of file
-            for chunk in r.iter_content(chunk_size=1048576):
+            for chunk in request.iter_content(chunk_size=1048576):
 
                 logging.debug('Downloading chunk: {} for file: {}'.format(chunk_count, local_file_path))
 
                 # If there is a chunk to write to file, write it
                 if chunk:
-                    f.write(chunk)
+                    open_file.write(chunk)
 
                 # Increase chunk counter
                 chunk_count = chunk_count + 1
 
-        r.close()
+        request.close()
     return local_file_path
 
 
