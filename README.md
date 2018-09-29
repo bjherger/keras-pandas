@@ -173,6 +173,11 @@ to reach out to me at `13herger <at> gmail <dot> com`
 
 ### Development
 
+### 1.3.5
+
+ - Adding regression example w/ inverse_transformation (#64)
+ - Fixing issue where web socket connections were being opened needlessly (#65)
+
 ### 1.3.4
 
  - Adding `Manifest.in`, with including files references in `setup.py` (#54) 
