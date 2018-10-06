@@ -20,6 +20,8 @@ For more info, check out the:
  - [Documentation](http://keras-pandas.readthedocs.io/en/latest/intro.html)
  - [Issue tracker](https://github.com/bjherger/keras-pandas/issues)
  - [Author's website](https://www.hergertarian.com/)
+ - [PyPi](https://pypi.org/project/keras-pandas/)
+ - [CI/CD](https://travis-ci.org/bjherger/keras-pandas/builds)
 
 ## Quick Start
 
@@ -171,7 +173,11 @@ to reach out to me at `13herger <at> gmail <dot> com`
 
 ## Changelog
 
+ - PR title (#PR number, or #Issue if no PR)
+
 ### Development
+
+ - Adding CI/CD and PyPi links, and updating contact section w/ about the author (#TODO) 
 
 ### 1.3.5
 
