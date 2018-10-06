@@ -188,7 +188,7 @@ board games with my partner in Seattle.
 
 ### Development
 
- - Adding CI/CD and PyPi links, and updating contact section w/ about the author (#TODO) 
+ - Adding CI/CD and PyPi links, and updating contact section w/ about the author (#70) 
 
 ### 1.3.5
 
