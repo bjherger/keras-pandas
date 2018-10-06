@@ -28,6 +28,8 @@ setup(
         ('Documentation', 'http://keras-pandas.readthedocs.io/en/latest/intro.html'),
         ('Code', 'https://github.com/bjherger/keras-pandas'),
         ('Issue tracker', 'https://github.com/bjherger/keras-pandas/issues'),
+        ('PyPi', 'https://pypi.org/project/keras-pandas/'),
+        ('CI/CD', 'https://travis-ci.org/bjherger/keras-pandas/builds'),
         ('Author\'s website', 'https://www.hergertarian.com/')
     )),
 )

@@ -20,6 +20,8 @@ For more info, check out the:
  - [Documentation](http://keras-pandas.readthedocs.io/en/latest/intro.html)
  - [Issue tracker](https://github.com/bjherger/keras-pandas/issues)
  - [Author's website](https://www.hergertarian.com/)
+ - [PyPi](https://pypi.org/project/keras-pandas/)
+ - [CI/CD](https://travis-ci.org/bjherger/keras-pandas/builds)
 
 ## Quick Start
 
@@ -169,9 +171,24 @@ The output layer is correctly formatted to accept the response variable numpy ob
 Hey, I'm Brendan Herger, avaiable at [https://www.hergertarian.com/](https://www.hergertarian.com/). Please feel free 
 to reach out to me at `13herger <at> gmail <dot> com`
 
+If you'd like to know a bit about me, I enjoy bridging the gap between data science and engineering, to build and 
+deploy data products.
+
+I've enjoyed building a unique combination of machine learning, deep learning, and software engineering skills. In my 
+previous work at Capital One and startups, I've has built authorization fraud, insider threat, and legal discovery 
+automation platforms. In each of these cases I've lead a team of data scientists and data engineers to enable and 
+elevate our client's business workflow (and capture some amazing data).
+
+When I'm not knee deep in a code base, I can be found traveling, sharing my collection of Japanese teas, and playing 
+board games with my partner in Seattle. 
+
 ## Changelog
 
+ - PR title (#PR number, or #Issue if no PR)
+
 ### Development
+
+ - Adding CI/CD and PyPi links, and updating contact section w/ about the author (#TODO) 
 
 ### 1.3.5
 
