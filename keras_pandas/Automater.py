@@ -399,3 +399,15 @@ class Automater(object):
 
         return suggested_loss
 
+    def _inverse_transform_output(self, y):
+        """
+
+        :param y:
+        :return:
+        """
+        # TODO Get output variable type
+
+        # TODO Get transformation pipeline for response variable
+        
+        # TODO Parse and inverse transform y based on response variable type
+        pass
