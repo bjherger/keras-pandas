@@ -408,6 +408,6 @@ class Automater(object):
         # TODO Get output variable type
 
         # TODO Get transformation pipeline for response variable
-        
+
         # TODO Parse and inverse transform y based on response variable type
         pass
