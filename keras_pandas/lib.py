@@ -34,6 +34,7 @@ def check_variable_list_are_valid(variable_type_dict):
 
 
 def get_variable_type(variable_name, variable_type_dict, response_var):
+    # TODO This seems unnecessary. We should be able to get the variable type for any variable with this function
     if variable_name is not response_var:
         raise KeyError('Provided variable: {} not in response variable: {}'.format(variable_name,
                                                                                    response_var))

@@ -191,24 +191,7 @@ class Automater(object):
         """
         return self.fit(input_dataframe).transform(input_dataframe)
 
-    def get_transformers(self):
-        # TODO
-        pass
-
-    def get_transformer(self, variable):
-        # TODO
-        pass
-
-    def list_default_transformation_pipelines(self):
-        # TODO
-        pass
-
-    def _check_input_dataframe_columns_(self, input_dataframe):
-        # TODO
-        pass
-
-    def _check_output_dataframe_columns_(self, output_dataframe):
-        # TODO
+    def _get_variable_type(self, variable_type_dict, variable):
         pass
 
     def _create_input_nub(self, variable_type_dict, input_dataframe):
@@ -405,9 +388,24 @@ class Automater(object):
         :param y:
         :return:
         """
-        # TODO Get output variable type
+        # Find response variable's variable type
+        response_variable_types = lib.get_variable_type(self.response_var, self._variable_type_dict, self.response_var)
+        response_variable_type = response_variable_types[0]
+        logging.info('Found response variable type: {}'.format(response_variable_type))
 
-        # TODO Get transformation pipeline for response variable
+        # Get transformation pipeline for response variable
+        response_transform_tuple = list(filter(lambda x: x[0][0] == self.response_var, self.output_mapper.built_features))[0]
+        response_transform_pipeline = response_transform_tuple[1]
+        logging.info('response_transform_pipeline" {}'.format(response_transform_pipeline))
 
-        # TODO Parse and inverse transform y based on response variable type
-        pass
+        # Parse and inverse transform y based on response variable type
+        if response_variable_type is 'numerical_vars':
+            response_scaler = response_transform_pipeline.named_steps['standardscaler']
+            logging.info('Standard scaler trained for response_var. scale_: {}, mean_: {}, var_: {}'.
+                         format(response_scaler.scale_, response_scaler.mean_, response_scaler.var_))
+        else:
+            raise ValueError('Unable to perform inverse transform for response variable\s data type: {}'.format(response_variable_type))
+
+        natural_scaled_vars = response_scaler.inverse_transform(y)
+        return natural_scaled_vars
+
