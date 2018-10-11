@@ -1,12 +1,12 @@
 gensim==3.4.0
 h5py==2.7.1
-Keras==2.1.5
+Keras==2.2.4
 m2r==0.1.14
 Markdown==2.6.11
 pandas==0.22.0
-sklearn
-sklearn-pandas
+scikit-learn==0.19.2
+sklearn-pandas==1.7.0
 Sphinx==1.7.5
 sphinx-rtd-theme==0.3.1
 sphinxcontrib-websupport==1.0.1
-tensorflow==1.4.0
+tensorflow==1.11.0
