@@ -188,10 +188,11 @@ board games with my partner in Seattle.
 
 ### Development
 
- - Nothing yet
+ - Nothing here yet
 
 ### 2.0.2
 
+ - Remove a lot of the unnecessary dependencies (#75)
  - Update dependencies to contemporary versions (#74)
  
 ### 2.0.1
