@@ -196,6 +196,7 @@ board games with my partner in Seattle.
    - Added filling unseen values w/ `CategoricalImputer`
    - Converted default transformer pipeline to use `copy.deepcopy` instead of `copy.copy`. This was a hotfix for a 
    previously unknown issue. 
+   - Standardizing setting logging level, only in test base class and examples (when `__main__`)
 
 ### 1.3.5
 
