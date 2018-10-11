@@ -1,6 +1,8 @@
 import copy
 import logging
+import sklearn
 
+import numpy
 import pandas
 from keras.engine import Layer
 from keras.layers import Concatenate, Dense
@@ -265,6 +267,7 @@ class Automater(object):
                                          .format(variable, input_dataframe.columns))
 
                 # Apply handler to current variable, creating nub input and nub tip
+                logging.info('Creating inputs for variable: {}, of variable type: {}'.format(variable, variable_type))
                 variable_input, variable_input_nub_tip = variable_type_handler(variable, input_dataframe)
                 input_layers.append(variable_input)
                 input_nub_tips.append(variable_input_nub_tip)
@@ -346,9 +349,10 @@ class Automater(object):
             logging.info('For variable type: {}, using default pipeline: {}'.format(variable_type, default_pipeline))
 
             for variable in variable_list:
-                logging.debug('Creating transformation for variable: {}, '
-                              'with default_pipeline: {}'.format(variable, default_pipeline))
-                variable_pipeline = list(map(copy.copy, default_pipeline))
+
+                variable_pipeline = list(map(sklearn.base.clone, default_pipeline))
+                logging.info('Creating transformation for variable: {}, '
+                              'with pipeline: {}'.format(variable, variable_pipeline))
 
                 # Append to the correct list
                 if variable == self.response_var:
@@ -403,12 +407,23 @@ class Automater(object):
 
         # Parse and inverse transform y based on response variable type
         if response_variable_type is 'numerical_vars':
-            response_scaler = response_transform_pipeline.named_steps['standardscaler']
-            logging.info('Standard scaler trained for response_var. scale_: {}, mean_: {}, var_: {}'.
-                         format(response_scaler.scale_, response_scaler.mean_, response_scaler.var_))
-        else:
-            raise ValueError('Unable to perform inverse transform for response variable\s data type: {}'.format(response_variable_type))
+            response_variable_transformer = response_transform_pipeline.named_steps['standardscaler']
+            logging.info('StandardScaler trained for response_var. scale_: {}, mean_: {}, var_: {}'.
+                         format(response_variable_transformer.scale_, response_variable_transformer.mean_,
+                                response_variable_transformer.var_))
+        elif response_variable_type is 'categorical_vars':
+            response_variable_transformer = response_transform_pipeline.named_steps['labelencoder']
+            logging.info('LabelEncoder trained for response_var. classes_: {}'.format(
+                response_variable_transformer.classes_))
 
-        natural_scaled_vars = response_scaler.inverse_transform(y)
+            # Find the index of the most likely response
+            print(y)
+            y = numpy.argmax(y, axis=1)
+            print(y)
+        else:
+            raise ValueError('Unable to perform inverse transform for response variable data type: {}'.format(
+                response_variable_type))
+
+        natural_scaled_vars = response_variable_transformer.inverse_transform(y)
         return natural_scaled_vars
 

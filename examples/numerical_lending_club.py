@@ -1,5 +1,6 @@
 import logging
 
+import numpy
 import pandas
 from keras import Model
 from keras.layers import Dense
@@ -11,6 +12,8 @@ from keras_pandas.Automater import Automater
 
 def main():
     logging.getLogger().setLevel(logging.INFO)
+    # TODO Remove
+    numpy.random.seed(0)
 
     # Load data
     observations = lib.load_lending_club()
@@ -37,8 +40,12 @@ def main():
     categorical_vars = ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
                         'application_type', 'disbursement_method']
     text_vars = ['desc', 'purpose', 'title']
+    # TODO reset to multiple variables
+    # text_vars = ['purpose']
 
     train_observations, test_observations = train_test_split(observations)
+    train_observations = train_observations.copy()
+    test_observations = test_observations.copy()
 
     # Create and fit Automater
     auto = Automater(numerical_vars=numerical_vars, categorical_vars=categorical_vars, text_vars=text_vars,
@@ -63,12 +70,9 @@ def main():
     model.fit(train_X, train_y)
 
     test_y_pred = model.predict(test_X)
-    print(test_y_pred)
-    auto.inverse_transform_output(test_y_pred)
 
-
-    # TODO Inverse transform model output, to get usable results
-    # TODO Save all results
+    # Inverse transform model output, to get usable results and save all results
+    test_observations[auto.response_var + '_pred'] = auto.inverse_transform_output(test_y_pred)
 
     pass
 

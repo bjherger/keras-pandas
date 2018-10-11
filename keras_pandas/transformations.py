@@ -2,6 +2,7 @@ import logging
 from collections import defaultdict
 
 import numpy
+import pandas
 from gensim.utils import simple_preprocess
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.validation import check_is_fitted, column_or_1d
@@ -148,16 +149,6 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         observations = map(str, observations)
         return observations
 
-import pandas as pd
-import numpy as np
-
-
-
-
-
-
-
-
 class CategoricalImputer(BaseEstimator, TransformerMixin):
     """
     Impute missing values from a categorical/string np.ndarray or pd.Series
@@ -225,9 +216,9 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
         mask = self._get_null_mask(X, self.missing_values)
         X = X[~mask]
         if self.strategy == 'most_frequent':
-            modes = pd.Series(X).mode()
+            modes = pandas.Series(X).mode()
         elif self.strategy == 'constant':
-            modes = np.array([self.fill_value])
+            modes = numpy.array([self.fill_value])
         if modes.shape[0] == 0:
             raise ValueError('Data is empty or all values are null')
         elif modes.shape[0] > 1:
@@ -268,7 +259,7 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
             unknown_label_mask = self._get_unknown_label_mask(X)
             X[unknown_label_mask] = self.fill_
 
-        return np.asarray(X)
+        return numpy.asarray(X)
 
     @staticmethod
     def _get_null_mask(X, value):
@@ -278,7 +269,7 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
         if value == "NaN" or \
                 value is None or \
                 (isinstance(value, float) and np.isnan(value)):
-            return pd.isnull(X)
+            return pandas.isnull(X)
         else:
             return X == value
 
@@ -351,8 +342,8 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         self : returns an instance of self.
         """
         y = column_or_1d(y, warn=True)
-        y = np.append(y, ['UNK'])
-        self.classes_ = np.unique(y)
+        y = numpy.append(y, ['UNK'])
+        self.classes_ = numpy.unique(y)
         return self
 
     def fit_transform(self, y):
@@ -368,8 +359,8 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         y : array-like of shape [n_samples]
         """
         y = column_or_1d(y, warn=True)
-        y = np.append(y, ['UNK'])
-        self.classes_, y = np.unique(y, return_inverse=True)
+        y = numpy.append(y, ['UNK'])
+        self.classes_, y = numpy.unique(y, return_inverse=True)
         return y
 
     def transform(self, y):
@@ -387,11 +378,11 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         check_is_fitted(self, 'classes_')
         y = column_or_1d(y, warn=True)
 
-        classes = np.unique(y)
-        if len(np.intersect1d(classes, self.classes_)) < len(classes):
-            diff = np.setdiff1d(classes, self.classes_)
+        classes = numpy.unique(y)
+        if len(numpy.intersect1d(classes, self.classes_)) < len(classes):
+            diff = numpy.setdiff1d(classes, self.classes_)
             raise ValueError("y contains new labels: %s" % str(diff))
-        return np.searchsorted(self.classes_, y)
+        return numpy.searchsorted(self.classes_, y)
 
     def inverse_transform(self, y):
         """Transform labels back to original encoding.
@@ -407,8 +398,8 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         """
         check_is_fitted(self, 'classes_')
 
-        diff = np.setdiff1d(y, np.arange(len(self.classes_)))
+        diff = numpy.setdiff1d(y, numpy.arange(len(self.classes_)))
         if diff:
             raise ValueError("y contains new labels: %s" % str(diff))
-        y = np.asarray(y)
+        y = numpy.asarray(y)
         return self.classes_[y]
