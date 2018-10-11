@@ -95,28 +95,6 @@ def download_file(url, local_file_path, filename):
     return local_file_path
 
 
-def load_mushrooms():
-    """
-    Load the mushrooms data set, as a pandas DataFrame
-
-    :return: A DataFrame, containing the mushroom dataset
-    :rtype: pandas.DataFrame
-    """
-    # Extract the data
-    file_path = download_file(
-        'https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data',
-        '~/.keras-pandas/example_datasets/', filename='agaricus-lepiota.data')
-
-    observations = pandas.read_csv(filepath_or_buffer=file_path,
-                                   names=['class', 'cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor',
-                                          'gill-attachment', 'gill-spacing', 'gill-size', 'gill-color',
-                                          'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
-                                          'stalk-surface-below-ring', 'stalk-color-above-ring',
-                                          'stalk-color-below-ring', 'veil-type', 'veil-color', 'ring-number',
-                                          'ring-type', 'spore-print-color', 'population', 'habitat'])
-    return observations
-
-
 def load_titanic():
     """
     Load the titanic data set, as a pandas DataFrame

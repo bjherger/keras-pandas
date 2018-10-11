@@ -35,7 +35,7 @@ def main():
     numerical_vars = ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
                       'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal', 'revol_util',
                       'total_acc', 'pub_rec_bankruptcies']
-    categorical_vars = ['term', 'grade', 'emp_length', 'home_ownership', 'addr_state',
+    categorical_vars = ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
                         'application_type', 'disbursement_method']
     text_vars = ['desc', 'purpose', 'title']
 
@@ -45,7 +45,7 @@ def main():
 
     # Create and fit Automater
     auto = Automater(numerical_vars=numerical_vars, categorical_vars=categorical_vars, text_vars=text_vars,
-                     response_var='loan_amnt')
+                     response_var='loan_status')
     auto.fit(train_observations)
 
     # Create and fit keras (deep learning) model

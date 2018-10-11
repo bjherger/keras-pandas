@@ -14,30 +14,18 @@ def main():
     logging.getLogger().setLevel(logging.INFO)
 
     # Load data
-    observations = lib.load_lending_club()
+    observations = lib.load_titanic()
     # observations = lib.load_lending_club(test_run=False)
     print('Observation columns: {}'.format(list(observations.columns)))
-    print('Class balance:\n {}'.format(observations['loan_status'].value_counts()))
-
-
-    # Heuristic data transformations
-    for var in ['int_rate', 'revol_util']:
-
-        # Strip out percent signs
-        observations[var] = observations[var].apply(lambda x: str(x).replace('%', ''))
-        observations[var] = pandas.to_numeric(observations[var], errors='coerce')
-    for var in ['mths_since_last_delinq', 'annual_inc_joint']:
-
-        # Heuristic null filling for some variables
-        observations[var] = observations[var].fillna(0)
+    print('Class balance:\n {}'.format(observations['survived'].value_counts()))
 
     # List out variable types
-    numerical_vars = ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
-                      'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal', 'revol_util',
-                      'total_acc', 'pub_rec_bankruptcies']
-    categorical_vars = ['term', 'grade', 'emp_length', 'home_ownership', 'addr_state',
-                        'application_type', 'disbursement_method']
-    text_vars = ['desc', 'purpose', 'title']
+    numerical_vars = ['age', 'siblings_spouses_aboard', 'parents_children_aboard', 'fare']
+    categorical_vars = ['survived', 'pclass', 'sex']
+    text_vars = ['name']
+
+    for var in categorical_vars:
+        observations[var] = observations[var].astype(str)
 
     train_observations, test_observations = train_test_split(observations)
     train_observations = train_observations.copy()
@@ -45,7 +33,7 @@ def main():
 
     # Create and fit Automater
     auto = Automater(numerical_vars=numerical_vars, categorical_vars=categorical_vars, text_vars=text_vars,
-                     response_var='loan_amnt')
+                     response_var='survived')
     auto.fit(train_observations)
 
     # Create and fit keras (deep learning) model
