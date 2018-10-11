@@ -1,5 +1,7 @@
 import logging
 import os
+
+import numpy
 import pandas
 
 import requests
@@ -155,6 +157,7 @@ def load_mushroom():
 
 def load_lending_club(test_run=True):
     logging.info('Loading lending club data')
+    logging.info('Numpy random seed: {}'.format(numpy.random.get_state()))
     file_path = download_file('https://resources.lendingclub.com/LoanStats3a.csv.zip',
                               '~/.keras-pandas/example_datasets/',
                               filename='lending_club.csv.zip')
@@ -168,5 +171,5 @@ def load_lending_club(test_run=True):
         observations[variable] = pandas.to_numeric(observations[variable], errors='coerce')
 
     if test_run:
-        observations = observations.sample(1000)
+        observations = observations.sample(300)
     return observations

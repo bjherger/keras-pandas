@@ -351,7 +351,7 @@ class Automater(object):
 
             for variable in variable_list:
 
-                variable_pipeline = list(map(sklearn.base.clone, default_pipeline))
+                variable_pipeline = list(map(copy.deepcopy, default_pipeline))
                 logging.info('Creating transformation for variable: {}, '
                               'with pipeline: {}'.format(variable, variable_pipeline))
 
@@ -409,18 +409,18 @@ class Automater(object):
         # Parse and inverse transform y based on response variable type
         if response_variable_type is 'numerical_vars':
             response_variable_transformer = response_transform_pipeline.named_steps['standardscaler']
-            logging.info('StandardScaler trained for response_var. scale_: {}, mean_: {}, var_: {}'.
+            logging.info('StandardScaler was trained for response_var, and is being used for inverse transform. '
+                         'scale_: {}, mean_: {}, var_: {}'.
                          format(response_variable_transformer.scale_, response_variable_transformer.mean_,
                                 response_variable_transformer.var_))
         elif response_variable_type is 'categorical_vars':
             response_variable_transformer = response_transform_pipeline.named_steps['labelencoder']
-            logging.info('LabelEncoder trained for response_var. classes_: {}'.format(
+            logging.info('LabelEncoder was trained for response_var, and is being used for inverse transform. '
+                         'classes_: {}'.format(
                 response_variable_transformer.classes_))
 
             # Find the index of the most likely response
-            print(y)
             y = numpy.argmax(y, axis=1)
-            print(y)
         else:
             raise ValueError('Unable to perform inverse transform for response variable data type: {}'.format(
                 response_variable_type))

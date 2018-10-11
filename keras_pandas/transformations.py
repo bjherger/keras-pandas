@@ -55,7 +55,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
             if token not in self.token_index_lookup:
                 self.token_index_lookup[token] = self.next_token_index
                 self.next_token_index += 1
-
+        logging.info('Learned {} tokens'.format(len(self.token_index_lookup)))
         return self
 
     def transform(self, X):

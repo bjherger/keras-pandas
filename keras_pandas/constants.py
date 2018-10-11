@@ -106,9 +106,9 @@ def input_nub_text_handler(variable, input_dataframe):
     else:
         input_sequence_length = 1
 
-    # Get the vocab size (number of rows in the embedding). +3 is due to 1 for offset (len vs indexing w/ 0), 1 for
-    # unknown token, and 1 for something else?
-    vocab_size = int(numpy.max(transformed)) + 3
+    # Get the vocab size (number of rows in the embedding). The additional offsets are due to 1  for len vs indexing w/
+    # 0, 1 for unknown token, and the others for something else?
+    vocab_size = int(numpy.max(transformed)) + 4
 
     # Determine the embedding output size (number of columns in the embedding)
     # TODO There must be a better heuristic
