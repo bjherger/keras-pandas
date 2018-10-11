@@ -190,6 +190,10 @@ board games with my partner in Seattle.
 
  - Nothing yet
 
+### 2.0.1
+
+ - Fix issue w/ PyPi conflict
+
 ### 2.0.0
 
  - Adding CI/CD and PyPi links, and updating contact section w/ about the author (#70)

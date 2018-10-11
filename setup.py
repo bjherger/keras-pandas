@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from setuptools import setup, find_packages
 
-__version__ = '2.0.0'
+__version__ = '2.0.1'
 
 # Add README as long description
 with open("README.md", "r") as fh:
