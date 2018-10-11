@@ -190,6 +190,10 @@ board games with my partner in Seattle.
 
  - Nothing yet
 
+### 2.0.2
+
+ - Update dependencies to contemporary versions (#74)
+ 
 ### 2.0.1
 
  - Fix issue w/ PyPi conflict
