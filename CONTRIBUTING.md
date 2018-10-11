@@ -58,3 +58,4 @@ Adding support for new data types is designed to be (relatively) painless. A wor
    - Updating `default_suggested_losses` to include a suggested loss (e.g. `'VARTYPE_vars': losses.mean_squared_error`)
  - Modifying `Automater.py` to add output support (optional)
    - Updating `_create_output_nub` to create an output layer
+   - Updating `inverse_transform_output` to inverse transform Keras outputs
