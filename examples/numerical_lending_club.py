@@ -12,8 +12,6 @@ from keras_pandas.Automater import Automater
 
 def main():
     logging.getLogger().setLevel(logging.INFO)
-    # TODO Remove
-    numpy.random.seed(0)
 
     # Load data
     observations = lib.load_lending_club()
@@ -40,8 +38,6 @@ def main():
     categorical_vars = ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
                         'application_type', 'disbursement_method']
     text_vars = ['desc', 'purpose', 'title']
-    # TODO reset to multiple variables
-    # text_vars = ['purpose']
 
     train_observations, test_observations = train_test_split(observations)
     train_observations = train_observations.copy()

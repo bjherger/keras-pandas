@@ -168,6 +168,5 @@ def load_lending_club(test_run=True):
         observations[variable] = pandas.to_numeric(observations[variable], errors='coerce')
 
     if test_run:
-        # TODO Change to observations.sample(1000)
-        observations = observations.head(3000)
+        observations = observations.sample(1000)
     return observations

@@ -317,7 +317,8 @@ class Automater(object):
             output_nub = Dense(units=1, activation='linear')
 
         elif response_variable_type == 'categorical_vars':
-            categorical_num_response_levels = len(set(output_variables_df[self.response_var]))
+            # +1 for UNK level
+            categorical_num_response_levels = len(set(output_variables_df[self.response_var])) + 1
             output_nub = Dense(units=categorical_num_response_levels, activation='softmax')
         else:
             raise NotImplementedError(
@@ -379,7 +380,7 @@ class Automater(object):
         response_variable_type = response_variable_types[0]
         logging.info('Found response variable type'.format(response_variable_type))
 
-        # TODO Look up suggested loss
+        # Look up suggested loss
         if response_variable_type in constants.default_suggested_losses:
             suggested_loss = constants.default_suggested_losses[response_variable_type]
             logging.info('Suggesting loss: {}'.format(suggested_loss))
