@@ -11,7 +11,6 @@ from keras_pandas.Automater import Automater
 
 
 def main():
-    logging.getLogger().setLevel(logging.INFO)
 
     # Load data
     observations = lib.load_titanic()
@@ -63,4 +62,5 @@ def main():
 
 
 if __name__ == '__main__':
+    logging.getLogger().setLevel(logging.INFO)
     main()

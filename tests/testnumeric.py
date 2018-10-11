@@ -7,8 +7,6 @@ from keras_pandas import lib
 from keras_pandas.Automater import Automater
 from tests.testbase import TestBase
 
-logging.getLogger().setLevel(logging.INFO)
-
 
 class TestNumeric(TestBase):
 

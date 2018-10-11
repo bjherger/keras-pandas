@@ -8,8 +8,6 @@ from keras_pandas import lib
 from keras_pandas.transformations import EmbeddingVectorizer
 from tests.testbase import TestBase
 
-logging.getLogger().setLevel(logging.INFO)
-
 
 class TestEmbeddingVectorizer(TestBase):
 
