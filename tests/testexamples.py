@@ -1,17 +1,22 @@
-from examples import mushrooms, titanic, lending_club_classification, lending_club_regression
+from examples import numerical_lending_club, categorical_lending_club, categorical_mushrooms, categorical_titanic
 from tests.testbase import TestBase
+import numpy
 
 
 class TestExamples(TestBase):
+    def test_numerical_lending_club(self):
+        numpy.random.seed(0)
+        numerical_lending_club.main()
 
-    def test_mushrooms(self):
-        mushrooms.main()
+    def test_categorical_lending_club(self):
+        numpy.random.seed(0)
+        categorical_lending_club.main()
 
-    def test_titanic(self):
-        titanic.main()
+    def test_categorical_mushrooms(self):
+        numpy.random.seed(0)
+        categorical_mushrooms.main()
 
-    def test_lending(self):
-        lending_club_classification.main()
+    def test_categorical_titanic(self):
+        numpy.random.seed(0)
+        categorical_titanic.main()
 
-    def test_lending_regression(self):
-        lending_club_regression.main()

@@ -103,17 +103,16 @@ class TestCategorical(TestBase):
             _create_input_nub(variable_type_dict, train_df)
         self.assertEqual(3, len(input_layers))
 
-    def test_numerical_whole(self):
-        # TODO Rename, this is categorical whole
+    def test_categorical_whole(self):
         # St up data set
         mushroom_df = lib.load_mushroom()
         msk = numpy.random.rand(len(mushroom_df)) < 0.95
         mushroom_train = mushroom_df[msk]
         mushroom_test = mushroom_df[~msk]
-        iris_numerical_cols = ['odor', 'habitat', 'population', 'class']
+        categorical_vars = ['odor', 'habitat', 'population', 'class']
 
         # Create auto
-        auto = Automater(categorical_vars=iris_numerical_cols, response_var='class')
+        auto = Automater(categorical_vars=categorical_vars, response_var='class')
 
         # Train auto
         auto.fit(mushroom_train)

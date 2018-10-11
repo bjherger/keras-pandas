@@ -5,16 +5,16 @@ import keras
 import numpy
 from keras import losses
 from keras.layers import Embedding, Flatten, Bidirectional, LSTM
-from sklearn.preprocessing import Imputer, StandardScaler, LabelEncoder
-from sklearn_pandas import CategoricalImputer
+from sklearn.preprocessing import Imputer, StandardScaler
 
-from keras_pandas.transformations import EmbeddingVectorizer
+from keras_pandas.transformations import EmbeddingVectorizer, CategoricalImputer, LabelEncoder
 
 default_sklearn_mapper_pipelines = defaultdict(lambda: list())
 
 default_sklearn_mapper_pipelines.update({
     'numerical_vars': [Imputer(strategy='mean'), StandardScaler()],
-    'categorical_vars': [LabelEncoder()],
+    'categorical_vars': [CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
+                         LabelEncoder()],
     'boolean_vars': [LabelEncoder()],
     'text_vars': [EmbeddingVectorizer()],
     'non_transformed_vars': []
@@ -106,8 +106,9 @@ def input_nub_text_handler(variable, input_dataframe):
     else:
         input_sequence_length = 1
 
-    # Get the vocab size (number of rows in the embedding)
-    vocab_size = int(numpy.max(transformed)) + 2
+    # Get the vocab size (number of rows in the embedding). The additional offsets are due to 1  for len vs indexing w/
+    # 0, 1 for unknown token, and the others for something else?
+    vocab_size = int(numpy.max(transformed)) + 4
 
     # Determine the embedding output size (number of columns in the embedding)
     # TODO There must be a better heuristic

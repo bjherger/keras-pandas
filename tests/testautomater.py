@@ -11,8 +11,6 @@ from keras_pandas import lib
 from keras_pandas.Automater import Automater
 from tests.testbase import TestBase
 
-logging.getLogger().setLevel(logging.DEBUG)
-
 
 class TestAutomater(TestBase):
 
@@ -176,7 +174,7 @@ class TestAutomater(TestBase):
 
         logging.debug('unscaled_preds: {}'.format(list(unscaled_preds)))
 
-        scaled_preds = auto._inverse_transform_output(unscaled_preds)
+        scaled_preds = auto.inverse_transform_output(unscaled_preds)
 
         logging.debug('scaled_preds: {}'.format(list(scaled_preds)))
 
@@ -234,7 +232,7 @@ class TestAutomater(TestBase):
 
         logging.debug('unscaled_preds: {}'.format(list(unscaled_preds)))
 
-        scaled_preds = auto._inverse_transform_output(unscaled_preds)
+        scaled_preds = auto.inverse_transform_output(unscaled_preds)
 
         logging.debug('scaled_preds: {}'.format(list(scaled_preds)))
 

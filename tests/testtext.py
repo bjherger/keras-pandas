@@ -10,8 +10,6 @@ from keras_pandas import lib
 from keras_pandas.Automater import Automater
 from tests.testbase import TestBase
 
-logging.getLogger().setLevel(logging.INFO)
-
 
 class TestText(TestBase):
 
@@ -70,10 +68,10 @@ class TestText(TestBase):
         data_test = data[~msk]
 
         text_vars = ['name']
-        categorical_vars = ['survived']
+        numerical_vars = ['survived']
 
         # Create auto
-        auto = Automater(text_vars=text_vars, categorical_vars=categorical_vars, response_var='survived')
+        auto = Automater(text_vars=text_vars, numerical_vars=numerical_vars, response_var='survived')
 
         # Train auto
         auto.fit(data_train)
