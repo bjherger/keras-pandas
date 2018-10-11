@@ -16,6 +16,7 @@ def main():
     observations = lib.load_lending_club()
     # observations = lib.load_lending_club(test_run=False)
     print('Observation columns: {}'.format(list(observations.columns)))
+    print('Class balance:\n {}'.format(observations['loan_status'].value_counts()))
 
 
     # Heuristic data transformations
@@ -31,7 +32,7 @@ def main():
 
     # List out variable types
     numerical_vars = ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
-                      'inq_last_6mths', 'mths_since_last_delinq', 'open_acc', 'pub_rec', 'revol_bal', 'revol_util',
+                      'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal', 'revol_util',
                       'total_acc', 'pub_rec_bankruptcies']
     categorical_vars = ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
                         'application_type', 'disbursement_method']
@@ -61,7 +62,8 @@ def main():
 
     model.fit(train_X, train_y)
 
-    test_y_pred = model.predict(test_y)
+    test_y_pred = model.predict(test_X)
+    print(test_y_pred)
     auto.inverse_transform_output(test_y_pred)
 
 

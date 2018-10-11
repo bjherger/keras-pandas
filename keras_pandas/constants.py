@@ -5,9 +5,9 @@ import keras
 import numpy
 from keras import losses
 from keras.layers import Embedding, Flatten, Bidirectional, LSTM
-from sklearn.preprocessing import Imputer, StandardScaler, LabelEncoder
+from sklearn.preprocessing import Imputer, StandardScaler
 
-from keras_pandas.transformations import EmbeddingVectorizer, CategoricalImputer
+from keras_pandas.transformations import EmbeddingVectorizer, CategoricalImputer, LabelEncoder
 
 default_sklearn_mapper_pipelines = defaultdict(lambda: list())
 
