@@ -30,6 +30,9 @@ class Automater(object):
 
         # Create list of user provided input variables, by flattening values from _variable_type_dict
         self._user_provided_variables = [item for sublist in self._variable_type_dict.values() for item in sublist]
+        if response_var is not None and response_var not in self._user_provided_variables:
+            raise ValueError('Response variable: {} not in list of user provided variables: '
+                             '{}'.format(response_var, self._user_provided_variables))
 
         # Create mappers, to transform input variables
         (self.input_mapper, self.output_mapper) = self._create_mappers(self._variable_type_dict)
@@ -74,8 +77,8 @@ class Automater(object):
         input_variables_df = self.input_mapper.transform(input_dataframe)
 
         if self.response_var is not None:
+            logging.info('Fitting response var: {}'.format(self.response_var))
             # Fit output mapper
-
             self.output_mapper.fit(input_dataframe)
 
             # Transform output data
@@ -382,7 +385,7 @@ class Automater(object):
 
         return suggested_loss
 
-    def _inverse_transform_output(self, y):
+    def inverse_transform_output(self, y):
         """
 
         :param y:

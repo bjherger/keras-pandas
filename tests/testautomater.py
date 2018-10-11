@@ -176,7 +176,7 @@ class TestAutomater(TestBase):
 
         logging.debug('unscaled_preds: {}'.format(list(unscaled_preds)))
 
-        scaled_preds = auto._inverse_transform_output(unscaled_preds)
+        scaled_preds = auto.inverse_transform_output(unscaled_preds)
 
         logging.debug('scaled_preds: {}'.format(list(scaled_preds)))
 
@@ -234,7 +234,7 @@ class TestAutomater(TestBase):
 
         logging.debug('unscaled_preds: {}'.format(list(unscaled_preds)))
 
-        scaled_preds = auto._inverse_transform_output(unscaled_preds)
+        scaled_preds = auto.inverse_transform_output(unscaled_preds)
 
         logging.debug('scaled_preds: {}'.format(list(scaled_preds)))
 

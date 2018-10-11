@@ -4,6 +4,7 @@ from collections import defaultdict
 import numpy
 from gensim.utils import simple_preprocess
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.utils.validation import check_is_fitted
 
 
 class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
@@ -70,9 +71,8 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
 
     def generate_embedding_sequence_length(self, observation_series):
-        logging.info('Generating embedding_sequence_length')
         lengths = list(map(len, observation_series))
-        embedding_sequence_length = int(numpy.median(lengths))
+        embedding_sequence_length = max([int(numpy.median(lengths)), 1])
         logging.info('Generated embedding_sequence_length: {}'.format(embedding_sequence_length))
 
         return embedding_sequence_length
@@ -147,3 +147,141 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
         observations = map(str, observations)
         return observations
+
+import pandas as pd
+import numpy as np
+
+
+
+
+
+
+
+
+class CategoricalImputer(BaseEstimator, TransformerMixin):
+    """
+    Impute missing values from a categorical/string np.ndarray or pd.Series
+    with the most frequent value on the training data.
+    Parameters
+    ----------
+    missing_values : string or "NaN", optional (default="NaN")
+        The placeholder for the missing values. All occurrences of
+        `missing_values` will be imputed. None and np.nan are treated
+        as being the same, use the string value "NaN" for them.
+    copy : boolean, optional (default=True)
+        If True, a copy of X will be created.
+    strategy : string, optional (default = 'most_frequent')
+        The imputation strategy.
+        - If "most_frequent", then replace missing using the most frequent
+          value along each column. Can be used with strings or numeric data.
+        - If "constant", then replace missing values with fill_value. Can be
+          used with strings or numeric data.
+    fill_value : string, optional (default='?')
+        The value that all instances of `missing_values` are replaced
+        with if `strategy` is set to `constant`. This is useful if
+        you don't want to impute with the mode, or if there are multiple
+        modes in your data and you want to choose a particular one. If
+        `strategy` is not set to `constant`, this parameter is ignored.
+    Attributes
+    ----------
+    fill_ : str
+        The imputation fill value
+    """
+
+    def __init__(
+        self,
+        missing_values='NaN',
+        strategy='most_frequent',
+        fill_value='?',
+        fill_unknown_labels=False,
+        copy=True
+    ):
+        self.missing_values = missing_values
+        self.copy = copy
+        self.fill_value = fill_value
+        self.strategy = strategy
+        self.known_values = None
+        self.fill_unknown_labels = fill_unknown_labels
+
+        strategies = ['constant', 'most_frequent']
+        if self.strategy not in strategies:
+            raise ValueError(
+                'Strategy {0} not in {1}'.format(self.strategy, strategies)
+            )
+
+    def fit(self, X, y=None):
+        """
+        Get the most frequent value.
+        Parameters
+        ----------
+            X : np.ndarray or pd.Series
+                Training data.
+            y : Passthrough for ``Pipeline`` compatibility.
+        Returns
+        -------
+            self: CategoricalImputer
+        """
+
+        mask = self._get_null_mask(X, self.missing_values)
+        X = X[~mask]
+        if self.strategy == 'most_frequent':
+            modes = pd.Series(X).mode()
+        elif self.strategy == 'constant':
+            modes = np.array([self.fill_value])
+        if modes.shape[0] == 0:
+            raise ValueError('Data is empty or all values are null')
+        elif modes.shape[0] > 1:
+            raise ValueError('No value is repeated more than '
+                             'once in the column')
+        else:
+            self.fill_ = modes[0]
+
+        self.known_values = set(X)
+
+        return self
+
+    def transform(self, X):
+        """
+        Replaces missing values in the input data with the most frequent value
+        of the training data.
+        Parameters
+        ----------
+            X : np.ndarray or pd.Series
+                Data with values to be imputed.
+        Returns
+        -------
+            np.ndarray
+                Data with imputed values.
+        """
+
+        check_is_fitted(self, 'fill_')
+
+        if self.copy:
+            X = X.copy()
+
+        null_mask = self._get_null_mask(X, self.missing_values)
+        X[null_mask] = self.fill_
+
+        if self.fill_unknown_labels:
+            unknown_label_mask = self._get_unknown_label_mask(X)
+            X[unknown_label_mask] = self.fill_
+
+        return np.asarray(X)
+
+    @staticmethod
+    def _get_null_mask(X, value):
+        """
+        Compute the boolean mask X == missing_values.
+        """
+        if value == "NaN" or \
+                value is None or \
+                (isinstance(value, float) and np.isnan(value)):
+            return pd.isnull(X)
+        else:
+            return X == value
+
+    def _get_unknown_label_mask(self, X):
+        """
+        Compute the boolean mask X == missing_values.
+        """
+        return numpy.logical_not(numpy.isin(X, self.known_values))

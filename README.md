@@ -189,7 +189,11 @@ board games with my partner in Seattle.
 ### Development
 
  - Adding CI/CD and PyPi links, and updating contact section w/ about the author (#70)
- - Major rewrite / update of examples (#72) 
+ - Major rewrite / update of examples (#72)
+   - Fixes bug in embedding transformer. Embeddings will now be at least length 1. 
+   - Add functionality to check if `resp_var` is in the list of user provided variables
+   - Added better null filling w/ `CategoricalImputer`
+   - Added filling unseen values w/ `CategoricalImputer`
 
 ### 1.3.5
 

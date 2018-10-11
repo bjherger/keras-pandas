@@ -153,7 +153,7 @@ def load_mushroom():
     return observations
 
 
-def load_lending_club():
+def load_lending_club(test_run=True):
     logging.info('Loading lending club data')
     file_path = download_file('https://resources.lendingclub.com/LoanStats3a.csv.zip',
                               '~/.keras-pandas/example_datasets/',
@@ -167,4 +167,6 @@ def load_lending_club():
         observations[variable] = observations[variable].apply(lambda x: str(x).strip('%') if x else None)
         observations[variable] = pandas.to_numeric(observations[variable], errors='coerce')
 
+    if test_run:
+        observations = observations.sample(1000)
     return observations
