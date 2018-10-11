@@ -2,11 +2,16 @@ import copy
 import logging
 import unittest
 
+import numpy
+import pandas
+from keras import Model
+from keras.layers import Dense
+
 from keras_pandas import lib
 from keras_pandas.Automater import Automater
 from tests.testbase import TestBase
 
-logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().setLevel(logging.DEBUG)
 
 
 class TestAutomater(TestBase):
@@ -120,4 +125,120 @@ class TestAutomater(TestBase):
                           categorical_vars=data['categorical_vars'],
                           datetime_vars=data['datetime_vars'])
 
-        # TODO Test that df_out is captured correctly
+
+    def test_inverse_transform_numerical_response(self):
+
+        # :oad data
+        observations = lib.load_lending_club()
+
+        # Set to test run
+        observations = observations.sample(n=100)
+
+        # Declare variable types
+        categorical_vars = ['term', 'grade', 'sub_grade', 'emp_length', 'home_ownership', 'verification_status',
+                            'issue_d',
+                            'pymnt_plan', 'purpose', 'addr_state', 'initial_list_status', 'application_type',
+                            'disbursement_method', 'loan_status']
+        numerical_vars = ['loan_amnt', 'funded_amnt', 'funded_amnt_inv', 'annual_inc', 'installment', 'dti',
+                          'inq_last_6mths', 'open_acc', 'pub_rec', 'revol_bal', 'total_acc', 'pub_rec_bankruptcies',
+                          'int_rate', 'revol_util']
+
+        text_vars = ['desc', 'title']
+
+        # Manual null filling
+        for categorical_var in categorical_vars:
+            observations[categorical_var] = observations[categorical_var].fillna('None')
+            observations[categorical_var] = observations[categorical_var].apply(str)
+
+        auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_vars, text_vars=text_vars,
+                         response_var='funded_amnt')
+
+        X, y = auto.fit_transform(observations)
+
+        # Start model with provided input nub
+        x = auto.input_nub
+
+        # Fill in your own hidden layers
+        x = Dense(8)(x)
+        x = Dense(16, activation='relu')(x)
+        x = Dense(8)(x)
+
+        # End model with provided output nub
+        x = auto.output_nub(x)
+
+        model = Model(inputs=auto.input_layers, outputs=x)
+        model.compile(optimizer='Adam', loss=auto.loss, metrics=['accuracy'])
+
+        # Train model
+        logging.warning('Settle in! This training normally takes about 5-20 minutes on CPU')
+        model.fit(X, y, epochs=1, validation_split=.2)
+        unscaled_preds = model.predict(X)
+
+        logging.debug('unscaled_preds: {}'.format(list(unscaled_preds)))
+
+        scaled_preds = auto._inverse_transform_output(unscaled_preds)
+
+        logging.debug('scaled_preds: {}'.format(list(scaled_preds)))
+
+        self.assertNotAlmostEquals(0, numpy.mean(scaled_preds))
+
+        self.assertNotAlmostEquals(1, numpy.std(scaled_preds))
+
+    def test_inverse_transform_numerical_response(self):
+
+        # :oad data
+        observations = lib.load_lending_club()
+
+        # Set to test run
+        observations = observations.sample(n=100)
+
+        # Declare variable types
+        categorical_vars = ['term', 'grade', 'sub_grade', 'emp_length', 'home_ownership', 'verification_status',
+                            'issue_d',
+                            'pymnt_plan', 'purpose', 'addr_state', 'initial_list_status', 'application_type',
+                            'disbursement_method', 'loan_status']
+        numerical_vars = ['loan_amnt', 'funded_amnt', 'funded_amnt_inv', 'annual_inc', 'installment', 'dti',
+                          'inq_last_6mths', 'open_acc', 'pub_rec', 'revol_bal', 'total_acc', 'pub_rec_bankruptcies',
+                          'int_rate', 'revol_util']
+
+        text_vars = ['desc', 'title']
+
+        # Manual null filling
+        for categorical_var in categorical_vars:
+            observations[categorical_var] = observations[categorical_var].fillna('None')
+            observations[categorical_var] = observations[categorical_var].apply(str)
+
+        auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_vars, text_vars=text_vars,
+                         response_var='funded_amnt')
+
+        X, y = auto.fit_transform(observations)
+
+        # Start model with provided input nub
+        x = auto.input_nub
+
+        # Fill in your own hidden layers
+        x = Dense(8)(x)
+        x = Dense(16, activation='relu')(x)
+        x = Dense(8)(x)
+
+        # End model with provided output nub
+        x = auto.output_nub(x)
+
+        model = Model(inputs=auto.input_layers, outputs=x)
+        model.compile(optimizer='Adam', loss=auto.loss, metrics=['accuracy'])
+
+        # Train model
+        logging.warning('Settle in! This training normally takes about 5-20 minutes on CPU')
+        model.fit(X, y, epochs=1, validation_split=.2)
+        unscaled_preds = model.predict(X)
+
+        logging.debug('unscaled_preds: {}'.format(list(unscaled_preds)))
+
+        scaled_preds = auto._inverse_transform_output(unscaled_preds)
+
+        logging.debug('scaled_preds: {}'.format(list(scaled_preds)))
+
+        self.assertNotAlmostEquals(0, numpy.mean(scaled_preds))
+
+        self.assertNotAlmostEquals(1, numpy.std(scaled_preds))
+
