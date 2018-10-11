@@ -194,6 +194,8 @@ board games with my partner in Seattle.
    - Add functionality to check if `resp_var` is in the list of user provided variables
    - Added better null filling w/ `CategoricalImputer`
    - Added filling unseen values w/ `CategoricalImputer`
+   - Converted default transformer pipeline to use `copy.deepcopy` instead of `copy.copy`. This was a hotfix for a 
+   previously unknown issue. 
 
 ### 1.3.5
 
