@@ -403,3 +403,14 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
             raise ValueError("y contains new labels: %s" % str(diff))
         y = numpy.asarray(y)
         return self.classes_[y]
+
+class StringEncoder(BaseEstimator, TransformerMixin):
+
+    def __init__(self):
+        pass
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        return X.astype(str)
