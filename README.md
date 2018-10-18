@@ -188,6 +188,10 @@ board games with my partner in Seattle.
 
 ### Development
 
+ - There's nothing here! (yet)
+
+### 2.1.0
+
  - Boolean support deprecated. Boolean (bool) data type can be treated as a special case of categorical data types
 
 ### 2.0.2
