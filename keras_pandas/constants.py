@@ -7,15 +7,15 @@ from keras import losses
 from keras.layers import Embedding, Flatten, Bidirectional, LSTM
 from sklearn.preprocessing import Imputer, StandardScaler
 
-from keras_pandas.transformations import EmbeddingVectorizer, CategoricalImputer, LabelEncoder
+from keras_pandas.transformations import EmbeddingVectorizer, CategoricalImputer, LabelEncoder, StringEncoder
 
 default_sklearn_mapper_pipelines = defaultdict(lambda: list())
 
 default_sklearn_mapper_pipelines.update({
     'numerical_vars': [Imputer(strategy='mean'), StandardScaler()],
-    'categorical_vars': [CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
+    'categorical_vars': [StringEncoder(), CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
                          LabelEncoder()],
-    'text_vars': [EmbeddingVectorizer()],
+    'text_vars': [StringEncoder(), EmbeddingVectorizer()],
     'non_transformed_vars': []
 })
 

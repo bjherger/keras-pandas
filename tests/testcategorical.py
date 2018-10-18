@@ -103,6 +103,45 @@ class TestCategorical(TestBase):
             _create_input_nub(variable_type_dict, train_df)
         self.assertEqual(3, len(input_layers))
 
+    def test_boolean(self):
+        observations = lib.load_mushroom()
+        observations['population_bool'] = observations['population'] == 's'
+
+        msk = numpy.random.rand(len(observations)) < 0.95
+        mushroom_train = observations[msk]
+        mushroom_test = observations[~msk]
+
+        categorical_vars = ['odor', 'habitat', 'class']
+        boolean_vars = ['population_bool']
+
+        auto = Automater(categorical_vars=categorical_vars, boolean_vars=boolean_vars,  response_var='class')
+
+        auto.fit(mushroom_train)
+        X_train, y_train = auto.transform(mushroom_train)
+
+        # Extract input_nub from auto
+        input_nub = auto.input_nub
+
+        # Extract output_nub from auto
+        output_nub = auto.output_nub
+
+        # Create DL model
+        x = input_nub
+        x = Dense(30)(x)
+        x = output_nub(x)
+
+        model = Model(inputs=auto.input_layers, outputs=x)
+        model.compile(optimizer='Adam', loss=auto.loss)
+
+        # Train DL model
+        model.fit(X_train, y_train)
+
+        # Transform test set
+        mushroom_test = mushroom_test.drop('class', axis=1)
+        X_test, y_test = auto.transform(mushroom_test)
+        model.predict(X_test)
+
+
     def test_categorical_whole(self):
         # St up data set
         mushroom_df = lib.load_mushroom()
