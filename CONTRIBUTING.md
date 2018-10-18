@@ -44,7 +44,7 @@ make html
 Adding support for new data types is designed to be (relatively) painless. A workflow for adding new data type (e.g. 
 `VARTYPE`) includes:
 
-
+ - Adding a tests to `test/`
  - Modifying `Automater.__init__`
    - Include new data type in `Automater.__init__`'s parameters (e.g. `VARTYPE_vars=list()`)
    - Add the new variable to `self._variable_type_dict` (e.g. `self._variable_type_dict['VARTYPE_vars'] = VARTYPE`)

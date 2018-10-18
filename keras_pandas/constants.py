@@ -16,6 +16,7 @@ default_sklearn_mapper_pipelines.update({
     'categorical_vars': [StringEncoder(), CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
                          LabelEncoder()],
     'text_vars': [StringEncoder(), EmbeddingVectorizer()],
+    'timeseries_vars': [],
     'non_transformed_vars': []
 })
 
