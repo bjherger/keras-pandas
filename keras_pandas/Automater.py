@@ -13,7 +13,7 @@ from keras_pandas import constants, lib
 
 class Automater(object):
 
-    def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
+    def __init__(self, numerical_vars=list(), categorical_vars=list(), datetime_vars=list(),
                  text_vars=list(), non_transformed_vars=list(), response_var=None, df_out=False):
 
         self.response_var = response_var
@@ -24,7 +24,6 @@ class Automater(object):
         self._variable_type_dict = dict()
         self._variable_type_dict['numerical_vars'] = numerical_vars
         self._variable_type_dict['categorical_vars'] = categorical_vars
-        self._variable_type_dict['boolean_vars'] = boolean_vars
         self._variable_type_dict['datetime_vars'] = datetime_vars
         self._variable_type_dict['text_vars'] = text_vars
         self._variable_type_dict['non_transformed_vars'] = non_transformed_vars

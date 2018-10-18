@@ -15,7 +15,6 @@ default_sklearn_mapper_pipelines.update({
     'numerical_vars': [Imputer(strategy='mean'), StandardScaler()],
     'categorical_vars': [CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
                          LabelEncoder()],
-    'boolean_vars': [LabelEncoder()],
     'text_vars': [EmbeddingVectorizer()],
     'non_transformed_vars': []
 })
@@ -23,7 +22,6 @@ default_sklearn_mapper_pipelines.update({
 default_suggested_losses = {
     'numerical_vars': losses.mean_squared_error,
     'categorical_vars': losses.sparse_categorical_crossentropy,
-    'boolean_vars': losses.sparse_categorical_crossentropy
 }
 
 
