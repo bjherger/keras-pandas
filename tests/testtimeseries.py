@@ -31,20 +31,23 @@ class TestTimeSeries(TestBase):
 
 
         # Create automater
-        auto = Automater(numerical_vars=numerical_vars, timeseries_vars=timeseries_vars)
+        auto = Automater(numerical_vars=numerical_vars, timeseries_vars=timeseries_vars, response_var='ise')
 
         # Fit automater
         auto.fit(train_observations)
 
-        # TODO Create model
+        # Create model
         x = auto.input_nub
         x = Dense(32)(x)
         x = auto.output_nub(x)
 
-        Model(inputs=auto.input_nub, outputs=auto.output_nub)
+        model = Model(inputs=auto.input_layers, outputs=x)
+        model.compile(optimizer='adam', loss=auto.loss)
 
+        # Train model
+        train_X, train_y = auto.transform(train_observations)
+        model.fit(train_X, train_y)
 
-        # TODO Train model
 
         # TODO Use model to predict
         pass
