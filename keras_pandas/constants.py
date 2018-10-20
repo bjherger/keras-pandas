@@ -100,7 +100,7 @@ def input_nub_text_handler(variable, input_dataframe):
     logging.info('Text var has variable / derived variable list: {}'.format(variable_list))
     transformed = input_dataframe[variable_list].as_matrix()
 
-    # Set up sequence length for input_layer layer
+    # Set up sequence length for input_layer
     if len(transformed.shape) >= 2:
         input_sequence_length = int(transformed.shape[1])
     else:
@@ -130,11 +130,20 @@ def input_nub_text_handler(variable, input_dataframe):
 
     return input_layer, x
 
+def input_nub_timseries_handler():
+    # TODO Get transformed data for shaping
+
+    # TODO Set up sequence length for input_layer
+
+    # TODO Create and stack layers
+    pass
+
 
 default_input_nub_type_handlers = dict()
 
 default_input_nub_type_handlers.update({
     'numerical_vars': input_nub_numeric_handler,
     'categorical_vars': input_nub_categorical_handler,
-    'text_vars': input_nub_text_handler
+    'text_vars': input_nub_text_handler,
+    'timeseries_vars': input_nub_timseries_handler
 })
