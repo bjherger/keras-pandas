@@ -175,13 +175,15 @@ def load_instanbul_stocks(as_ts=False):
         for lagged_var in lagged_vars:
             shifts = zip(observations[lagged_var].shift(1), observations[lagged_var].shift(2),
                          observations[lagged_var].shift(3))
-            # Convert tuples to lists
-            shifts = map(list, shifts)
 
+            # Convert shifts to numpy object
+            # shifts = map(lambda x: numpy.array(x), shifts)
             # Convert iterator to list
             shifts = list(shifts)
             observations[lagged_var+'_lagged'] = shifts
 
         observations = observations[3:]
+
+    observations = observations.copy()
     logging.info('Available columns: {}'.format(observations.columns))
     return observations
