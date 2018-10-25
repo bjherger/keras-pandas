@@ -2,10 +2,11 @@
 def main():
     # TODO Load data
     # TODO Heuristic data transformations
+    # TODO Train /test split
     # TODO List out variable types
     # TODO Create and fit Automater
     # TODO Create and fit keras (deep learning) model.
-    # TODO List out which components are supplied by Automaterl
+    # TODO List out which components are supplied by Automater
     # TODO Inverse transform model output, to get usable results
     # TODO Save all results
 
