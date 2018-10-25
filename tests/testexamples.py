@@ -1,4 +1,5 @@
-from examples import numerical_response_lending_club, categorical_response_lending_club, categorical_response_mushrooms, categorical_response_titanic
+from examples import numerical_response_lending_club, categorical_response_lending_club, categorical_response_mushrooms, \
+    categorical_response_titanic, numerical_response_stocks
 from tests.testbase import TestBase
 import numpy
 
@@ -20,3 +21,6 @@ class TestExamples(TestBase):
         numpy.random.seed(0)
         categorical_response_titanic.main()
 
+    def test_numerical_stocks(self):
+        numpy.random.seed(0)
+        numerical_response_stocks.main()
