@@ -14,9 +14,6 @@ from tests.testbase import TestBase
 
 class TestTimeSeries(TestBase):
 
-    def test_transform_no_response(self):
-        pass
-
     def test_timeseries_whole(self):
         observations = lib.load_instanbul_stocks(as_ts=True)
 
