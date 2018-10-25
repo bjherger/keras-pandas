@@ -85,6 +85,7 @@ class TestAutomater(TestBase):
         auto = Automater()
         self.assertEqual({'numerical_vars': list(), 'categorical_vars': list(),
                           'datetime_vars': list(), 'text_vars': list(),
+                          'timeseries_vars': list(),
                           'non_transformed_vars': list()}, auto._variable_type_dict, )
         self.assertCountEqual(list(), auto._user_provided_variables)
 
@@ -98,6 +99,7 @@ class TestAutomater(TestBase):
         response = copy.deepcopy(data)
         response['non_transformed_vars'] = list()
         response['text_vars'] = list()
+        response['timeseries_vars'] = list()
 
         auto = Automater(numerical_vars=data['numerical_vars'], categorical_vars=data['categorical_vars'],
                          datetime_vars=data['datetime_vars'])

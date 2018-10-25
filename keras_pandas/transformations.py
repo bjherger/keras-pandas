@@ -1,9 +1,11 @@
 import logging
+import sys
 from collections import defaultdict
 
 import numpy
 import pandas
 from gensim.utils import simple_preprocess
+from keras_preprocessing.sequence import pad_sequences
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.validation import check_is_fitted, column_or_1d
 
@@ -23,10 +25,10 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
     """
 
-    def __init__(self, embedding_sequence_length=None):
+    def __init__(self, max_sequence_length=None):
         # TODO Allow for UNK 'dropout' rate
 
-        self.embedding_sequence_length = embedding_sequence_length
+        self.max_sequence_length = max_sequence_length
 
         # Create a dictionary, with default value 0 (corresponding to UNK token)
         self.token_index_lookup = defaultdict(int)
@@ -44,8 +46,8 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         observations = list(map(lambda x: simple_preprocess(x), observations))
 
         # Generate embedding_sequence_length, if necessary
-        if self.embedding_sequence_length is None:
-            self.embedding_sequence_length = self.generate_embedding_sequence_length(observations)
+        if self.max_sequence_length is None:
+            self.max_sequence_length = self.generate_embedding_sequence_length(observations)
 
         # Update index_lookup
         tokens = [val for sublist in observations for val in sublist]
@@ -68,7 +70,9 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         # Redo numpy formatting
         observations = list(map(lambda x: numpy.array(x), observations))
 
-        return numpy.matrix(observations)
+        X = numpy.matrix(observations)
+
+        return X
 
 
     def generate_embedding_sequence_length(self, observation_series):
@@ -103,7 +107,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
         # Pad indices
         padding_index = self.token_index_lookup['__PAD__']
-        padding_length = self.embedding_sequence_length
+        padding_length = self.max_sequence_length
         padded_indices = self.pad(indices, length=padding_length, pad_char=padding_index)
         logging.debug('Padded indices: {}'.format(padded_indices))
 
@@ -268,7 +272,7 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
         """
         if value == "NaN" or \
                 value is None or \
-                (isinstance(value, float) and np.isnan(value)):
+                (isinstance(value, float) and numpy.isnan(value)):
             return pandas.isnull(X)
         else:
             return X == value
@@ -414,3 +418,30 @@ class StringEncoder(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         return X.astype(str)
+
+class TimeSeriesVectorizer(TransformerMixin, BaseEstimator):
+
+    def __init__(self, max_sequence_length=None):
+        self.max_sequence_length = max_sequence_length
+
+    def fit(self, X, y=None):
+        if self.max_sequence_length is None:
+            sequence_lengths = list(map(lambda x: len(x[0]), X))
+            self.max_sequence_length = min(sequence_lengths)
+            logging.info('Set max_sequence_length to: {}'.format(self.max_sequence_length))
+        return self
+
+    def transform(self, X):
+        # Convert data types and reshape
+        # TODO There must be a way to do this w/o explicitly changing data types and unraveling
+        results = list()
+        for sequence in X:
+            sequence = sequence[0]
+            results.append(list(sequence))
+
+        # Covert outermost layer to a numpy array
+        X = numpy.array(results)
+
+        # Pad all of the sequences to be the same length
+        X = pad_sequences(X, maxlen=self.max_sequence_length)
+        return X

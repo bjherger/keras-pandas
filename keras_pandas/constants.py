@@ -4,18 +4,21 @@ from collections import defaultdict
 import keras
 import numpy
 from keras import losses
-from keras.layers import Embedding, Flatten, Bidirectional, LSTM
+from keras.layers import Embedding, Flatten, Bidirectional, LSTM, Reshape
 from sklearn.preprocessing import Imputer, StandardScaler
 
-from keras_pandas.transformations import EmbeddingVectorizer, CategoricalImputer, LabelEncoder, StringEncoder
+from keras_pandas.transformations import EmbeddingVectorizer, CategoricalImputer, LabelEncoder, StringEncoder, \
+    TimeSeriesVectorizer
 
 default_sklearn_mapper_pipelines = defaultdict(lambda: list())
 
 default_sklearn_mapper_pipelines.update({
     'numerical_vars': [Imputer(strategy='mean'), StandardScaler()],
-    'categorical_vars': [StringEncoder(), CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
+    'categorical_vars': [StringEncoder(),
+                         CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
                          LabelEncoder()],
     'text_vars': [StringEncoder(), EmbeddingVectorizer()],
+    'timeseries_vars': [TimeSeriesVectorizer()],
     'non_transformed_vars': []
 })
 
@@ -98,7 +101,7 @@ def input_nub_text_handler(variable, input_dataframe):
     logging.info('Text var has variable / derived variable list: {}'.format(variable_list))
     transformed = input_dataframe[variable_list].as_matrix()
 
-    # Set up sequence length for input_layer layer
+    # Set up sequence length for input_layer
     if len(transformed.shape) >= 2:
         input_sequence_length = int(transformed.shape[1])
     else:
@@ -129,10 +132,37 @@ def input_nub_text_handler(variable, input_dataframe):
     return input_layer, x
 
 
+def input_nub_timseries_handler(variable, input_dataframe):
+    # TODO Get transformed data for shaping
+    if variable in input_dataframe.columns:
+        variable_list = [variable]
+    else:
+        variable_name_prefix = variable + '_'
+        variable_list = list(filter(lambda x: x.startswith(variable_name_prefix), input_dataframe.columns))
+    transformed = input_dataframe[variable_list].as_matrix()
+
+    # Set up sequence length for input_layer
+    if len(transformed.shape) >= 2:
+        input_sequence_length = int(transformed.shape[1])
+    else:
+        input_sequence_length = 1
+    logging.info('For variable: {}, using input_sequence_length: {}'.format(variable, input_sequence_length))
+
+    # Create and stack layers
+    # TODO Figure out how to format the input shape correctly
+    input_layer = keras.Input(shape=(input_sequence_length,), name='input_{}'.format(variable))
+    x = input_layer
+    x = Reshape((input_sequence_length, 1))(x)
+    x = Bidirectional(LSTM(32, name='lstm_{}'.format(variable)), name='bidirectional_lstm_{}'.format(variable))(x)
+
+    return input_layer, x
+
+
 default_input_nub_type_handlers = dict()
 
 default_input_nub_type_handlers.update({
     'numerical_vars': input_nub_numeric_handler,
     'categorical_vars': input_nub_categorical_handler,
-    'text_vars': input_nub_text_handler
+    'text_vars': input_nub_text_handler,
+    'timeseries_vars': input_nub_timseries_handler
 })

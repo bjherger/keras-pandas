@@ -14,7 +14,7 @@ from keras_pandas import constants, lib
 class Automater(object):
 
     def __init__(self, numerical_vars=list(), categorical_vars=list(), boolean_vars=list(), datetime_vars=list(),
-                 text_vars=list(), non_transformed_vars=list(), response_var=None, df_out=False):
+                 text_vars=list(), timeseries_vars = list(), non_transformed_vars=list(), response_var=None, df_out=False):
 
         self.response_var = response_var
         self.fitted = False
@@ -27,6 +27,7 @@ class Automater(object):
         self._variable_type_dict['categorical_vars'] = categorical_vars + boolean_vars
         self._variable_type_dict['datetime_vars'] = datetime_vars
         self._variable_type_dict['text_vars'] = text_vars
+        self._variable_type_dict['timeseries_vars'] = timeseries_vars
         self._variable_type_dict['non_transformed_vars'] = non_transformed_vars
         lib.check_variable_list_are_valid(self._variable_type_dict)
 

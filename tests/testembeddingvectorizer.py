@@ -51,7 +51,7 @@ class TestEmbeddingVectorizer(TestBase):
     def test_mapper(self):
         data = lib.load_titanic()
 
-        transformation_list = [(['name'], [EmbeddingVectorizer(embedding_sequence_length=12)])]
+        transformation_list = [(['name'], [EmbeddingVectorizer(max_sequence_length=12)])]
 
         mapper = DataFrameMapper(transformation_list, df_out=True)
 

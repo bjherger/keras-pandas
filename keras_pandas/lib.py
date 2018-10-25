@@ -151,3 +151,43 @@ def load_lending_club(test_run=True):
     if test_run:
         observations = observations.sample(300)
     return observations
+
+def load_instanbul_stocks(as_ts=False):
+    logging.info('Loading lending club data')
+    logging.info('Numpy random seed: {}'.format(numpy.random.get_state()))
+    file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/00247/data_akbilgic.xlsx',
+                              '~/.keras-pandas/example_datasets/',
+                              filename='instanbul_stocks.xlsw')
+    logging.info('Reading data from filepath: {}'.format(file_path))
+
+    observations = pandas.read_excel(file_path, header=1)
+    observations.columns = list(map(lambda x: x.lower().replace(' ', '_').replace('/', '_'), observations.columns))
+    logging.info('Available raw columns: {}'.format(observations.columns))
+
+    # Coarse data transformations
+    observations['date'] = pandas.to_datetime(observations['date'])
+
+    if as_ts:
+        logging.info('Reformatting data as timeseries')
+        observations = observations.sort_values('date')
+
+        lagged_vars = ['ise', 'ise.1', 'sp', 'dax']
+        for lagged_var in lagged_vars:
+            shifts = zip(observations[lagged_var].shift(1), observations[lagged_var].shift(2),
+                         observations[lagged_var].shift(3))
+
+            # Convert shifts to numpy object
+            # shifts = map(lambda x: numpy.array(x), shifts)
+            # Convert iterator to list
+            shifts = list(shifts)
+            observations[lagged_var+'_lagged'] = shifts
+
+            # Convert from tuple to list
+            observations[lagged_var + '_lagged'] = observations[lagged_var+'_lagged'].apply(list)
+
+        observations = observations[3:]
+
+
+    observations = observations.copy()
+    logging.info('Available columns: {}'.format(observations.columns))
+    return observations
