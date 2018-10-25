@@ -46,6 +46,8 @@ class TestTimeSeries(TestBase):
 
         # Train model
         train_X, train_y = auto.transform(train_observations)
+        print(len(train_X))
+        print(train_X[0].shape)
         model.fit(train_X, train_y)
 
 

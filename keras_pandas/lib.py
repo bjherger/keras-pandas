@@ -182,7 +182,11 @@ def load_instanbul_stocks(as_ts=False):
             shifts = list(shifts)
             observations[lagged_var+'_lagged'] = shifts
 
+            # Convert from tuple to list
+            observations[lagged_var + '_lagged'] = observations[lagged_var+'_lagged'].apply(list)
+
         observations = observations[3:]
+
 
     observations = observations.copy()
     logging.info('Available columns: {}'.format(observations.columns))

@@ -432,49 +432,16 @@ class TimeSeriesVectorizer(TransformerMixin, BaseEstimator):
         return self
 
     def transform(self, X):
-        X = self.prepare_input(X)
-        X = list(map(lambda x: self.pad(x, self.max_sequence_length, 0), X))
+        # Convert data types and reshape
+        # TODO There must be a way to do this w/o explicitly changing data types and unraveling
+        results = list()
+        for sequence in X:
+            sequence = sequence[0]
+            results.append(list(sequence))
 
-        # Redo numpy formatting
-        X = list(map(lambda x: numpy.array(x), X))
-        X = numpy.matrix(X)
+        # Covert outermost layer to a numpy array
+        X = numpy.array(results)
 
+        # Pad all of the sequences to be the same length
+        X = pad_sequences(X, maxlen=self.max_sequence_length)
         return X
-
-    @staticmethod
-    def prepare_input(X):
-        # Undo Numpy formatting
-        observations = list(map(lambda x: x[0], X))
-        return observations
-
-    @staticmethod
-    def pad(input_sequence, length, pad_char):
-        """
-        Pad the given iterable, so that it is the correct length.
-
-        :param input_sequence: Any iterable object
-        :param length: The desired length of the output.
-        :type length: int
-        :param pad_char: The character or int to be added to short sequences
-        :type pad_char: str or int
-        :return: A sequence, of len `length`
-        :rtype: []
-        """
-
-        # If input_sequence is a string, convert to to an explicit list
-        if isinstance(input_sequence, str):
-            input_sequence = list(input_sequence)
-
-        # If the input_sequence is the correct length, return it
-        if len(input_sequence) == length:
-            return input_sequence
-
-        # If the input_sequence is too long, truncate it
-        elif len(input_sequence) > length:
-            return input_sequence[:length]
-
-        # If the input_sequence is too short, extend it w/ the pad_car
-        else:
-            padding_len = length - len(input_sequence)
-            padding = [pad_char] * padding_len
-            return list(input_sequence) + list(padding)

@@ -4,7 +4,7 @@ from collections import defaultdict
 import keras
 import numpy
 from keras import losses
-from keras.layers import Embedding, Flatten, Bidirectional, LSTM
+from keras.layers import Embedding, Flatten, Bidirectional, LSTM, Reshape
 from sklearn.preprocessing import Imputer, StandardScaler
 
 from keras_pandas.transformations import EmbeddingVectorizer, CategoricalImputer, LabelEncoder, StringEncoder, \
@@ -150,8 +150,10 @@ def input_nub_timseries_handler(variable, input_dataframe):
 
     # Create and stack layers
     # TODO Figure out how to format the input shape correctly
-    input_layer = keras.Input(shape=(input_sequence_length, 1), name='input_{}'.format(variable))
-    x = Bidirectional(LSTM(128, name='lstm_{}'.format(variable)), name='bidirectiona_lstm_{}'.format(variable))(input_layer)
+    input_layer = keras.Input(shape=(input_sequence_length,), name='input_{}'.format(variable))
+    x = input_layer
+    x = Reshape((input_sequence_length, 1))(x)
+    x = Bidirectional(LSTM(32, name='lstm_{}'.format(variable)), name='bidirectional_lstm_{}'.format(variable))(x)
 
     return input_layer, x
 
