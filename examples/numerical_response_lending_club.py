@@ -14,10 +14,8 @@ def main():
 
     # Load data
     observations = lib.load_lending_club()
-    # observations = lib.load_lending_club(test_run=False)
     print('Observation columns: {}'.format(list(observations.columns)))
     print('Class balance:\n {}'.format(observations['loan_status'].value_counts()))
-
 
     # Heuristic data transformations
     for var in ['int_rate', 'revol_util']:
@@ -38,6 +36,7 @@ def main():
                         'application_type', 'disbursement_method']
     text_vars = ['desc', 'purpose', 'title']
 
+    # Train /test split
     train_observations, test_observations = train_test_split(observations)
     train_observations = train_observations.copy()
     test_observations = test_observations.copy()
