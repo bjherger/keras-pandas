@@ -189,6 +189,11 @@ board games with my partner in Seattle.
 ### Development
 
  - There's nothing here! (yet)
+ 
+### 2.2.0
+
+ - Add timeseries support (#78)
+ - Add timeseries examples (#79)
 
 ### 2.1.0
 
