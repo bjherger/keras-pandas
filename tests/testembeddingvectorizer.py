@@ -1,11 +1,8 @@
-import logging
-import unittest
-
 from numpy.testing import assert_array_equal
 from sklearn_pandas import DataFrameMapper
 
 from keras_pandas import lib
-from keras_pandas.transformations import EmbeddingVectorizer
+from keras_pandas.data_types.transformations import EmbeddingVectorizer
 from tests.testbase import TestBase
 
 
