@@ -28,7 +28,7 @@ class TestTimeSeries(TestBase):
 
 
         # Create automater
-        auto = Automater(numerical_vars=numerical_vars, timeseries_vars=timeseries_vars, response_var='ise')
+        auto = Automater(numerical_vars=numerical_vars, timeseries_vars=timeseries_vars, output_var='ise')
 
         # Fit automater
         auto.fit(train_observations)

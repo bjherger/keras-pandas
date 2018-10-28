@@ -3,21 +3,26 @@ from functools import reduce
 
 class Automater(object):
 
-    def __init__(self, variable_type_dict=dict(), response_var=None):
+    def __init__(self, data_type_dict=dict(), output_var=None, data_type_handlers=dict()):
 
-        self.variable_type_dict = variable_type_dict
-        self.input_vars = reduce(lambda x, y: x+y, self.variable_type_dict.values())
-        if response_var is not None:
-            self.input_vars.remove(response_var)
-        self.response_var = response_var
-        self.supervised = self.response_var != None
+        self.data_type_dict = data_type_dict
+        self.input_vars = reduce(lambda x, y: x + y, self.data_type_dict.values())
+
+        # If there's an output_var, remove it from from input_vars
+        if (output_var is not None) and (output_var in self.input_vars):
+            self.input_vars.remove(output_var)
+
+        self.output_var = output_var
+        self.supervised = self.output_var != None
         self.input_mapper = None
         self.output_mapper = None
         self.fitted = False
 
+        self.data_type_handlers = {'numerical': None,
+                                   'categorical': None}
+
         # Exit checks
         self._valid_configurations_check()
-
 
     def fit(self, input_dataframe):
         # TODO Setup checks
@@ -87,7 +92,7 @@ class Automater(object):
             return True
 
     def _check_response_var(self):
-        if self.response_var is None:
+        if self.output_var is None:
             raise AssertionError('Attempting to call to function that requires a response variable. Please create a new'
                                  'automater, using the response_var parater')
         else:
@@ -98,11 +103,31 @@ class Automater(object):
         pass
 
     def _valid_configurations_check(self):
-        # TODO Check that each variable is assigned to only one variable type
+        # Check that each variable is assigned to only one variable type
+        for outer_datatype, outer_variable_list in self.data_type_dict.items():
+            for inner_datatype, inner_variable_list in self.data_type_dict.items():
+
+                # Do not compare data types to themselves
+                if inner_datatype == outer_datatype:
+                    continue
+
+                else:
+                    intersection = set(outer_variable_list).intersection(set(inner_variable_list))
+                    if len(intersection) > 0:
+                        raise ValueError('Datatype lists {} and {} overlap, and share variables(s): {}'.
+                                         format(inner_datatype, outer_datatype, intersection))
+
         # TODO Check that all datatype handlers are available
+
         if self.supervised:
-            # TODO Check that response variable is in the variable_type_dict
-            # TODO Check that respone_var 's datatype class supports output
+            # Check that response variable is in the data_type_dict
+            variable_list = reduce(lambda x, y: x + y, self.data_type_dict.values())
+            if self.output_var not in variable_list:
+                raise ValueError('Output variable: {} is not in variable type dict: {}. Please add output variable to '
+                                 'data type dict.'.format(self.output_var, self.data_type_dict))
+
+            # Check that respone_var 's datatype class supports output
+
             pass
 
         pass

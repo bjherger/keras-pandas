@@ -76,7 +76,7 @@ class TestNumeric(TestBase):
         iris_numerical_cols = ['sepal_length', 'petal_length']
 
         # Create auto
-        auto = Automater(numerical_vars=iris_numerical_cols, response_var='sepal_length')
+        auto = Automater(numerical_vars=iris_numerical_cols, output_var='sepal_length')
 
         # Train auto
         auto.fit(iris_train)

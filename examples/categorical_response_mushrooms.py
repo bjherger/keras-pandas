@@ -29,7 +29,7 @@ def main():
 
     # Create and fit Automater
     auto = Automater(numerical_vars=numerical_vars, categorical_vars=categorical_vars, text_vars=text_vars,
-                     response_var='class')
+                     output_var='class')
     auto.fit(train_observations)
 
     # Create and fit keras (deep learning) model
@@ -52,8 +52,8 @@ def main():
     test_y_pred = model.predict(test_X)
 
     # Inverse transform model output, to get usable results and save all results
-    test_observations[auto.response_var + '_pred'] = auto.inverse_transform_output(test_y_pred)
-    print('Predictions: {}'.format(test_observations[auto.response_var + '_pred']))
+    test_observations[auto.output_var + '_pred'] = auto.inverse_transform_output(test_y_pred)
+    print('Predictions: {}'.format(test_observations[auto.output_var + '_pred']))
 
     pass
 

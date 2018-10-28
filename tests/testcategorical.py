@@ -55,7 +55,7 @@ class TestCategorical(TestBase):
 
         # Two numerical variables, df_out = False
         test_columns = ['odor', 'habitat']
-        auto = Automater(categorical_vars=test_columns, df_out=False, response_var='habitat')
+        auto = Automater(categorical_vars=test_columns, df_out=False, output_var='habitat')
         auto.fit(train_df)
 
         (X,y) = auto.transform(train_df)
@@ -63,7 +63,7 @@ class TestCategorical(TestBase):
 
         # Two numerical variables, df_out = True
         test_columns = ['odor', 'habitat']
-        auto = Automater(categorical_vars=test_columns, df_out=True, response_var='habitat')
+        auto = Automater(categorical_vars=test_columns, df_out=True, output_var='habitat')
         auto.fit(train_df)
 
         transformed = auto.transform(train_df)
@@ -114,7 +114,7 @@ class TestCategorical(TestBase):
         categorical_vars = ['odor', 'habitat', 'class']
         boolean_vars = ['population_bool']
 
-        auto = Automater(categorical_vars=categorical_vars, boolean_vars=boolean_vars,  response_var='class')
+        auto = Automater(categorical_vars=categorical_vars, boolean_vars=boolean_vars, output_var='class')
 
         auto.fit(mushroom_train)
         X_train, y_train = auto.transform(mushroom_train)
@@ -151,7 +151,7 @@ class TestCategorical(TestBase):
         categorical_vars = ['odor', 'habitat', 'population', 'class']
 
         # Create auto
-        auto = Automater(categorical_vars=categorical_vars, response_var='class')
+        auto = Automater(categorical_vars=categorical_vars, output_var='class')
 
         # Train auto
         auto.fit(mushroom_train)

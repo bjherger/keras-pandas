@@ -71,7 +71,7 @@ class TestText(TestBase):
         numerical_vars = ['survived']
 
         # Create auto
-        auto = Automater(text_vars=text_vars, numerical_vars=numerical_vars, response_var='survived')
+        auto = Automater(text_vars=text_vars, numerical_vars=numerical_vars, output_var='survived')
 
         # Train auto
         auto.fit(data_train)
