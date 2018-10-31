@@ -191,3 +191,23 @@ def load_instanbul_stocks(as_ts=False):
     observations = observations.copy()
     logging.info('Available columns: {}'.format(observations.columns))
     return observations
+
+def check_valid_datatype(datatype_class):
+    is_valid = False
+
+    datatype_attributes = set(datatype_class.__dict__.keys())
+
+    required_input_signature = set(['supports_output', 'default_transformation_pipeline', 'input_nub_generator'])
+
+    # Check for input support
+    if required_input_signature.issubset(datatype_attributes):
+
+        # Check for output support
+        if datatype_class.supports_output:
+            required_output_signature = set(['input_nub_generator', 'output_inverse_transform', 'output_suggest_loss'])
+            if required_output_signature.issubset(datatype_attributes):
+                is_valid = True
+        else:
+            is_valid = True
+
+    return is_valid

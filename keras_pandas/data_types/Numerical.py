@@ -35,9 +35,10 @@ class Numerical():
 
         # Create input_layer layer
         input_layer = keras.Input(shape=(input_sequence_length,), dtype='float32', name='input_{}'.format(variable))
+        input_nub = input_layer
 
         # Return, in format of input_layer, last variable-specific layer
-        return input_layer, input_layer
+        return input_layer, input_nub
 
     def output_nub_generator(self, variable, input_df):
         """
