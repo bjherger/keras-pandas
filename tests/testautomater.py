@@ -6,28 +6,37 @@ class TestAutomater(TestBase):
 
     def test_init(self):
         # Supervised
-        variable_type_dict = {'numerical': ['n1', 'n2'],
-                              'categorical': ['c1', 'c2'],
-                              'boolean': ['b1']}
+        data_type_dict = {'numerical': ['n1', 'n2']}
 
-        auto = Automater(data_type_dict=variable_type_dict,
-                         output_var='c1')
+        auto = Automater(data_type_dict=data_type_dict,
+                         output_var='n1')
 
         self.assertTrue(auto.supervised)
-        self.assertCountEqual(['n1', 'n2', 'c2', 'b1'], auto.input_vars)
-        self.assertEqual('c1', auto.output_var)
+        self.assertCountEqual(['n2'], auto.input_vars)
+        self.assertEqual('n1', auto.output_var)
         self.assertIsNone(auto.input_mapper)
         self.assertIsNone(auto.output_mapper)
         self.assertFalse(auto.fitted)
 
         # Unsupervised
-        auto = Automater(data_type_dict=variable_type_dict)
+        auto = Automater(data_type_dict=data_type_dict)
         self.assertFalse(auto.supervised)
-        self.assertCountEqual(['n1', 'n2', 'c1', 'c2', 'b1'], auto.input_vars)
+        self.assertCountEqual(['n1', 'n2'], auto.input_vars)
         self.assertEqual(None, auto.output_var)
         self.assertIsNone(auto.input_mapper)
         self.assertIsNone(auto.output_mapper)
         self.assertFalse(auto.fitted)
+
+        # Bad configuration: Supervised
+        data_type_dict = {'numerical': ['n1', 'n2'],
+                              'categorical': ['c1', 'c2'],
+                              'boolean': ['b1']}
+
+        self.assertRaises(ValueError, Automater, data_type_dict=data_type_dict,
+                         output_var='c1')
+
+        # Bad configuration: Unsupervised
+        self.assertRaises(ValueError, Automater, data_type_dict=data_type_dict)
 
         pass
 
