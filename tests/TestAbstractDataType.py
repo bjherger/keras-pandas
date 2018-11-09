@@ -14,8 +14,6 @@ class TestAbstractDataType(TestBase):
         self.assertEqual(None, datatype.output_suggested_loss())
         self.assertTrue(datatype._check_output_support())
 
-        pass
-
     def test_no_output_support(self):
         datatype = AbstractDataType()
         self.assertTrue(check_valid_datatype(datatype))
@@ -23,7 +21,3 @@ class TestAbstractDataType(TestBase):
         self.assertRaises(ValueError, datatype.output_nub_generator, 'test', 'test')
         self.assertRaises(ValueError, datatype.output_suggested_loss)
         self.assertRaises(ValueError, datatype._check_output_support)
-
-        pass
-
-        pass

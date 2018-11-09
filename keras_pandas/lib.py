@@ -201,8 +201,9 @@ def check_valid_datatype(datatype_class):
 
     logging.info('datatype: {} has attributes: {}'.format(datatype_class, datatype_attributes))
 
-    required_input_signature = set(['supports_output', 'default_transformation_pipeline', 'input_nub_generator'])
-    required_output_signature = required_input_signature.union(set(['input_nub_generator', 'output_inverse_transform', 'output_suggested_loss']))
+    required_input_signature = {'supports_output', 'default_transformation_pipeline', 'input_nub_generator'}
+    required_output_signature = required_input_signature.union(
+        {'input_nub_generator', 'output_inverse_transform', 'output_suggested_loss'})
 
     if datatype_class.supports_output:
         is_valid = required_output_signature.issubset(datatype_attributes)
