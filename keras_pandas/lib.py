@@ -204,7 +204,7 @@ def check_valid_datatype(datatype_class):
     required_output_signature = required_input_signature.union(
         {'input_nub_generator', 'output_inverse_transform', 'output_suggested_loss'})
 
-    if datatype_class.supports_output:
+    if hasattr(datatype_attributes, 'supports_output') and datatype_class.supports_output:
         is_valid = required_output_signature.issubset(datatype_attributes)
     else:
         is_valid = required_input_signature.issubset(datatype_attributes)
