@@ -3,7 +3,7 @@ from keras_pandas.lib import check_valid_datatype
 from tests.testbase import TestBase
 
 
-class TestAbstractDataType(TestBase):
+class TestAbstractDatatype(TestBase):
 
     def test_output_support(self):
         datatype = AbstractDataType()
