@@ -54,7 +54,7 @@ class AbstractDataType():
 
         return natural_scaled_vars
 
-    def output_suggest_loss(self):
+    def output_suggested_loss(self):
         self._check_output_support()
         suggested_loss = None
         return suggested_loss
@@ -64,3 +64,4 @@ class AbstractDataType():
 
             raise ValueError('This datatype: {} does not support output, but has called to an output related '
                              'function.'.format(self.__class__))
+        return True

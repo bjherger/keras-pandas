@@ -1,3 +1,4 @@
+import inspect
 import logging
 import os
 
@@ -195,19 +196,17 @@ def load_instanbul_stocks(as_ts=False):
 def check_valid_datatype(datatype_class):
     is_valid = False
 
-    datatype_attributes = set(datatype_class.__dict__.keys())
+    datatype_attributes = inspect.getmembers(datatype_class)
+    datatype_attributes = set(map(lambda x: x[0], datatype_attributes))
+
+    logging.info('datatype: {} has attributes: {}'.format(datatype_class, datatype_attributes))
 
     required_input_signature = set(['supports_output', 'default_transformation_pipeline', 'input_nub_generator'])
+    required_output_signature = required_input_signature.union(set(['input_nub_generator', 'output_inverse_transform', 'output_suggested_loss']))
 
-    # Check for input support
-    if required_input_signature.issubset(datatype_attributes):
-
-        # Check for output support
-        if datatype_class.supports_output:
-            required_output_signature = set(['input_nub_generator', 'output_inverse_transform', 'output_suggest_loss'])
-            if required_output_signature.issubset(datatype_attributes):
-                is_valid = True
-        else:
-            is_valid = True
+    if datatype_class.supports_output:
+        is_valid = required_output_signature.issubset(datatype_attributes)
+    else:
+        is_valid = required_input_signature.issubset(datatype_attributes)
 
     return is_valid

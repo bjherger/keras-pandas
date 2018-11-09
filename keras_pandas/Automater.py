@@ -45,7 +45,8 @@ class Automater(object):
         self.input_mapper = self._create_mapper(self.input_vars)
         self.output_mapper = self._create_mapper(self.output_var)
 
-        # TODO Update fitted to True
+        # Update fitted to True
+        self.fitted = True
         pass
 
     def transform(self, input_dataframe, df_out=None):
