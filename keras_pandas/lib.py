@@ -194,7 +194,6 @@ def load_instanbul_stocks(as_ts=False):
     return observations
 
 def check_valid_datatype(datatype_class):
-    is_valid = False
 
     datatype_attributes = inspect.getmembers(datatype_class)
     datatype_attributes = set(map(lambda x: x[0], datatype_attributes))
