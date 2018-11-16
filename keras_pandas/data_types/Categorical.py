@@ -13,7 +13,7 @@ class Categorical():
         self.supports_output = True
         self.default_transformation_pipeline = [StringEncoder(),
                          CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
-                         LabelEncoder()],
+                         LabelEncoder()]
 
     def input_nub_generator(self, variable, transformed_df):
         """
@@ -31,7 +31,6 @@ class Categorical():
         """
         # Get transformed data for shaping
         transformed = transformed_df[variable].as_matrix()
-
 
         # Set up dimensions for input_layer layer
         if len(transformed.shape) >= 2:
@@ -58,7 +57,7 @@ class Categorical():
 
         return input_layer, input_nub
 
-    def output_nub_generator(self, variable, input_df):
+    def output_nub_generator(self, variable, transformed_df):
         """
         Generate an output layer for a Keras network.
 
@@ -66,13 +65,13 @@ class Categorical():
 
         :param variable: A Variable contained in the input_df
         :type variable: str
-        :param input_df: A dataframe, containing either the specified variable, or derived variables
-        :type input_df: pandas.DataFrame
+        :param transformed_df: A dataframe, containing either the specified variable, or derived variables
+        :type transformed_df: pandas.DataFrame
         :return: output_layer
         """
         self._check_output_support()
         # +1 for UNK level
-        categorical_num_response_levels = len(set(input_df[variable])) + 1
+        categorical_num_response_levels = len(set(transformed_df[variable])) + 1
         output_layer = Dense(units=categorical_num_response_levels, activation='softmax')
 
         return output_layer

@@ -81,7 +81,7 @@ class Numerical():
     def output_suggest_loss(self):
         self._check_output_support()
         # TODO We can do better than this, if we are able to look at the response data
-        suggested_loss = keras.losses.mean_squared_error()
+        suggested_loss = keras.losses.mean_squared_error
         return suggested_loss
 
     def _check_output_support(self):
