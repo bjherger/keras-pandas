@@ -1,9 +1,7 @@
-import keras
 from keras import Model
 from sklearn_pandas import DataFrameMapper
 
 from keras_pandas import lib
-from keras_pandas.data_types.Categorical import Categorical
 from keras_pandas.data_types.Numerical import Numerical
 from tests.testbase import TestBase
 
@@ -37,5 +35,5 @@ class TestNumerical(TestBase):
         x = input_nub
         x = output_nub(x)
 
-        model = Model(input_nub, x)
+        model = Model(input_layer, x)
         model.compile(optimizer='adam', loss=datatype.output_suggest_loss())
