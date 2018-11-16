@@ -103,24 +103,29 @@ def load_titanic():
     :return: A DataFrame, containing the titanic dataset
     :rtype: pandas.DataFrame
     """
+    logging.info('Loading titanic data')
     file_path = download_file('http://web.stanford.edu/class/archive/cs/cs109/cs109.1166/stuff/titanic.csv',
                               '~/.keras-pandas/example_datasets/', filename='titanic.csv')
 
     observations = pandas.read_csv(file_path)
     observations.columns = list(map(lambda x: x.lower().replace(' ', '_').replace('/', '_'), observations.columns))
-
+    logging.info('Available titanic columns: {}'.format(observations.columns))
     return observations
 
 
 def load_iris():
+    logging.info('Loading iris data')
     file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data',
                               '~/.keras-pandas/example_datasets/', filename='iris.csv')
     observations = pandas.read_csv(file_path, names=['sepal_length', 'sepal_width', 'petal_length', 'petal_width',
                                                      'class'])
+
+    logging.info('Available iris columns: {}'.format(observations.columns))
     return observations
 
 
 def load_mushroom():
+    logging.info('Loading mushroom data')
     file_path = download_file(
         'https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data',
         '~/.keras-pandas/example_datasets/', filename='agaricus-lepiota.csv')
@@ -131,6 +136,7 @@ def load_mushroom():
                                           'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type', 'veil-color',
                                           'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat'])
 
+    logging.info('Available mushroom columns: {}'.format(observations.columns))
     return observations
 
 
@@ -151,10 +157,12 @@ def load_lending_club(test_run=True):
 
     if test_run:
         observations = observations.sample(300)
+
+    logging.info('Available lending club columns: {}'.format(observations.columns))
     return observations
 
 def load_instanbul_stocks(as_ts=False):
-    logging.info('Loading lending club data')
+    logging.info('Loading Instanbul data')
     logging.info('Numpy random seed: {}'.format(numpy.random.get_state()))
     file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/00247/data_akbilgic.xlsx',
                               '~/.keras-pandas/example_datasets/',
@@ -190,7 +198,7 @@ def load_instanbul_stocks(as_ts=False):
 
 
     observations = observations.copy()
-    logging.info('Available columns: {}'.format(observations.columns))
+    logging.info('Available Istanbul columns: {}'.format(observations.columns))
     return observations
 
 def check_valid_datatype(datatype_class):

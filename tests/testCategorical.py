@@ -17,18 +17,18 @@ class TestCategorical(TestBase):
         lib.check_valid_datatype(datatype)
 
     def test_whole(self):
-        datatype = Numerical()
-        observations = lib.load_titanic()
+        datatype = Categorical()
+        observations = lib.load_mushroom()
 
         self.assertTrue(datatype.supports_output)
         self.assertIn('default_transformation_pipeline', datatype.__dict__.keys())
 
-        input_layer, input_nub = datatype.input_nub_generator('fare', observations)
+        input_layer, input_nub = datatype.input_nub_generator('cap-shape', observations)
 
-        output_nub = datatype.output_nub_generator('fare', observations)
+        output_nub = datatype.output_nub_generator('cap-color', observations)
 
         x = input_nub
         x = output_nub(x)
 
         model = Model(input_nub, x)
-        model.compile(optimizer='adam', loss='mse')
+        model.compile(optimizer='adam', loss=datatype.output_suggested_loss())

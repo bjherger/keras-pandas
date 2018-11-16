@@ -40,7 +40,7 @@ class Numerical():
         # Return, in format of input_layer, last variable-specific layer
         return input_layer, input_nub
 
-    def output_nub_generator(self, variable, input_df):
+    def output_nub_generator(self, variable, transformed_df):
         """
                 Generate an output layer for a Keras network.
 
@@ -48,8 +48,8 @@ class Numerical():
 
                 :param variable: A Variable contained in the input_df
                 :type variable: str
-                :param input_df: A dataframe, containing either the specified variable, or derived variables
-                :type input_df: pandas.DataFrame
+                :param transformed_df: A dataframe, containing either the specified variable, or derived variables
+                :type transformed_df: pandas.DataFrame
                 :return: output_layer
                 """
         self._check_output_support()

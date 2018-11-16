@@ -5,13 +5,17 @@ import numpy
 from keras import losses
 from keras.layers import Embedding, Flatten, Dense
 
+from keras_pandas.transformations import StringEncoder, CategoricalImputer, LabelEncoder
+
 
 class Categorical():
     def __init__(self):
-        self.supports_output = False
-        self.default_transformation_pipeline = []
+        self.supports_output = True
+        self.default_transformation_pipeline = [StringEncoder(),
+                         CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
+                         LabelEncoder()],
 
-    def input_nub_generator(self, variable, input_df):
+    def input_nub_generator(self, variable, transformed_df):
         """
         Generate an input layer and input 'nub' for a Keras network.
 
@@ -21,12 +25,13 @@ class Categorical():
 
         :param variable: Name of the variable
         :type variable: str
-        :param input_df: A dataframe, containing either the specified variable, or derived variables
-        :type input_df: pandas.DataFrame
+        :param transformed_df: A dataframe, containing either the specified variable, or derived variables
+        :type transformed_df: pandas.DataFrame
         :return: A tuple containing the input layer, and the last layer of the nub
         """
         # Get transformed data for shaping
-        transformed = input_df[variable].as_matrix()
+        transformed = transformed_df[variable].as_matrix()
+
 
         # Set up dimensions for input_layer layer
         if len(transformed.shape) >= 2:
