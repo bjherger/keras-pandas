@@ -1,6 +1,7 @@
 import inspect
 import logging
 import os
+import tempfile
 
 import numpy
 import pandas
@@ -94,6 +95,12 @@ def download_file(url, local_file_path, filename):
 
         request.close()
     return local_file_path
+
+def get_temp_dir():
+    temp_dir = tempfile.mkdtemp(prefix='python_starter')
+    logging.info('Created temp_dir: {}'.format(temp_dir))
+    print('Created temp_dir: {}'.format(temp_dir))
+    return temp_dir
 
 
 def load_titanic():

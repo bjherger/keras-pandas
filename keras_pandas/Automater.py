@@ -188,7 +188,7 @@ class Automater(object):
         """
         return self.fit(observations).transform(observations)
 
-    def suggest_loss(self, observations=None):
+    def suggest_loss(self):
         """
         Suggest a loss function, based on:
 
@@ -206,14 +206,8 @@ class Automater(object):
         # Look up datatype class for respone variable
         datatype = self.variable_datatype_dict[self.output_var]
 
-        # Transform the observations
-        if observations is not None:
-            output_observations_transformed = self.output_mapper.transform(observations)
-        else:
-            output_observations_transformed = None
-
         # Extract suggested loss from datatype class
-        suggested_loss = datatype.output_suggested_loss(output_observations_transformed)
+        suggested_loss = datatype.output_suggested_loss()
 
         # Return suggested loss
         return suggested_loss

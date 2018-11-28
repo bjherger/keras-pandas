@@ -50,18 +50,22 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
             self.max_sequence_length = self.generate_embedding_sequence_length(observations)
 
         # Update index_lookup
-        tokens = [val for sublist in observations for val in sublist]
+        tokens = set()
+        for observation in observations:
+            tokens.update(observation)
+
         logging.debug('Fitting with tokens: {}'.format(tokens))
 
-        for token in tokens:
-            if token not in self.token_index_lookup:
-                self.token_index_lookup[token] = self.next_token_index
-                self.next_token_index += 1
-        logging.info('Learned {} tokens'.format(len(self.token_index_lookup)))
+        current_max_index = max(self.token_index_lookup.values())
+        index_range = range(current_max_index, len(tokens) + current_max_index )
+        learned_token_index_lookup = dict(zip(tokens, index_range))
+        self.token_index_lookup.update(learned_token_index_lookup)
+        new_max_token_index = max(self.token_index_lookup.values())
+        logging.info('Learned tokens, new_max_token_index: {}'.format(new_max_token_index ))
         return self
 
     def transform(self, X):
-
+        print(self.next_token_index)
         observations = self.prepare_input(X)
 
         # Convert to embedding format
@@ -71,6 +75,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         observations = list(map(lambda x: numpy.array(x), observations))
 
         X = numpy.matrix(observations)
+        logging.info('Transformed text, max index: {}'.format(numpy.max(X)))
 
         return X
 
@@ -84,7 +89,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
     def process_string(self, input_string):
         """
-        Turn a string into padded sequences, consisten with Keras's Embedding layer
+        Turn a string into padded sequences, consistent with Keras's Embedding layer
 
          - Simple preprocess & tokenize
          - Convert tokens to indices
