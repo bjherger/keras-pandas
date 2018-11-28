@@ -172,13 +172,21 @@ class Automater(object):
         """
         return self.fit(observations).transform(observations)
 
-    def suggest_loss(self):
+    def suggest_loss(self, observations):
         self._check_fitted()
         self._check_has_response_var()
-        # TODO Look up datatype class for respone variable
-        # TODO Extract suggested loss from datatype class
-        # TODO Return suggested loss
-        pass
+
+        # Look up datatype class for respone variable
+        datatype = self.variable_datatype_dict[self.output_var]
+
+        # Transform the observations
+        output_observations_transformed = self.output_mapper.transform(observations)
+
+        # Extract suggested loss from datatype class
+        suggested_loss = datatype.output_suggested_loss(output_observations_transformed)
+
+        # Return suggested loss
+        return suggested_loss
 
     def inverse_transform_output(self, y):
         self._check_fitted()
@@ -237,6 +245,7 @@ class Automater(object):
 
     def _create_output_nub(self, output_observations_transformed):
         self._check_has_response_var()
+
         # Pull datatype for output_var
         datatype = self.variable_datatype_dict[self.output_var]
 

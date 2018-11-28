@@ -95,7 +95,7 @@ class Categorical():
 
         return natural_scaled_vars
 
-    def output_suggested_loss(self):
+    def output_suggested_loss(self, transformed_observations=None):
         self._check_output_support()
         suggested_loss = losses.sparse_categorical_crossentropy
         return suggested_loss
