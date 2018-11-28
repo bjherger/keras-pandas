@@ -81,6 +81,12 @@ class TestAutomater(TestBase):
         self.assertTrue(isinstance(transformed_observations, pandas.DataFrame))
         self.assertEqual(test_observations.shape[0], transformed_observations.shape[0])  # Correct number of rows back
 
+        # Test suggest_loss
+        suggested_loss = auto.suggest_loss(test_observations)
+        self.assertTrue(callable(suggested_loss))
+        suggested_loss = auto.suggest_loss()
+        self.assertTrue(callable(suggested_loss))
+
     def test_unsupervised(self):
         observations = lib.load_lending_club()
 
@@ -131,3 +137,5 @@ class TestAutomater(TestBase):
         transformed_observations = auto.transform(test_observations, df_out=True)
         self.assertTrue(isinstance(transformed_observations, pandas.DataFrame))
         self.assertEqual(test_observations.shape[0], transformed_observations.shape[0])  # Correct number of rows back
+
+
