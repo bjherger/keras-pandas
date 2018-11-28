@@ -124,6 +124,18 @@ class Automater(object):
         pass
 
     def transform(self, observations, df_out=False):
+        """
+         - Transform the keras input columns
+         - Transform the output_var, if supervised and the output_var is present
+         - Format the data, consistent w/ df_out
+
+        :param observations: A pandas dataframe, containing all keras input layers
+        :type observations: pandas.DataFrame
+        :return: Either a pandas dataframe (if `df_out = True`), or a numpy object (if `df_out = False`). This object
+            will contain: the transformed input variables, and the transformed output variables (if the output variable
+            is present in `input_dataframe`
+        """
+
         # Setup checks
         self._check_fitted()
         self._check_input_df(observations)
