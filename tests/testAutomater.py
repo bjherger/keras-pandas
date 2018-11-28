@@ -2,6 +2,8 @@ import pandas
 from functools import reduce
 
 import numpy
+from keras import Model
+from keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn_pandas import DataFrameMapper
 
@@ -70,11 +72,12 @@ class TestAutomater(TestBase):
         self.assertIsNotNone(auto.output_mapper.built_features)
 
         # Test transform, df_out=False
-        X, y = auto.transform(test_observations)
-        self.assertTrue(isinstance(X, numpy.ndarray))
-        self.assertTrue(isinstance(y, numpy.ndarray))
-        self.assertEqual(test_observations.shape[0], X.shape[0])  # Correct number of rows back
-        self.assertEqual(test_observations.shape[0], y.shape[0])  # Correct number of rows back
+        train_X, train_y = auto.transform(train_observations)
+        test_X, test_y = auto.transform(test_observations)
+        self.assertTrue(isinstance(test_X, list))
+        self.assertTrue(isinstance(test_y, numpy.ndarray))
+        self.assertEqual(test_observations.shape[0], test_X[0].shape[0])  # Correct number of rows back
+        self.assertEqual(test_observations.shape[0], test_y.shape[0])  # Correct number of rows back
 
         # Test transform, df_out=True
         transformed_observations = auto.transform(test_observations, df_out=True)
@@ -86,6 +89,24 @@ class TestAutomater(TestBase):
         self.assertTrue(callable(suggested_loss))
         suggested_loss = auto.suggest_loss()
         self.assertTrue(callable(suggested_loss))
+        
+        # Test model building
+
+        x = auto.input_nub
+        x = Dense(32)(x)
+        x = auto.output_nub(x)
+
+        model = Model(inputs=auto.input_layers, outputs=x)
+        model.compile(optimizer='Adam', loss=auto.suggest_loss())
+        model.fit(train_X, train_y)
+
+        pred_y = model.predict(test_X)
+
+        # Test inverse_transform_output
+        inv_transformed_pred_y = auto.inverse_transform_output(pred_y)
+        self.assertEqual(test_observations.shape[0], inv_transformed_pred_y.shape[0])
+
+
 
     def test_unsupervised(self):
         observations = lib.load_lending_club()
@@ -129,9 +150,9 @@ class TestAutomater(TestBase):
 
         # Test transform, df_out=False
         X, y = auto.transform(test_observations)
-        self.assertTrue(isinstance(X, numpy.ndarray))
+        self.assertTrue(isinstance(X, list))
         self.assertIsNone(y)
-        self.assertEqual(test_observations.shape[0], X.shape[0])  # Correct number of rows back
+        self.assertEqual(test_observations.shape[0], X[0].shape[0])  # Correct number of rows back
 
         # Test transform, df_out=True
         transformed_observations = auto.transform(test_observations, df_out=True)

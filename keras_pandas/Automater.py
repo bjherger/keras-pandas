@@ -160,10 +160,26 @@ class Automater(object):
             return output
         else:
             # Return correctly formatted Numpy objects as X, y
+
+            # Format X as a list of arrays, consistent w/ Keras's input formatting
+            X = list()
+            for variable in self.input_vars:
+                logging.info('Adding keras input variable: {} to X'.format(variable))
+                if variable in input_observations_transformed.columns:
+                    data = input_observations_transformed[variable].values
+                else:
+                    logging.info('Checking for derived variables')
+                    variable_name_prefix = variable + '_'
+                    derived_variable_list = list(filter(lambda x: x.startswith(variable_name_prefix),
+                                                        input_observations_transformed.columns))
+                    logging.debug('Derived variable list: {}'.format(derived_variable_list))
+                    data = input_observations_transformed[derived_variable_list].values
+                X.append(data)
+
             if output_observations_transformed is not None:
-                return input_observations_transformed.values, output_observations_transformed[self.output_var].values
+                return X, output_observations_transformed[self.output_var].values
             else:
-                return input_observations_transformed.values, None
+                return X, None
 
     def fit_transform(self, observations):
         """
@@ -218,8 +234,12 @@ class Automater(object):
         # Look up datatype class for respone variable
         datatype = self.variable_datatype_dict[self.output_var]
 
+        # Pull fitted response_transform_pipeline
+        response_transform_tuple = list(filter(lambda x: x[0][0] == self.output_var, self.output_mapper.built_features))[0]
+        response_transform_pipeline = response_transform_tuple[1]
+
         # Use data type to output_inverse_transform variable
-        raw_scaled_output = datatype.output_inverse_transform(y)
+        raw_scaled_output = datatype.output_inverse_transform(y, response_transform_pipeline)
         return raw_scaled_output
 
 
