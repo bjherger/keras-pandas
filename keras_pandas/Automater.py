@@ -173,6 +173,17 @@ class Automater(object):
         return self.fit(observations).transform(observations)
 
     def suggest_loss(self, observations):
+        """
+        Suggest a loss function, based on:
+
+         - Output variable datatype
+         - Observations of output_var
+
+        :param observations: A pandas DataFrame containing the output_var
+        :type observations: pandas.DataFrame
+        :return: A Keras supported loss function
+        """
+
         self._check_fitted()
         self._check_has_response_var()
 
@@ -189,8 +200,26 @@ class Automater(object):
         return suggested_loss
 
     def inverse_transform_output(self, y):
+        """
+        Transform the output_var to be in the same basis (scale / domain) as it was in the original data set. This is
+        convenient for comparing predictions to actual data, and computing metrics relative to actual data and other
+        models
+        :param y: The output of a Keras model's .predict function
+        :type y: numpy.ndarray
+        :return: Data, which can be compared to the original data set
+        :rtype numpy.ndarray
+        """
         self._check_fitted()
         self._check_has_response_var()
+
+        # Look up datatype class for respone variable
+        datatype = self.variable_datatype_dict[self.output_var]
+
+        # Use data type to output_inverse_transform variable
+        raw_scaled_output = datatype.output_inverse_transform(y)
+        return raw_scaled_output
+
+
         pass
 
     def _create_input_nub(self, transformed_observations):
