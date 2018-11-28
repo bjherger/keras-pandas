@@ -11,7 +11,8 @@ class TimeSeries():
         self.supports_output = False
         self.default_transformation_pipeline = [TimeSeriesVectorizer()]
 
-    def input_nub_generator(self, variable, transformed_observations):
+    @staticmethod
+    def input_nub_generator(variable, transformed_observations):
         """
         Generate an input layer and input 'nub' for a Keras network.
 
@@ -55,7 +56,6 @@ class TimeSeries():
 
         input_nub = x
 
-
         return input_layer, input_nub
 
     def output_nub_generator(self, variable, transformed_observations):
@@ -96,7 +96,6 @@ class TimeSeries():
 
     def _check_output_support(self):
         if not self.supports_output:
-
             raise ValueError('This datatype: {} does not support output, but has called to an output related '
                              'function.'.format(self.__class__))
         return True

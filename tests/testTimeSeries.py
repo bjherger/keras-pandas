@@ -6,6 +6,7 @@ from keras_pandas import lib
 from keras_pandas.data_types.TimeSeries import TimeSeries
 from tests.testbase import TestBase
 
+
 class TestNumerical(TestBase):
 
     def test_init(self):

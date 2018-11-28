@@ -3,9 +3,7 @@ import logging
 import os
 import tempfile
 
-import numpy
 import pandas
-
 import requests
 
 
@@ -60,6 +58,8 @@ def download_file(url, local_file_path, filename):
     :type url: str
     :param local_file_path: Path to download the file to
     :type local_file_path: str
+    :param filename: Filename to save the data to
+    :type filename: str
     :return: The path to the file on the local machine (same as input `local_file_path`)
     :rtype: str
     """
@@ -71,8 +71,6 @@ def download_file(url, local_file_path, filename):
         os.makedirs(local_file_path)
 
     local_file_path = os.path.join(local_file_path, filename)
-
-
 
     # Open output file
     if not os.path.exists(local_file_path):
@@ -95,6 +93,7 @@ def download_file(url, local_file_path, filename):
 
         request.close()
     return local_file_path
+
 
 def get_temp_dir():
     temp_dir = tempfile.mkdtemp(prefix='python_starter')
@@ -167,6 +166,7 @@ def load_lending_club(test_run=True):
     logging.info('Available lending club columns: {}'.format(observations.columns))
     return observations
 
+
 def load_instanbul_stocks(as_ts=False):
     logging.info('Loading Instanbul data')
     file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/00247/data_akbilgic.xlsx',
@@ -194,20 +194,19 @@ def load_instanbul_stocks(as_ts=False):
             # shifts = map(lambda x: numpy.array(x), shifts)
             # Convert iterator to list
             shifts = list(shifts)
-            observations[lagged_var+'_lagged'] = shifts
+            observations[lagged_var + '_lagged'] = shifts
 
             # Convert from tuple to list
-            observations[lagged_var + '_lagged'] = observations[lagged_var+'_lagged'].apply(list)
+            observations[lagged_var + '_lagged'] = observations[lagged_var + '_lagged'].apply(list)
 
         observations = observations[3:]
-
 
     observations = observations.copy()
     logging.info('Available Istanbul columns: {}'.format(observations.columns))
     return observations
 
-def check_valid_datatype(datatype_class):
 
+def check_valid_datatype(datatype_class):
     datatype_attributes = inspect.getmembers(datatype_class)
     datatype_attributes = set(map(lambda x: x[0], datatype_attributes))
 

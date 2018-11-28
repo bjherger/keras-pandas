@@ -67,7 +67,7 @@ test_X, test_y = auto.transform(test_observations)
 x = auto.input_nub
 x = auto.output_nub(x)
 
-model = Model(inputs= auto.input_layers, outputs=x)
+model = Model(inputs=auto.input_layers, outputs=x)
 model.compile(optimizer='adam', loss=auto.suggest_loss())
 ```
 

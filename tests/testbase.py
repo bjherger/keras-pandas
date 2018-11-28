@@ -3,7 +3,7 @@ import unittest
 
 
 class TestBase(unittest.TestCase):
-    
+
     def __init__(self, *args, **kwargs):
         super(TestBase, self).__init__(*args, **kwargs)
         self.log_level = logging.INFO
@@ -11,4 +11,3 @@ class TestBase(unittest.TestCase):
 
         if not hasattr(self, 'assertCountEqual'):
             self.assertCountEqual = self.assertItemsEqual
-        

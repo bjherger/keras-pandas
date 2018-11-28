@@ -1,5 +1,4 @@
 import logging
-import sys
 from collections import defaultdict
 
 import numpy
@@ -57,11 +56,11 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         logging.debug('Fitting with tokens: {}'.format(tokens))
 
         current_max_index = max(self.token_index_lookup.values())
-        index_range = range(current_max_index, len(tokens) + current_max_index )
+        index_range = range(current_max_index, len(tokens) + current_max_index)
         learned_token_index_lookup = dict(zip(tokens, index_range))
         self.token_index_lookup.update(learned_token_index_lookup)
         new_max_token_index = max(self.token_index_lookup.values())
-        logging.info('Learned tokens, new_max_token_index: {}'.format(new_max_token_index ))
+        logging.info('Learned tokens, new_max_token_index: {}'.format(new_max_token_index))
         return self
 
     def transform(self, X):
@@ -79,8 +78,8 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
         return X
 
-
-    def generate_embedding_sequence_length(self, observation_series):
+    @staticmethod
+    def generate_embedding_sequence_length(observation_series):
         lengths = list(map(len, observation_series))
         embedding_sequence_length = max([int(numpy.median(lengths)), 1])
         logging.info('Generated embedding_sequence_length: {}'.format(embedding_sequence_length))
@@ -158,6 +157,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         observations = map(str, observations)
         return observations
 
+
 class CategoricalImputer(BaseEstimator, TransformerMixin):
     """
     Impute missing values from a categorical/string np.ndarray or pd.Series
@@ -189,12 +189,12 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
     """
 
     def __init__(
-        self,
-        missing_values='NaN',
-        strategy='most_frequent',
-        fill_value='?',
-        fill_unknown_labels=False,
-        copy=True
+            self,
+            missing_values='NaN',
+            strategy='most_frequent',
+            fill_value='?',
+            fill_unknown_labels=False,
+            copy=True
     ):
         self.missing_values = missing_values
         self.copy = copy
@@ -202,6 +202,7 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
         self.strategy = strategy
         self.known_values = {'UNK'}
         self.fill_unknown_labels = fill_unknown_labels
+        self.fill_ = None
 
         strategies = ['constant', 'most_frequent']
         if self.strategy not in strategies:
@@ -294,6 +295,7 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
                 should_replace.append(True)
         return should_replace
 
+
 class LabelEncoder(BaseEstimator, TransformerMixin):
     """Encode labels with value between 0 and n_classes-1.
 
@@ -355,7 +357,7 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         self.classes_ = numpy.unique(y)
         return self
 
-    def fit_transform(self, y):
+    def fit_transform(self, y, **kwargs):
         """Fit label encoder and return encoded labels
 
         Parameters
@@ -366,6 +368,7 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         Returns
         -------
         y : array-like of shape [n_samples]
+        :param **kwargs:
         """
         y = column_or_1d(y, warn=True)
         y = numpy.append(y, ['UNK'])
@@ -414,6 +417,7 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         y = numpy.asarray(y)
         return self.classes_[y]
 
+
 class StringEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self):
@@ -422,8 +426,10 @@ class StringEncoder(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
         return self
 
-    def transform(self, X):
+    @staticmethod
+    def transform(X):
         return X.astype(str)
+
 
 class TimeSeriesVectorizer(TransformerMixin, BaseEstimator):
 

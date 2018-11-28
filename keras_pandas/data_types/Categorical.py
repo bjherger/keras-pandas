@@ -12,10 +12,12 @@ class Categorical():
     def __init__(self):
         self.supports_output = True
         self.default_transformation_pipeline = [StringEncoder(),
-                         CategoricalImputer(strategy='constant', fill_value='UNK', fill_unknown_labels=True),
-                         LabelEncoder()]
+                                                CategoricalImputer(strategy='constant', fill_value='UNK',
+                                                                   fill_unknown_labels=True),
+                                                LabelEncoder()]
 
-    def input_nub_generator(self, variable, transformed_observations):
+    @staticmethod
+    def input_nub_generator(variable, transformed_observations):
         """
         Generate an input layer and input 'nub' for a Keras network.
 

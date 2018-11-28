@@ -87,7 +87,7 @@ class TestAutomater(TestBase):
         # Test suggest_loss
         suggested_loss = auto.suggest_loss()
         self.assertTrue(callable(suggested_loss))
-        
+
         # Test model building
 
         x = auto.input_nub
@@ -103,8 +103,6 @@ class TestAutomater(TestBase):
         # Test inverse_transform_output
         inv_transformed_pred_y = auto.inverse_transform_output(pred_y)
         self.assertEqual(test_observations.shape[0], inv_transformed_pred_y.shape[0])
-
-
 
     def test_unsupervised(self):
         observations = lib.load_lending_club()
@@ -156,5 +154,3 @@ class TestAutomater(TestBase):
         transformed_observations = auto.transform(test_observations, df_out=True)
         self.assertTrue(isinstance(transformed_observations, pandas.DataFrame))
         self.assertEqual(test_observations.shape[0], transformed_observations.shape[0])  # Correct number of rows back
-
-

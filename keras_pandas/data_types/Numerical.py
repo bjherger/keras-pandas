@@ -10,7 +10,8 @@ class Numerical():
         self.supports_output = True
         self.default_transformation_pipeline = [Imputer(strategy='mean'), StandardScaler()]
 
-    def input_nub_generator(self, variable, transformed_observations):
+    @staticmethod
+    def input_nub_generator(variable, transformed_observations):
         """
         Generate an input layer and input 'nub' for a keras network.
 
@@ -48,7 +49,8 @@ class Numerical():
 
                 :param variable: A Variable contained in the input_df
                 :type variable: str
-                :param transformed_observations: A dataframe, containing either the specified variable, or derived variables
+                :param transformed_observations: A dataframe, containing either the specified variable, or derived
+                variables
                 :type transformed_observations: pandas.DataFrame
                 :return: output_layer
                 """

@@ -35,7 +35,6 @@ class Automater(object):
         # Dictionary of the format {'datatype': ['variable_name_1', 'variable_name_2']}
         self.datatype_variable_dict = data_type_dict
 
-
         # Set up a list of all input variables
         self.input_vars = copy.copy(reduce(lambda x, y: x + y, self.datatype_variable_dict.values()))
 
@@ -112,9 +111,8 @@ class Automater(object):
         self.input_nub = input_nub
 
         if self.supervised:
-
             # Fit output mapper, and transform data for layer creation
-            output_transformed_dataframe = self.output_mapper.fit_transform(observations)
+            output_transformed_dataframe = self.output_mapper.fit_transform(observations, )
 
             # Create output nub
             self.output_nub = self._create_output_nub(output_transformed_dataframe)
@@ -131,6 +129,9 @@ class Automater(object):
 
         :param observations: A pandas dataframe, containing all keras input layers
         :type observations: pandas.DataFrame
+        :param df_out: Whether to return a Pandas DataFrame. Returns DataFrame if True, keras-compatable object if
+        false
+        :type df_out: bool
         :return: Either a pandas dataframe (if `df_out = True`), or a numpy object (if `df_out = False`). This object
             will contain: the transformed input variables, and the transformed output variables (if the output variable
             is present in `input_dataframe`
@@ -195,8 +196,6 @@ class Automater(object):
          - Output variable datatype
          - Observations of output_var
 
-        :param observations: A pandas DataFrame containing the output_var
-        :type observations: pandas.DataFrame
         :return: A Keras supported loss function
         """
 
@@ -229,13 +228,13 @@ class Automater(object):
         datatype = self.variable_datatype_dict[self.output_var]
 
         # Pull fitted response_transform_pipeline
-        response_transform_tuple = list(filter(lambda x: x[0][0] == self.output_var, self.output_mapper.built_features))[0]
+        response_transform_tuple = \
+        list(filter(lambda x: x[0][0] == self.output_var, self.output_mapper.built_features))[0]
         response_transform_pipeline = response_transform_tuple[1]
 
         # Use data type to output_inverse_transform variable
         raw_scaled_output = datatype.output_inverse_transform(y, response_transform_pipeline)
         return raw_scaled_output
-
 
         pass
 
@@ -309,7 +308,6 @@ class Automater(object):
         transformation_list = list()
         logging.info('Creating mapper for variables: {}'.format(variable_list))
         for variable in variable_list:
-
             # Pull the default pipeline
             datatype = self.variable_datatype_dict[variable]
             default_pipeline = datatype.default_transformation_pipeline
@@ -373,8 +371,9 @@ class Automater(object):
 
             # Check that response variable is in the data_type_dict
             if output_datatype is None:
-                raise ValueError('Output variable: {} is not in variable_datatype_dict: {}. Please add output variable to '
-                                 'data type dict.'.format(self.output_var, self.variable_datatype_dict))
+                raise ValueError(
+                    'Output variable: {} is not in variable_datatype_dict: {}. Please add output variable to '
+                    'data type dict.'.format(self.output_var, self.variable_datatype_dict))
 
             # Check that respone_var 's datatype class supports output
             if not output_datatype.supports_output:

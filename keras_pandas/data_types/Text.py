@@ -12,7 +12,8 @@ class Text():
         self.supports_output = False
         self.default_transformation_pipeline = [StringEncoder(), EmbeddingVectorizer()]
 
-    def input_nub_generator(self, variable, transformed_observations):
+    @staticmethod
+    def input_nub_generator(variable, transformed_observations):
         """
         Generate an input layer and input 'nub' for a Keras network.
 
