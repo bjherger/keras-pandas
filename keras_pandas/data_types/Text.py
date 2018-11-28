@@ -12,7 +12,7 @@ class Text():
         self.supports_output = False
         self.default_transformation_pipeline = [StringEncoder(), EmbeddingVectorizer()]
 
-    def input_nub_generator(self, variable, transformed_df):
+    def input_nub_generator(self, variable, transformed_observations):
         """
         Generate an input layer and input 'nub' for a Keras network.
 
@@ -22,21 +22,21 @@ class Text():
 
         :param variable: Name of the variable
         :type variable: str
-        :param transformed_df: A dataframe, containing either the specified variable, or derived variables
-        :type transformed_df: pandas.DataFrame
+        :param transformed_observations: A dataframe, containing either the specified variable, or derived variables
+        :type transformed_observations: pandas.DataFrame
         :return: A tuple containing the input layer, and the last layer of the nub
         """
         logging.info('Creating input nub for: {}'.format(variable))
         # Get transformed data for shaping. One column per token.
-        if variable in transformed_df.columns:
+        if variable in transformed_observations.columns:
             variable_list = [variable]
         else:
             variable_name_prefix = variable + '_'
-            variable_list = list(filter(lambda x: x.startswith(variable_name_prefix), transformed_df.columns))
+            variable_list = list(filter(lambda x: x.startswith(variable_name_prefix), transformed_observations.columns))
         logging.info('Determined variable list: {}'.format(variable_list))
 
         # Pull transformed data as matrix
-        transformed = transformed_df[variable_list].as_matrix()
+        transformed = transformed_observations[variable_list].as_matrix()
 
         # Determine sequence length
         if len(transformed.shape) >= 2:
@@ -70,7 +70,7 @@ class Text():
         # Return
         return input_layer, input_nub
 
-    def output_nub_generator(self, variable, input_df):
+    def output_nub_generator(self, variable, transformed_observations):
         """
         Generate an output layer for a Keras network.
 
@@ -78,8 +78,8 @@ class Text():
 
         :param variable: A Variable contained in the input_df
         :type variable: str
-        :param input_df: A dataframe, containing either the specified variable, or derived variables
-        :type input_df: pandas.DataFrame
+        :param transformed_observations: A dataframe, containing either the specified variable, or derived variables
+        :type transformed_observations: pandas.DataFrame
         :return: output_layer
         """
         self._check_output_support()

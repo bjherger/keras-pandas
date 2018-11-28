@@ -142,7 +142,6 @@ def load_mushroom():
 
 def load_lending_club(test_run=True):
     logging.info('Loading lending club data')
-    logging.info('Numpy random seed: {}'.format(numpy.random.get_state()))
     file_path = download_file('https://resources.lendingclub.com/LoanStats3a.csv.zip',
                               '~/.keras-pandas/example_datasets/',
                               filename='lending_club.csv.zip')
@@ -163,7 +162,6 @@ def load_lending_club(test_run=True):
 
 def load_instanbul_stocks(as_ts=False):
     logging.info('Loading Instanbul data')
-    logging.info('Numpy random seed: {}'.format(numpy.random.get_state()))
     file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/00247/data_akbilgic.xlsx',
                               '~/.keras-pandas/example_datasets/',
                               filename='instanbul_stocks.xlsw')

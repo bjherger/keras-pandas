@@ -2,57 +2,130 @@ import copy
 import logging
 from functools import reduce
 
+from keras.layers import Concatenate
 from sklearn_pandas import DataFrameMapper
 
+from keras_pandas.data_types.Categorical import Categorical
 from keras_pandas.data_types.Numerical import Numerical
+from keras_pandas.data_types.Text import Text
+from keras_pandas.data_types.TimeSeries import TimeSeries
 
 
 class Automater(object):
 
-    def __init__(self, data_type_dict=dict(), output_var=None, data_type_handlers=dict()):
+    def __init__(self, data_type_dict=dict(), output_var=None, datatype_handlers=dict()):
+        """
+        An Automater object, allows users to rapidly build and iterate on deep learning models.
 
+        This class supports building and iterating on deep learning models by providing:
+
+         - A cleaned, transformed and correctly formatted X and y (good for keras, sklearn or any other ML platform)
+         - An `input_nub`, without the hassle of worrying about input shapes or data types
+         - An `nub`, correctly formatted for the kind of response variable provided
+
+        :param data_type_dict: A dictionary, in the format {'datatype': ['variable_name_1', 'variable_name_2']}
+        :type data_type_dict: {str:[str]}
+        :param output_var: The name of the response variable
+        :type output_var: str
+        :param datatype_handlers: Any custom or external datatype handlers, in the format {'datatype': DataTypeClass}
+        :type datatype_handlers: {str:class}
+        """
+
+        # Dictionary of the format {'datatype': ['variable_name_1', 'variable_name_2']}
         self.datatype_variable_dict = data_type_dict
 
-        self.variable_datatype_dict = dict()
+
+        # Set up a list of all input variables
         self.input_vars = copy.copy(reduce(lambda x, y: x + y, self.datatype_variable_dict.values()))
 
         # If there's an output_var, remove it from from input_vars
         if (output_var is not None) and (output_var in self.input_vars):
             self.input_vars.remove(output_var)
 
+        # Set up output
         self.output_var = output_var
         self.supervised = self.output_var is not None
-        self.input_mapper = None
-        self.output_mapper = None
-        self.fitted = False
 
-        self.datatype_handlers = {'numerical': Numerical()}
-        self.datatype_handlers.update(data_type_handlers)
+        # Set up datatype handlers
+        self.datatype_handlers = {'numerical': Numerical(),
+                                  'categorical': Categorical(),
+                                  'boolean': Categorical(),
+                                  'timeseries': TimeSeries(),
+                                  'text': Text()}
 
+        # Add user-supplied datatype handlers
+        self.datatype_handlers.update(datatype_handlers)
+
+        # Dictionary of the format {'variable_name_1': DataTypeClass}
+        self.variable_datatype_dict = dict()
         for datatype_name, variable_list in self.datatype_variable_dict.items():
             for variable in variable_list:
-                handler = self.datatype_handlers.get(datatype_name, None)
-                self.variable_datatype_dict[variable] = handler
+                if datatype_name in self.datatype_handlers:
+                    handler = self.datatype_handlers.get(datatype_name, None)
+                    self.variable_datatype_dict[variable] = handler
+                    logging.info('Providing variable: {} with datatype handler: {}'.format(variable, handler))
+                else:
+                    raise ValueError('Unknown datatype: {}'.format(datatype_name))
+
+        # Set up mappers
+        self.input_mapper = self._create_mapper(self.input_vars)
+        if self.supervised:
+            self.output_mapper = self._create_mapper([self.output_var])
+        else:
+            self.output_mapper = None
+
+        # Attributes
+        self.fitted = False
+        self.input_layers = None
+        self.input_nub = None
+        self.output_nub = None
 
         # Exit checks
         self._valid_configurations_check()
 
-    def fit(self, input_dataframe):
-        # Setup checks
-        self._check_input_df(input_dataframe)
+    def fit(self, observations):
+        """
 
-        # Create mappers
-        self.input_mapper = self._create_mapper(self.input_vars)
-        self.output_mapper = self._create_mapper(self.output_var)
+         - Fit input mapper
+         - Create input layer and nub
+         - Create output mapper (if supervised)
+         - Create output nub (if supervised)
+        - Set `self.fitted` to `True`
+
+        :param observations: A pandas DataFrame, containing the relevant variables
+        :type observations: pandas.DataFrame
+        :return: self, now in a fitted state. The Automater now has initialized input layers, output layer(s) (if
+            response variable is present), and can be used for the transform step
+        :rtype: Automater
+        """
+        # Setup checks
+        self._check_input_df(observations)
+
+        # Fit input mapper, and transform data for layer creation
+        input_observations_transformed = self.input_mapper.fit_transform(observations)
+
+        # Create input layer and nub
+
+        input_layers, input_nub = self._create_input_nub(input_observations_transformed)
+        self.input_layers = input_layers
+        self.input_nub = input_nub
+
+        if self.supervised:
+
+            # Fit output mapper, and transform data for layer creation
+            output_transformed_dataframe = self.output_mapper.fit_transform(observations)
+
+            # Create output nub
+            self.output_nub = self._create_output_nub(output_transformed_dataframe)
 
         # Update fitted to True
         self.fitted = True
         pass
 
-    def transform(self, input_dataframe, df_out=None):
+    def transform(self, observations, df_out=None):
         # TODO Setup checks
         self._check_fitted()
-        self._check_input_df(input_dataframe)
+        self._check_input_df(observations)
 
         # TODO Transform input variables
         # TODO Format data for return
@@ -69,12 +142,12 @@ class Automater(object):
             # TODO Return correctly formatted Numpy objects
             pass
 
-    def fit_transform(self, input_dataframe):
+    def fit_transform(self, observations):
         """
         Perform a `fit`, and then a `transform`. See `transform` for return documentation
 
         """
-        return self.fit(input_dataframe).transform(input_dataframe)
+        return self.fit(observations).transform(observations)
 
     def suggest_loss(self):
         self._check_fitted()
@@ -89,22 +162,78 @@ class Automater(object):
         self._check_has_response_var()
         pass
 
-    def _create_input_nub(self):
-        # TODO
-        pass
+    def _create_input_nub(self, transformed_observations):
+        """
+        Generate a nub, appropriate for feeding all input variables into a Keras model. Each input variable has one
+        input layer and one input nub, with:
 
-    def _create_output_nub(self):
+          - One  Input (required)
+          - Possible additional layers (optional, such as embedding layers for text)
+
+        All input nubs are then joined with a Concatenate layer
+        :param transformed_observations: A pandas dataframe, containing all keras input variables after their
+        transformation pipelines
+        :type transformed_observations: pandas.DataFrame
+        :return: A Keras layer, which can be fed into future layers
+        :rtype: ([keras,Input], Layer)
+        """
+        # Initialize input_layer_list
+        input_layer_list = list()
+
+        # Initialize input_nub_list
+        input_nub_list = list()
+
+        # Iterate through input variables and datatypes
+        for variable in self.input_vars:
+            datatype = self.variable_datatype_dict[variable]
+            logging.info('Creating input_layer and input_nub for variable: {} and datatype: {}'.format(variable,
+                                                                                                       datatype))
+
+            # Use datatype to create input and nub
+            input_layer, input_nub = datatype.input_nub_generator(variable, transformed_observations)
+
+            # Add input to input_layer_list
+            input_layer_list.append(input_layer)
+
+            # Add input_nub to input_nub_list
+            input_nub_list.append(input_nub)
+
+        # Concatenate input_nubs, if there is more than one
+        if len(input_nub_list) > 1:
+            logging.info('Creating input_nub, by concatenating input_nub_list: {}'.format(input_nub_list))
+            input_nub = Concatenate(name='concatenate_inputs')(input_nub_list)
+        elif len(input_nub_list) == 1:
+            logging.info('Only one variable input: {}. Return that input nub, instead of concatenating'.format(
+                input_nub_list[0]))
+            input_nub = input_nub_list[0]
+        else:
+            logging.warning('No inputs provided for model. Returning None for input nub.')
+            input_nub = None
+
+        return input_layer_list, input_nub
+
+    def _create_output_nub(self, output_observations_transformed):
         self._check_has_response_var()
-        pass
+        # Pull datatype for output_var
+        datatype = self.variable_datatype_dict[self.output_var]
+
+        # Check that datatype supports output
+        if not datatype.supports_output:
+            raise ValueError('datatype: {} does not support output, but is used as the datatype for the '
+                             'output_var'.format(datatype))
+
+        # Use datatype to create output_nub
+        output_nub = datatype.output_nub_generator(self.output_var, output_observations_transformed)
+
+        return output_nub
 
     def _create_mapper(self, variable_list):
         transformation_list = list()
         logging.info('Creating mapper for variables: {}'.format(variable_list))
         for variable in variable_list:
-            datatype_name = self.variable_datatype_dict[variable]
 
             # Pull the default pipeline
-            datatype = self.datatype_handlers[datatype_name]
+            datatype = self.variable_datatype_dict[variable]
             default_pipeline = datatype.default_transformation_pipeline
 
             # Copy the default pipeline, so each variable has its own learned parameters
@@ -114,8 +243,8 @@ class Automater(object):
             transformation_list.append(([variable], variable_pipeline))
 
             logging.info('Creating transformation pipeline for variable: {}, '
-                         'with datatype_name: {} and transformation_list: '
-                         '{}'.format(variable, datatype_name, transformation_list))
+                         'with datatype: {} and transformation_list: '
+                         '{}'.format(variable, type(datatype), transformation_list))
 
         logging.info('Creating transformation pipeline: {}'.format(transformation_list))
 

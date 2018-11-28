@@ -3,7 +3,7 @@ class AbstractDatatype():
         self.supports_output = False
         self.default_transformation_pipeline = []
 
-    def input_nub_generator(self, variable, transformed_df):
+    def input_nub_generator(self, variable, transformed_obervations):
         """
         Generate an input layer and input 'nub' for a Keras network.
 
@@ -13,8 +13,8 @@ class AbstractDatatype():
 
         :param variable: Name of the variable
         :type variable: str
-        :param transformed_df: A dataframe, containing either the specified variable, or derived variables
-        :type transformed_df: pandas.DataFrame
+        :param transformed_obervations: A dataframe, containing either the specified variable, or derived variables
+        :type transformed_obervations: pandas.DataFrame
         :return: A tuple containing the input layer, and the last layer of the nub
         """
 
@@ -23,7 +23,7 @@ class AbstractDatatype():
 
         return input_layer, input_nub
 
-    def output_nub_generator(self, variable, input_df):
+    def output_nub_generator(self, variable, input_observations):
         """
         Generate an output layer for a Keras network.
 
@@ -31,8 +31,8 @@ class AbstractDatatype():
 
         :param variable: A Variable contained in the input_df
         :type variable: str
-        :param input_df: A dataframe, containing either the specified variable, or derived variables
-        :type input_df: pandas.DataFrame
+        :param input_observations: A dataframe, containing either the specified variable, or derived variables
+        :type input_observations: pandas.DataFrame
         :return: output_layer
         """
         self._check_output_support()
