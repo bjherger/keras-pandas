@@ -2,7 +2,6 @@ import logging
 import os
 import pickle
 
-import numpy
 from keras import Model
 from keras.layers import Dense
 from sklearn.model_selection import train_test_split
@@ -29,7 +28,6 @@ def main():
     test_observations = test_observations.copy()
 
     # List out variable types
-
     data_type_dict = {'numerical': ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
                                     'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal',
                                     'revol_util',

@@ -25,10 +25,54 @@ For more info, check out the:
 
 ## Quick Start
 
-Let's build a model with the [titanic data set](https://www.kaggle.com/c/titanic/data). This data set is particularly 
-fun because this data set contains a mix of categorical and numerical data types, and features a lot of null values. 
+Let's build a model with the [lending club data set](https://www.lendingclub.com/info/download-data.action). This data set is 
+particularly fun because this data set contains a mix of text, categorical and numerical data types, and features a 
+lot of null values. 
 
-TODO 
+```python
+from keras import Model
+from keras_pandas import lib
+from keras_pandas.Automater import Automater
+from sklearn.model_selection import train_test_split
+
+# Load data
+observations = lib.load_lending_club()
+
+# Train /test split
+train_observations, test_observations = train_test_split(observations)
+train_observations = train_observations.copy()
+test_observations = test_observations.copy()
+
+# List out variable types
+
+data_type_dict = {'numerical': ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
+                                'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal',
+                                'revol_util',
+                                'total_acc', 'pub_rec_bankruptcies'],
+                  'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method'],
+                  'text': ['desc', 'purpose', 'title']}
+output_var = 'loan_status'
+
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
+auto.fit(train_observations)
+
+# Transform data
+train_X, train_y = auto.fit_transform(train_observations)
+test_X, test_y = auto.transform(test_observations)
+
+# Create and fit keras (deep learning) model.
+
+x = auto.input_nub
+x = auto.output_nub(x)
+
+model = Model(inputs= auto.input_layers, outputs=x)
+model.compile(optimizer='adam', loss=auto.suggest_loss())
+```
+
+And that's it! In a couple of lines, we've created a model that accepts a few dozen variables, and can create a world
+ class deep learning model
 
 ## Usage
 
@@ -42,23 +86,85 @@ pip install -U keras-pandas
 
 ### Creating an Automater
 
-TODO 
+The `Automater` object is the central object in `keras-pandas`. It accepts a dictionary of the format `{'datatype': 
+['var1', var2']}`
 
-As a side note, the response variable must be in one of the variable type lists (e.g. `survived` is in `categorical_vars`)
+For example we could create an automater using the built in `numerical`, `categorical`, and `text` datatypes, by 
+calling: 
+
+```python
+# List out variable types
+data_type_dict = {'numerical': ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
+                                'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal',
+                                'revol_util',
+                                'total_acc', 'pub_rec_bankruptcies'],
+                  'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method'],
+                  'text': ['desc', 'purpose', 'title']}
+output_var = 'loan_status'
+
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
+```
+
+As a side note, the response variable must be in one of the variable type lists (e.g. `loan_status` is in `categorical_vars`)
 
 #### One variable type
 
-TODO
+If you only have one variable type, only use one variable type!
+
+```python
+# List out variable types
+data_type_dict = {'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method']}
+output_var = 'loan_status'
+
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
+```
 
 #### Multiple variable types
 
-TODO
+If you have multiple variable types, feel free to use all of them! Built in datatypes are listed in `Automater.datatype_handlers`
 
-#### No `response_var`
+```python
+# List out variable types
+data_type_dict = {'numerical': ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
+                                'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal',
+                                'revol_util',
+                                'total_acc', 'pub_rec_bankruptcies'],
+                  'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method'],
+                  'text': ['desc', 'purpose', 'title']}
+output_var = 'loan_status'
 
-TODO
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
+```
 
 #### Custom datatypes
+
+If there's a specific datatype you'd like to use that's not built in (such as images, videos, or geospatial), you can 
+include it by using `Automater`'s `datatype_handlers` parameter. 
+
+A template datatype can be found in `keras_pandas/data_types/Abstract.py`. Filling out this template will yield a new
+ datatype handler. If you're happy with your work and want to share your new datatype handler, create a PR (and check
+  out `contributing.md`)
+   
+#### No `output_var`
+
+If your model doesn't need a response var, or your use case doesn't use `keras-pandas`'s output functionality, you 
+can skip the `output_var` by setting it to None
+
+```python
+# List out variable types
+data_type_dict = {'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method']}
+output_var = None
+
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
+```
 
 ### Fitting the Automater
 
@@ -141,12 +247,14 @@ Added
 Modified
 
  - Updated `Automater` interface, which accepts a dictionary of data types
+ - Heavily updated README
  - More consistent logging and data formatting for sample data sets
 
 Removed
 
  - Removed examples, will be re-implemented in future release
  - All existing unittests
+ - Bulk of new datatypes in `contributing.md`, will be re-added in future release
  
 ### 2.2.0
 
