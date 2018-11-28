@@ -381,6 +381,7 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         """
         check_is_fitted(self, 'classes_')
         y = column_or_1d(y, warn=True)
+        y = numpy.array(list(map(lambda x: x if x in self.classes_ else 'UNK', y)))
 
         classes = numpy.unique(y)
         if len(numpy.intersect1d(classes, self.classes_)) < len(classes):

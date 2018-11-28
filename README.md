@@ -136,6 +136,7 @@ Added
    - Duck-typing helper method (`keras_pandas/lib.check_valid_datatype()`) to confirm that a datatype has valid 
    signature
  - New testing, streamlined and standardized
+ - Support for transforming unseen categorical levels, via the `UNK` token (experimental)
    
 Modified
 

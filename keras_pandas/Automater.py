@@ -1,5 +1,6 @@
 import copy
 import logging
+import pandas
 from functools import reduce
 
 from keras.layers import Concatenate
@@ -122,25 +123,35 @@ class Automater(object):
         self.fitted = True
         pass
 
-    def transform(self, observations, df_out=None):
-        # TODO Setup checks
+    def transform(self, observations, df_out=False):
+        # Setup checks
         self._check_fitted()
         self._check_input_df(observations)
 
-        # TODO Transform input variables
-        # TODO Format data for return
+        # Transform input variables
+        input_observations_transformed = self.input_mapper.transform(observations)
 
-        # TODO Check if response_var is in input dataframe
-        # TODO Transform output variable
-        # TODO Add response variable to return_df
-
-        # TODO Check if df_out
-        if df_out:
-            # TODO Return correctly formatted DF
-            pass
+        # Transform output_var if supervised and available
+        if self.supervised and self.output_var in observations:
+            # Transform output variable
+            output_observations_transformed = self.output_mapper.transform(observations)
         else:
-            # TODO Return correctly formatted Numpy objects
-            pass
+            output_observations_transformed = None
+
+        # Format data and return
+        if df_out:
+            # Return correctly formatted DF
+            if output_observations_transformed is not None:
+                output = pandas.concat([input_observations_transformed, output_observations_transformed], axis=1)
+            else:
+                output = input_observations_transformed
+            return output
+        else:
+            # Return correctly formatted Numpy objects as X, y
+            if output_observations_transformed is not None:
+                return input_observations_transformed.values, output_observations_transformed[self.output_var].values
+            else:
+                return input_observations_transformed.values, None
 
     def fit_transform(self, observations):
         """
