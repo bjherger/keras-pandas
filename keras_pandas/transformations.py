@@ -1,5 +1,4 @@
 import logging
-import sys
 from collections import defaultdict
 
 import numpy
@@ -50,18 +49,22 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
             self.max_sequence_length = self.generate_embedding_sequence_length(observations)
 
         # Update index_lookup
-        tokens = [val for sublist in observations for val in sublist]
+        tokens = set()
+        for observation in observations:
+            tokens.update(observation)
+
         logging.debug('Fitting with tokens: {}'.format(tokens))
 
-        for token in tokens:
-            if token not in self.token_index_lookup:
-                self.token_index_lookup[token] = self.next_token_index
-                self.next_token_index += 1
-        logging.info('Learned {} tokens'.format(len(self.token_index_lookup)))
+        current_max_index = max(self.token_index_lookup.values())
+        index_range = range(current_max_index, len(tokens) + current_max_index)
+        learned_token_index_lookup = dict(zip(tokens, index_range))
+        self.token_index_lookup.update(learned_token_index_lookup)
+        new_max_token_index = max(self.token_index_lookup.values())
+        logging.info('Learned tokens, new_max_token_index: {}'.format(new_max_token_index))
         return self
 
     def transform(self, X):
-
+        print(self.next_token_index)
         observations = self.prepare_input(X)
 
         # Convert to embedding format
@@ -71,11 +74,12 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         observations = list(map(lambda x: numpy.array(x), observations))
 
         X = numpy.matrix(observations)
+        logging.info('Transformed text, max index: {}'.format(numpy.max(X)))
 
         return X
 
-
-    def generate_embedding_sequence_length(self, observation_series):
+    @staticmethod
+    def generate_embedding_sequence_length(observation_series):
         lengths = list(map(len, observation_series))
         embedding_sequence_length = max([int(numpy.median(lengths)), 1])
         logging.info('Generated embedding_sequence_length: {}'.format(embedding_sequence_length))
@@ -84,7 +88,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
 
     def process_string(self, input_string):
         """
-        Turn a string into padded sequences, consisten with Keras's Embedding layer
+        Turn a string into padded sequences, consistent with Keras's Embedding layer
 
          - Simple preprocess & tokenize
          - Convert tokens to indices
@@ -153,6 +157,7 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         observations = map(str, observations)
         return observations
 
+
 class CategoricalImputer(BaseEstimator, TransformerMixin):
     """
     Impute missing values from a categorical/string np.ndarray or pd.Series
@@ -184,12 +189,12 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
     """
 
     def __init__(
-        self,
-        missing_values='NaN',
-        strategy='most_frequent',
-        fill_value='?',
-        fill_unknown_labels=False,
-        copy=True
+            self,
+            missing_values='NaN',
+            strategy='most_frequent',
+            fill_value='?',
+            fill_unknown_labels=False,
+            copy=True
     ):
         self.missing_values = missing_values
         self.copy = copy
@@ -197,6 +202,7 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
         self.strategy = strategy
         self.known_values = {'UNK'}
         self.fill_unknown_labels = fill_unknown_labels
+        self.fill_ = None
 
         strategies = ['constant', 'most_frequent']
         if self.strategy not in strategies:
@@ -289,6 +295,7 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
                 should_replace.append(True)
         return should_replace
 
+
 class LabelEncoder(BaseEstimator, TransformerMixin):
     """Encode labels with value between 0 and n_classes-1.
 
@@ -350,7 +357,7 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         self.classes_ = numpy.unique(y)
         return self
 
-    def fit_transform(self, y):
+    def fit_transform(self, y, **kwargs):
         """Fit label encoder and return encoded labels
 
         Parameters
@@ -361,6 +368,7 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         Returns
         -------
         y : array-like of shape [n_samples]
+        :param **kwargs:
         """
         y = column_or_1d(y, warn=True)
         y = numpy.append(y, ['UNK'])
@@ -381,6 +389,7 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         """
         check_is_fitted(self, 'classes_')
         y = column_or_1d(y, warn=True)
+        y = numpy.array(list(map(lambda x: x if x in self.classes_ else 'UNK', y)))
 
         classes = numpy.unique(y)
         if len(numpy.intersect1d(classes, self.classes_)) < len(classes):
@@ -408,6 +417,7 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         y = numpy.asarray(y)
         return self.classes_[y]
 
+
 class StringEncoder(BaseEstimator, TransformerMixin):
 
     def __init__(self):
@@ -416,8 +426,10 @@ class StringEncoder(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
         return self
 
-    def transform(self, X):
+    @staticmethod
+    def transform(X):
         return X.astype(str)
+
 
 class TimeSeriesVectorizer(TransformerMixin, BaseEstimator):
 

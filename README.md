@@ -25,53 +25,54 @@ For more info, check out the:
 
 ## Quick Start
 
-Let's build a model with the [titanic data set](https://www.kaggle.com/c/titanic/data). This data set is particularly 
-fun because this data set contains a mix of categorical and numerical data types, and features a lot of null values. 
-
-We'll `keras-pandas`
-
-```bash
-pip install -U keras-pandas
-```
-
-And then run the following snippet to create and train a model:
+Let's build a model with the [lending club data set](https://www.lendingclub.com/info/download-data.action). This data set is 
+particularly fun because this data set contains a mix of text, categorical and numerical data types, and features a 
+lot of null values. 
 
 ```python
 from keras import Model
-from keras.layers import Dense
-
+from keras_pandas import lib
 from keras_pandas.Automater import Automater
-from keras_pandas.lib import load_titanic
+from sklearn.model_selection import train_test_split
 
-observations = load_titanic()
+# Load data
+observations = lib.load_lending_club()
 
-# Transform the data set, using keras_pandas
-categorical_vars = ['pclass', 'sex', 'survived']
-numerical_vars = ['age', 'siblings_spouses_aboard', 'parents_children_aboard', 'fare']
-text_vars = ['name']
+# Train /test split
+train_observations, test_observations = train_test_split(observations)
+train_observations = train_observations.copy()
+test_observations = test_observations.copy()
 
-auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_vars, text_vars=text_vars,
- response_var='survived')
-X, y = auto.fit_transform(observations)
+# List out variable types
 
-# Start model with provided input nub
+data_type_dict = {'numerical': ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
+                                'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal',
+                                'revol_util',
+                                'total_acc', 'pub_rec_bankruptcies'],
+                  'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method'],
+                  'text': ['desc', 'purpose', 'title']}
+output_var = 'loan_status'
+
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
+auto.fit(train_observations)
+
+# Transform data
+train_X, train_y = auto.fit_transform(train_observations)
+test_X, test_y = auto.transform(test_observations)
+
+# Create and fit keras (deep learning) model.
+
 x = auto.input_nub
-
-# Fill in your own hidden layers
-x = Dense(32)(x)
-x = Dense(32, activation='relu')(x)
-x = Dense(32)(x)
-
-# End model with provided output nub
 x = auto.output_nub(x)
 
 model = Model(inputs=auto.input_layers, outputs=x)
-model.compile(optimizer='Adam', loss=auto.loss, metrics=['accuracy'])
+model.compile(optimizer='adam', loss=auto.suggest_loss())
+```
 
-# Train model
-model.fit(X, y, epochs=4, validation_split=.2)
-
-``` 
+And that's it! In a couple of lines, we've created a model that accepts a few dozen variables, and can create a world
+ class deep learning model
 
 ## Usage
 
@@ -85,45 +86,85 @@ pip install -U keras-pandas
 
 ### Creating an Automater
 
-The core feature of `keras-pandas` is the Automater, which accepts lists of variable types (all optional), and a 
-response variable (optional, for supervised problems). Together, all of these variables are the `user_input_variables`, 
-which may be different than the variables fed into Keras. 
+The `Automater` object is the central object in `keras-pandas`. It accepts a dictionary of the format `{'datatype': 
+['var1', var2']}`
 
-As a side note, the response variable must be in one of the variable type lists (e.g. `survived` is in `categorical_vars`)
+For example we could create an automater using the built in `numerical`, `categorical`, and `text` datatypes, by 
+calling: 
+
+```python
+# List out variable types
+data_type_dict = {'numerical': ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
+                                'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal',
+                                'revol_util',
+                                'total_acc', 'pub_rec_bankruptcies'],
+                  'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method'],
+                  'text': ['desc', 'purpose', 'title']}
+output_var = 'loan_status'
+
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
+```
+
+As a side note, the response variable must be in one of the variable type lists (e.g. `loan_status` is in `categorical_vars`)
 
 #### One variable type
 
-If you only have one variable type, only use that variable type!
+If you only have one variable type, only use one variable type!
 
 ```python
-categorical_vars = ['pclass', 'sex', 'survived']
-auto = Automater(categorical_vars=categorical_vars, response_var='survived')
+# List out variable types
+data_type_dict = {'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method']}
+output_var = 'loan_status'
+
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
 ```
 
 #### Multiple variable types
 
-If you have multiple variable types, throw them all in!
+If you have multiple variable types, feel free to use all of them! Built in datatypes are listed in `Automater.datatype_handlers`
 
 ```python
-categorical_vars = ['pclass', 'sex', 'survived']
-numerical_vars = ['age', 'siblings_spouses_aboard', 'parents_children_aboard', 'fare']
+# List out variable types
+data_type_dict = {'numerical': ['loan_amnt', 'annual_inc', 'open_acc', 'dti', 'delinq_2yrs',
+                                'inq_last_6mths', 'mths_since_last_delinq', 'pub_rec', 'revol_bal',
+                                'revol_util',
+                                'total_acc', 'pub_rec_bankruptcies'],
+                  'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method'],
+                  'text': ['desc', 'purpose', 'title']}
+output_var = 'loan_status'
 
-auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_vars, response_var='survived')
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
 ```
 
-#### No `response_var`
+#### Custom datatypes
 
-If all variables are always available, and / or your problems space doesn't have a single response variable, you can 
-omit the response variable.
+If there's a specific datatype you'd like to use that's not built in (such as images, videos, or geospatial), you can 
+include it by using `Automater`'s `datatype_handlers` parameter. 
+
+A template datatype can be found in `keras_pandas/data_types/Abstract.py`. Filling out this template will yield a new
+ datatype handler. If you're happy with your work and want to share your new datatype handler, create a PR (and check
+  out `contributing.md`)
+   
+#### No `output_var`
+
+If your model doesn't need a response var, or your use case doesn't use `keras-pandas`'s output functionality, you 
+can skip the `output_var` by setting it to None
 
 ```python
-categorical_vars = ['pclass', 'sex', 'survived']
-numerical_vars = ['age', 'siblings_spouses_aboard', 'parents_children_aboard', 'fare']
+# List out variable types
+data_type_dict = {'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
+                                  'application_type', 'disbursement_method']}
+output_var = None
 
-auto = Automater(categorical_vars=categorical_vars, numerical_vars=numerical_vars)
+# Create and fit Automater
+auto = Automater(data_type_dict=data_type_dict, output_var=output_var)
 ```
-
-In this case, an output nub will not be auto-generated
 
 ### Fitting the Automater
 
@@ -165,14 +206,13 @@ for each generated input, may contain addition layers, and has all input pipline
 The output layer is correctly formatted to accept the response variable numpy object.  
 
 
-
 ## Contact
 
 Hey, I'm Brendan Herger, avaiable at [https://www.hergertarian.com/](https://www.hergertarian.com/). Please feel free 
 to reach out to me at `13herger <at> gmail <dot> com`
 
-If you'd like to know a bit about me, I enjoy bridging the gap between data science and engineering, to build and 
-deploy data products.
+I enjoy bridging the gap between data science and engineering, to build and 
+deploy data products. I'm not currently pursuing contract work. 
 
 I've enjoyed building a unique combination of machine learning, deep learning, and software engineering skills. In my 
 previous work at Capital One and startups, I've has built authorization fraud, insider threat, and legal discovery 
@@ -189,6 +229,32 @@ board games with my partner in Seattle.
 ### Development
 
  - There's nothing here! (yet)
+
+### 3.0.0
+
+Brand new release, with
+
+Added
+
+ - New `Datatype` interface, with easier to understand pipelines for each datatype
+   - All existing datatypes (`Numerical`, `Categorical`, `Text` & `TimeSeries`) re-implmented in this new format
+   - Support for custom data types generated by users
+   - Duck-typing helper method (`keras_pandas/lib.check_valid_datatype()`) to confirm that a datatype has valid 
+   signature
+ - New testing, streamlined and standardized
+ - Support for transforming unseen categorical levels, via the `UNK` token (experimental)
+   
+Modified
+
+ - Updated `Automater` interface, which accepts a dictionary of data types
+ - Heavily updated README
+ - More consistent logging and data formatting for sample data sets
+
+Removed
+
+ - Removed examples, will be re-implemented in future release
+ - All existing unittests
+ - Bulk of new datatypes in `contributing.md`, will be re-added in future release
  
 ### 2.2.0
 

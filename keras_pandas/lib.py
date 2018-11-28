@@ -1,9 +1,9 @@
+import inspect
 import logging
 import os
+import tempfile
 
-import numpy
 import pandas
-
 import requests
 
 
@@ -58,6 +58,8 @@ def download_file(url, local_file_path, filename):
     :type url: str
     :param local_file_path: Path to download the file to
     :type local_file_path: str
+    :param filename: Filename to save the data to
+    :type filename: str
     :return: The path to the file on the local machine (same as input `local_file_path`)
     :rtype: str
     """
@@ -69,8 +71,6 @@ def download_file(url, local_file_path, filename):
         os.makedirs(local_file_path)
 
     local_file_path = os.path.join(local_file_path, filename)
-
-
 
     # Open output file
     if not os.path.exists(local_file_path):
@@ -95,6 +95,13 @@ def download_file(url, local_file_path, filename):
     return local_file_path
 
 
+def get_temp_dir():
+    temp_dir = tempfile.mkdtemp(prefix='python_starter')
+    logging.info('Created temp_dir: {}'.format(temp_dir))
+    print('Created temp_dir: {}'.format(temp_dir))
+    return temp_dir
+
+
 def load_titanic():
     """
     Load the titanic data set, as a pandas DataFrame
@@ -102,24 +109,29 @@ def load_titanic():
     :return: A DataFrame, containing the titanic dataset
     :rtype: pandas.DataFrame
     """
+    logging.info('Loading titanic data')
     file_path = download_file('http://web.stanford.edu/class/archive/cs/cs109/cs109.1166/stuff/titanic.csv',
                               '~/.keras-pandas/example_datasets/', filename='titanic.csv')
 
     observations = pandas.read_csv(file_path)
     observations.columns = list(map(lambda x: x.lower().replace(' ', '_').replace('/', '_'), observations.columns))
-
+    logging.info('Available titanic columns: {}'.format(observations.columns))
     return observations
 
 
 def load_iris():
+    logging.info('Loading iris data')
     file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data',
                               '~/.keras-pandas/example_datasets/', filename='iris.csv')
     observations = pandas.read_csv(file_path, names=['sepal_length', 'sepal_width', 'petal_length', 'petal_width',
                                                      'class'])
+
+    logging.info('Available iris columns: {}'.format(observations.columns))
     return observations
 
 
 def load_mushroom():
+    logging.info('Loading mushroom data')
     file_path = download_file(
         'https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data',
         '~/.keras-pandas/example_datasets/', filename='agaricus-lepiota.csv')
@@ -130,12 +142,12 @@ def load_mushroom():
                                           'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type', 'veil-color',
                                           'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat'])
 
+    logging.info('Available mushroom columns: {}'.format(observations.columns))
     return observations
 
 
 def load_lending_club(test_run=True):
     logging.info('Loading lending club data')
-    logging.info('Numpy random seed: {}'.format(numpy.random.get_state()))
     file_path = download_file('https://resources.lendingclub.com/LoanStats3a.csv.zip',
                               '~/.keras-pandas/example_datasets/',
                               filename='lending_club.csv.zip')
@@ -150,11 +162,13 @@ def load_lending_club(test_run=True):
 
     if test_run:
         observations = observations.sample(300)
+
+    logging.info('Available lending club columns: {}'.format(observations.columns))
     return observations
 
+
 def load_instanbul_stocks(as_ts=False):
-    logging.info('Loading lending club data')
-    logging.info('Numpy random seed: {}'.format(numpy.random.get_state()))
+    logging.info('Loading Instanbul data')
     file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/00247/data_akbilgic.xlsx',
                               '~/.keras-pandas/example_datasets/',
                               filename='instanbul_stocks.xlsw')
@@ -180,14 +194,31 @@ def load_instanbul_stocks(as_ts=False):
             # shifts = map(lambda x: numpy.array(x), shifts)
             # Convert iterator to list
             shifts = list(shifts)
-            observations[lagged_var+'_lagged'] = shifts
+            observations[lagged_var + '_lagged'] = shifts
 
             # Convert from tuple to list
-            observations[lagged_var + '_lagged'] = observations[lagged_var+'_lagged'].apply(list)
+            observations[lagged_var + '_lagged'] = observations[lagged_var + '_lagged'].apply(list)
 
         observations = observations[3:]
 
-
     observations = observations.copy()
-    logging.info('Available columns: {}'.format(observations.columns))
+    logging.info('Available Istanbul columns: {}'.format(observations.columns))
     return observations
+
+
+def check_valid_datatype(datatype_class):
+    datatype_attributes = inspect.getmembers(datatype_class)
+    datatype_attributes = set(map(lambda x: x[0], datatype_attributes))
+
+    logging.info('datatype: {} has attributes: {}'.format(datatype_class, datatype_attributes))
+
+    required_input_signature = {'supports_output', 'default_transformation_pipeline', 'input_nub_generator'}
+    required_output_signature = required_input_signature.union(
+        {'input_nub_generator', 'output_inverse_transform', 'output_suggested_loss'})
+
+    if hasattr(datatype_attributes, 'supports_output') and datatype_class.supports_output:
+        is_valid = required_output_signature.issubset(datatype_attributes)
+    else:
+        is_valid = required_input_signature.issubset(datatype_attributes)
+
+    return is_valid

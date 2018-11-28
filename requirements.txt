@@ -1,5 +1,10 @@
 gensim==3.6.0
+h5py==2.8.0
 Keras==2.2.4
+numpy==1.15.2
+pandas==0.23.4
+requests==2.19.1
+scikit-learn==0.20.0
 sklearn-pandas==1.7.0
 tensorflow==1.11.0
 xlrd==1.1.0
