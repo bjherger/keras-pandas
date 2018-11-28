@@ -1,5 +1,6 @@
 import logging
 import os
+import pickle
 
 import numpy
 from keras import Model
@@ -66,13 +67,12 @@ def main():
     if save_results:
         temp_dir = lib.get_temp_dir()
         model.save(os.path.join(temp_dir, 'model.h5py'))
-        numpy.save(os.path.join(temp_dir, 'train_X.npz'), train_X)
-        numpy.save(os.path.join(temp_dir, 'train_y.npz'), train_y)
-        numpy.save(os.path.join(temp_dir, 'test_X.npz'), test_X)
-        numpy.save(os.path.join(temp_dir, 'test_y.npz'), test_y)
-        numpy.save(os.path.join(temp_dir, 'pred_test_y.npz'), pred_test_y)
+        pickle.dump(train_X, open(os.path.join(temp_dir, 'train_X.pkl'), 'wb'))
+        pickle.dump(train_y, open(os.path.join(temp_dir, 'train_y.pkl'), 'wb'))
+        pickle.dump(test_X, open(os.path.join(temp_dir, 'test_X.pkl'), 'wb'))
+        pickle.dump(test_y, open(os.path.join(temp_dir, 'test_y.pkl'), 'wb'))
+        pickle.dump(pred_test_y, open(os.path.join(temp_dir, 'pred_test_y.pkl'), 'wb'))
 
-    pass
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)

@@ -121,7 +121,7 @@ class Automater(object):
 
         # Update fitted to True
         self.fitted = True
-        pass
+        return self
 
     def transform(self, observations, df_out=False):
         """
