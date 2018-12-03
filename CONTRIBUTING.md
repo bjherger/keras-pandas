@@ -42,3 +42,13 @@ make html
 ## Adding new data types
 
 TODO
+
+## Adding new examples
+
+To contribute a new example
+
+ - Add data loader method to `keras_pandas/lib.py` (perhaps in the style of `load_titanic()`)
+ - Add a new `.py` file under `examples` (perhaps by copying and pasting `example_interface.py`)
+ - Implement the required steps
+ - Add the new file to `tests/testExamples.py`
+ - Add the new example to `examples/README.md`
