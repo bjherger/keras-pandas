@@ -4,6 +4,7 @@ import keras
 import numpy
 from keras.layers import Bidirectional, LSTM, Embedding
 
+from keras_pandas import lib
 from keras_pandas.transformations import StringEncoder, EmbeddingVectorizer
 
 
@@ -60,11 +61,14 @@ class Text():
                                                            embedding_output_dim))
 
         # Create and stack layers
-        input_layer = keras.Input(shape=(input_sequence_length,), name='input_{}'.format(variable))
+        input_layer = keras.Input(shape=(input_sequence_length,),
+                                  name=lib.namespace_conversion('input_{}'.format(variable)))
         x = input_layer
         x = Embedding(input_dim=vocab_size, output_dim=embedding_output_dim, input_length=input_sequence_length,
-                      name='embedding_{}'.format(variable))(x)
-        x = Bidirectional(LSTM(128, name='lstm_{}'.format(variable)), name='bidirectiona_lstm_{}'.format(variable))(x)
+                      name=lib.namespace_conversion('embedding_{}'.format(variable)))(x)
+        x = Bidirectional(LSTM(128,
+                               name=lib.namespace_conversion('lstm_{}'.format(variable))),
+                          name=lib.namespace_conversion('bidirectiona_lstm_{}'.format(variable)))(x)
 
         input_nub = x
 

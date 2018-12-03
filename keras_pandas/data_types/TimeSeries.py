@@ -3,6 +3,7 @@ import logging
 import keras
 from keras.layers import Reshape, Bidirectional, LSTM
 
+from keras_pandas import lib
 from keras_pandas.transformations import TimeSeriesVectorizer
 
 
@@ -48,11 +49,12 @@ class TimeSeries():
 
         # Create and stack layers
         input_layer = keras.Input(shape=(input_sequence_length,),
-                                  name='input_{}'.format(variable))
+                                  name=lib.namespace_conversion('input_{}'.format(variable)))
         x = input_layer
         x = Reshape((input_sequence_length, 1))(x)
-        x = Bidirectional(LSTM(32, name='lstm_{}'.format(variable)),
-                          name='bidirectional_lstm_{}'.format(variable))(x)
+        x = Bidirectional(LSTM(32,
+                               name=lib.namespace_conversion('lstm_{}'.format(variable))),
+                          name=lib.namespace_conversion('bidirectional_lstm_{}'.format(variable)))(x)
 
         input_nub = x
 
