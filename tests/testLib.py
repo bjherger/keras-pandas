@@ -1,8 +1,6 @@
-from keras.backend import name_scope, placeholder
+from keras.backend import placeholder
 
 from keras_pandas import lib
-from keras_pandas.data_types.Abstract import AbstractDatatype
-from keras_pandas.lib import check_valid_datatype
 from tests.testbase import TestBase
 
 
@@ -12,4 +10,7 @@ class TestLib(TestBase):
         placeholder(name=lib.namespace_conversion(' asdf @$@#$@#'))
         placeholder(name=lib.namespace_conversion('asdf @$ @#$@#'))
         placeholder(name=lib.namespace_conversion('12342342'))
+        iris_vars = ['sepal length in cm', 'sepal width in cm', 'petal length in cm', 'petal width in cm', 'class', 'Iris Setosa', 'Iris Versicolour', 'Iris Virginica']
+        for var in iris_vars:
+            placeholder(name=lib.namespace_conversion(var))
         pass
