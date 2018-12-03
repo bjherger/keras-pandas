@@ -5,6 +5,7 @@ import numpy
 from keras import losses
 from keras.layers import Embedding, Flatten, Dense
 
+from keras_pandas import lib
 from keras_pandas.transformations import StringEncoder, CategoricalImputer, LabelEncoder
 
 
@@ -48,12 +49,14 @@ class Categorical():
                      'and embedding_output_dim: {}'.format(variable, input_sequence_length, categorical_num_levels,
                                                            embedding_output_dim))
 
-        input_layer = keras.Input(shape=(input_sequence_length,), name='input_{}'.format(variable))
+        input_layer = keras.Input(shape=(input_sequence_length,),
+                                  name=lib.namespace_conversion('input_{}'.format(variable)))
         x = input_layer
         x = Embedding(input_dim=categorical_num_levels,
                       output_dim=embedding_output_dim,
-                      input_length=input_sequence_length, name='embedding_{}'.format(variable))(x)
-        x = Flatten(name='flatten_embedding_{}'.format(variable))(x)
+                      input_length=input_sequence_length,
+                      name=lib.namespace_conversion('embedding_{}'.format(variable)))(x)
+        x = Flatten(name=lib.namespace_conversion('flatten_embedding_{}'.format(variable)))(x)
 
         input_nub = x
 

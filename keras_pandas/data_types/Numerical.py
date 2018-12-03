@@ -4,6 +4,8 @@ import keras
 from keras.layers import Dense
 from sklearn.preprocessing import Imputer, StandardScaler
 
+from keras_pandas import lib
+
 
 class Numerical():
     def __init__(self):
@@ -35,7 +37,8 @@ class Numerical():
             input_sequence_length = 1
 
         # Create input_layer layer
-        input_layer = keras.Input(shape=(input_sequence_length,), dtype='float32', name='input_{}'.format(variable))
+        input_layer = keras.Input(shape=(input_sequence_length,), dtype='float32',
+                                  name=lib.namespace_conversion('input_{}'.format(variable)))
         input_nub = input_layer
 
         # Return, in format of input_layer, last variable-specific layer
