@@ -19,10 +19,11 @@
 import os
 import sys
 
-import setup
-
 sys.path.insert(0, os.path.abspath('../keras_pandas'))
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../setup.py'))
+
+import setup
 
 # -- General configuration ------------------------------------------------
 
