@@ -228,6 +228,8 @@ board games with my partner in Seattle.
 
 ### Development
 
+ - Adding examples (#93)
+ - Upgraded `requests` library to `requests==2.20.1`, based on security concern (#94)
  - There's nothing here! (yet)
 
 ### 3.0.0
