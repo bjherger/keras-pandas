@@ -36,4 +36,4 @@ class TestNumerical(TestBase):
         x = output_nub(x)
 
         model = Model(input_layer, x)
-        model.compile(optimizer='adam', loss=datatype.output_suggest_loss())
+        model.compile(optimizer='adam', loss=datatype.output_suggested_loss())
