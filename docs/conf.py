@@ -22,6 +22,8 @@ import sys
 sys.path.insert(0, os.path.abspath('../keras_pandas'))
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../setup.py'))
+sys.path.insert(0, os.path.abspath('../README.md'))
+sys.path.insert(0, os.path.abspath('../requirements.txt'))
 
 import setup
 
