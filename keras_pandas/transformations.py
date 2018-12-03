@@ -64,7 +64,6 @@ class EmbeddingVectorizer(TransformerMixin, BaseEstimator):
         return self
 
     def transform(self, X):
-        print(self.next_token_index)
         observations = self.prepare_input(X)
 
         # Convert to embedding format

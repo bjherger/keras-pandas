@@ -1,8 +1,11 @@
 import inspect
 import logging
 import os
+import re
+import string
 import tempfile
 
+import numpy
 import pandas
 import requests
 
@@ -222,3 +225,25 @@ def check_valid_datatype(datatype_class):
         is_valid = required_input_signature.issubset(datatype_attributes)
 
     return is_valid
+
+
+def namespace_conversion(input_string):
+    """
+    Convert input_string to be sfve in the tensorflow namespace
+    :param input_string: A string, to be converted
+    :type input_string: str
+    :return: Cleanly formatted version of input_string
+    :rtype: str
+    """
+    # TODO we should check if this is in the current namespace already, and increment a number if it is
+    letters = s = set(string.ascii_lowercase + string.ascii_uppercase)
+    cleaned = re.sub(r'[^a-zA-Z0-9_]', '_', input_string)
+    if len(cleaned) <=0:
+        logging.warning('Input string: {} reduced to empty variable name. Replaced w/: {}'.format(input_string, cleaned))
+        cleaned = 'name_' + numpy.random.randint(0,1000)
+    if cleaned[0] not in letters:
+        cleaned = 'start_' + cleaned
+    if cleaned[-1] not in letters:
+        cleaned = cleaned + '_end'
+    logging.info('input_string: {} converted to cleaned: {}'.format(input_string, cleaned))
+    return cleaned
