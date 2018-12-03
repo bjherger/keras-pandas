@@ -41,7 +41,20 @@ make html
 
 ## Adding new data types
 
-TODO
+
+If there's a specific datatype you'd like to use that's not built in (such as images, videos, or geospatial), you can 
+include it by using `Automater`'s `datatype_handlers` parameter. 
+
+A template datatype can be found in `keras_pandas/data_types/Abstract.py`. Filling out this template will yield a new
+ datatype handler. If you're happy with your work and want to share your new datatype handler, create a PR.
+ 
+To create add a new datatype:
+
+ - Create a new `.py` file in `keras_pandas/data_types`, based on `keras_pandas/data_types/Abstract`
+ - Fill out your new datatype
+ - Create a new test class for your new datatype (perhaps based on `tests/testDatatypeTemplate` and / or 
+ `tests/testCategorical`) 
+ - Add the new datatype to `keras_pandas/Automater.datatype_handlers`, in `keras_pandas/Automater.__init__()` 
 
 ## Adding new examples
 
