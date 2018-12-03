@@ -210,6 +210,14 @@ def load_instanbul_stocks(as_ts=False):
 
 
 def check_valid_datatype(datatype_class):
+    """
+    Check whether the provided `datatype_class` meets the requirements for use as a keras-pandas datatype handler,
+    using duck-typing
+
+    :param datatype_class: A class, with the expected signature
+    :return: Whether or not the datatype_class has the requirements
+    :rtype: bool
+    """
     datatype_attributes = inspect.getmembers(datatype_class)
     datatype_attributes = set(map(lambda x: x[0], datatype_attributes))
 
@@ -230,6 +238,7 @@ def check_valid_datatype(datatype_class):
 def namespace_conversion(input_string):
     """
     Convert input_string to be sfve in the tensorflow namespace
+
     :param input_string: A string, to be converted
     :type input_string: str
     :return: Cleanly formatted version of input_string
