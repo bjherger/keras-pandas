@@ -80,7 +80,7 @@ class Numerical():
 
         return natural_scaled_vars
 
-    def output_suggest_loss(self):
+    def output_suggested_loss(self):
         self._check_output_support()
         # TODO We can do better than this, if we are able to look at the response data
         suggested_loss = keras.losses.mean_squared_error
