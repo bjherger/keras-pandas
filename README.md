@@ -229,6 +229,9 @@ board games with my partner in Seattle.
 
 ### Development
 
+ - Adding datatypes to CONTRIBUTING.md, adding CONTRIBUTING.md to docs (#96)
+ - Adding docs badge (#95)
+ - Adding support for unusual variable names / format keras names to be valid in name scope (#92)
  - Adding examples (#93)
  - Upgraded `requests` library to `requests==2.20.1`, based on security concern (#94)
  - There's nothing here! (yet)
