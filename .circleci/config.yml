@@ -9,7 +9,6 @@ workflows:
     jobs:
       - test-3.6
       - test-3.5
-      - test-2.7
 jobs:
   test-3.6: &test-template
     docker:
@@ -37,9 +36,9 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            python -m venv venv || virtualenv venv
+            python3 -m venv venv
             . venv/bin/activate
-            pip install -e .[dev]
+            pip install -r requirements.txt
 
       - save_cache:
           paths:
@@ -64,8 +63,3 @@ jobs:
     <<: *test-template
     docker:
     - image: circleci/python:3.5-jessie
-  test-2.7:
-    <<: *test-template
-    docker:
-    - image: circleci/python:2.7-jessie
-
