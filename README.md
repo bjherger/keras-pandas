@@ -230,6 +230,8 @@ board games with my partner in Seattle.
 
 ### Development
 
+### 3.0.1
+
  - Changing CI to Circleci (#100)
  - Adding datatypes to CONTRIBUTING.md, adding CONTRIBUTING.md to docs (#96)
  - Adding docs badge (#95)
