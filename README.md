@@ -230,6 +230,7 @@ board games with my partner in Seattle.
 
 ### Development
 
+ - Add boolean datatype (#TODO)
  - Added Contributing.md section for new datatypes (#101)
  - Added datatypes to docs in index.rst (#101)
  - Modified documentation to automatically generate API docs (#101)
