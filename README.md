@@ -230,6 +230,10 @@ board games with my partner in Seattle.
 
 ### Development
 
+ - Contributing.md section for new datatypes (#TODO)
+ - Add datatypes folder to docs in index.rst (#TODO)
+ 
+
 ### 3.0.1
 
  - Changing CI to Circleci (#100)
