@@ -8,12 +8,15 @@ Index
 
 Welcome to keras-pandas! I'd recommend that you start with the keras-pandas section & Quick Start.
 
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    intro
    automater
+   datatypes
    lib
    transformations
    contributing
