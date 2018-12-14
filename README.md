@@ -230,6 +230,11 @@ board games with my partner in Seattle.
 
 ### Development
 
+ - Added Contributing.md section for new datatypes (#101)
+ - Added datatypes to docs in index.rst (#101)
+ - Modified documentation to automatically generate API docs (#101)
+ 
+
 ### 3.0.1
 
  - Changing CI to Circleci (#100)

@@ -33,8 +33,12 @@ sys.path.insert(0, os.path.abspath('..'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'm2r'
+    'm2r',
+    'sphinx.ext.autosummary'
 ]
+
+autodoc_default_flags = ['__init__', 'members', 'undoc-members', 'private-members']
+autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

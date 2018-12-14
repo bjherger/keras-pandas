@@ -9,6 +9,12 @@ from keras_pandas.transformations import StringEncoder, EmbeddingVectorizer
 
 
 class Text():
+    """
+    Support for text variables, such as title: `['The count of Monte Cristo', 'Alice in Wonderland']`,
+    or article_text: ['Politicians in deadlock over latest international disagreement...', '42 is truly the answer to
+    life, the universe and everything according to a study by British ...']`
+    """
+
     def __init__(self):
         self.supports_output = False
         self.default_transformation_pipeline = [StringEncoder(), EmbeddingVectorizer()]

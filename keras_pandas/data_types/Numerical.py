@@ -8,6 +8,11 @@ from keras_pandas import lib
 
 
 class Numerical():
+    """
+    Support for categorical variables, such as annual_salary: `[175000, 105000, 30000000]`, or countries_visited: `[
+    1, 7, 22, 183, 12]`.
+    """
+
     def __init__(self):
         self.supports_output = True
         self.default_transformation_pipeline = [Imputer(strategy='mean'), StandardScaler()]

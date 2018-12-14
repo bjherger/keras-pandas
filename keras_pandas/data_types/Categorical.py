@@ -10,6 +10,11 @@ from keras_pandas.transformations import StringEncoder, CategoricalImputer, Labe
 
 
 class Categorical():
+    """
+    Support for categorical variables, such as fruits: `['apple', 'banana', 'coconut']`, or home_ownership: `['rent',
+    'own]`.
+    """
+
     def __init__(self):
         self.supports_output = True
         self.default_transformation_pipeline = [StringEncoder(),

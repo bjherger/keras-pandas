@@ -8,6 +8,10 @@ from keras_pandas.transformations import TimeSeriesVectorizer
 
 
 class TimeSeries():
+    """
+    Support for time series data, such as previous_day_closes: `[[123, 3, 0], [777, 42,
+    0]]` or last_three_purchase_prices: `[[222, 111, 891], [12312312, 412412, 12]]`
+    """
     def __init__(self):
         self.supports_output = False
         self.default_transformation_pipeline = [TimeSeriesVectorizer()]

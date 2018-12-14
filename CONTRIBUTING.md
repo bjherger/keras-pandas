@@ -54,7 +54,8 @@ To create add a new datatype:
  - Fill out your new datatype
  - Create a new test class for your new datatype (perhaps based on `tests/testDatatypeTemplate` and / or 
  `tests/testCategorical`) 
- - Add the new datatype to `keras_pandas/Automater.datatype_handlers`, in `keras_pandas/Automater.__init__()` 
+ - Add the new datatype to `keras_pandas/Automater.datatype_handlers`, in `keras_pandas/Automater.__init__()`
+ - Add the new datatype to `docs/index.rst`, in `autosummary list` 
 
 ## Adding new examples
 
