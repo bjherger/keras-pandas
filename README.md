@@ -230,8 +230,9 @@ board games with my partner in Seattle.
 
 ### Development
 
- - Contributing.md section for new datatypes (#101)
- - Add datatypes folder to docs in index.rst (#101)
+ - Added Contributing.md section for new datatypes (#101)
+ - Added datatypes to docs in index.rst (#101)
+ - Modified documentation to automatically generate API docs (#101)
  
 
 ### 3.0.1
