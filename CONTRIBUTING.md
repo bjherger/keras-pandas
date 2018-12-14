@@ -50,10 +50,11 @@ A template datatype can be found in `keras_pandas/data_types/Abstract.py`. Filli
  
 To create add a new datatype:
 
- - Create a new `.py` file in `keras_pandas/data_types`, based on `keras_pandas/data_types/Abstract`
- - Fill out your new datatype
- - Create a new test class for your new datatype (perhaps based on `tests/testDatatypeTemplate` and / or 
- `tests/testCategorical`) 
+ - Create a new `.py` file in `keras_pandas/data_types`, based on `keras_pandas/data_types/Abstract.py` (and perhaps 
+ referencing `keras_pandas/data_types/Numerical.py`)
+ - Fill out your new datatype's `.py` file
+ - Create a new test class for your new datatype (perhaps based on `tests/testDatatypeTemplate.py` and / or 
+ `tests/testNumerical.py`) 
  - Add the new datatype to `keras_pandas/Automater.datatype_handlers`, in `keras_pandas/Automater.__init__()`
  - Add the new datatype to `docs/index.rst`, in `autosummary list` 
 

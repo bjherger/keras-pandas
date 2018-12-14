@@ -1,11 +1,19 @@
-class AbstractDatatype():
+import keras
+from keras import losses
+from keras.layers import Dense
+
+from keras_pandas import lib
+from keras_pandas.transformations import TypeConversionEncoder
+
+
+class Boolean():
     """
-    Interface for all future datatypes
+    Support for boolean variables, such as owns_home: `[True, False, True]`, or existing_acct: `[True, True, False]`.
     """
 
     def __init__(self):
-        self.supports_output = False
-        self.default_transformation_pipeline = []
+        self.supports_output = True
+        self.default_transformation_pipeline = [TypeConversionEncoder(bool)]
 
     def input_nub_generator(self, variable, transformed_observations):
         """
@@ -22,9 +30,20 @@ class AbstractDatatype():
         :return: A tuple containing the input layer, and the last layer of the nub
         """
 
-        input_layer = None
-        input_nub = None
+        transformed = transformed_observations[variable].as_matrix()
 
+        # Set up dimensions for input_layer layer
+        if len(transformed.shape) >= 2:
+            input_sequence_length = int(transformed.shape[1])
+        else:
+            input_sequence_length = 1
+
+        # Create input_layer layer
+        input_layer = keras.Input(shape=(input_sequence_length,), dtype='bool',
+                                  name=lib.namespace_conversion('input_{}'.format(variable)))
+        input_nub = input_layer
+
+        # Return, in format of input_layer, last variable-specific layer
         return input_layer, input_nub
 
     def output_nub_generator(self, variable, input_observations):
@@ -40,7 +59,7 @@ class AbstractDatatype():
         :return: output_layer
         """
         self._check_output_support()
-        output_nub = None
+        output_nub = Dense(units=1, activation='sigmoid')
 
         return output_nub
 
@@ -54,13 +73,13 @@ class AbstractDatatype():
         :return: The same data, in the natural basis
         """
         self._check_output_support()
-        natural_scaled_vars = None
+        natural_scaled_vars = y_pred
 
         return natural_scaled_vars
 
     def output_suggested_loss(self):
         self._check_output_support()
-        suggested_loss = None
+        suggested_loss = losses.binary_crossentropy
         return suggested_loss
 
     def _check_output_support(self):

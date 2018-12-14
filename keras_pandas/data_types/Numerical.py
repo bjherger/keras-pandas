@@ -9,7 +9,7 @@ from keras_pandas import lib
 
 class Numerical():
     """
-    Support for categorical variables, such as annual_salary: `[175000, 105000, 30000000]`, or countries_visited: `[
+    Support for numerical variables, such as annual_salary: `[175000, 105000, 30000000]`, or countries_visited: `[
     1, 7, 22, 183, 12]`.
     """
 

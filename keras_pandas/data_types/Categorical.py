@@ -6,7 +6,7 @@ from keras import losses
 from keras.layers import Embedding, Flatten, Dense
 
 from keras_pandas import lib
-from keras_pandas.transformations import StringEncoder, CategoricalImputer, LabelEncoder
+from keras_pandas.transformations import TypeConversionEncoder, CategoricalImputer, LabelEncoder
 
 
 class Categorical():
@@ -17,7 +17,7 @@ class Categorical():
 
     def __init__(self):
         self.supports_output = True
-        self.default_transformation_pipeline = [StringEncoder(),
+        self.default_transformation_pipeline = [TypeConversionEncoder(str),
                                                 CategoricalImputer(strategy='constant', fill_value='UNK',
                                                                    fill_unknown_labels=True),
                                                 LabelEncoder()]

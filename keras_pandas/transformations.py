@@ -420,17 +420,17 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         return self.classes_[y]
 
 
-class StringEncoder(BaseEstimator, TransformerMixin):
+class TypeConversionEncoder(BaseEstimator, TransformerMixin):
 
-    def __init__(self):
+    def __init__(self, conversion_type):
+        self.conversion_type = conversion_type
         pass
 
     def fit(self, X, y=None):
         return self
 
-    @staticmethod
-    def transform(X):
-        return X.astype(str)
+    def transform(self, X):
+        return X.astype(self.conversion_type)
 
 
 class TimeSeriesVectorizer(TransformerMixin, BaseEstimator):

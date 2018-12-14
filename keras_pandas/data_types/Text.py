@@ -5,7 +5,7 @@ import numpy
 from keras.layers import Bidirectional, LSTM, Embedding
 
 from keras_pandas import lib
-from keras_pandas.transformations import StringEncoder, EmbeddingVectorizer
+from keras_pandas.transformations import TypeConversionEncoder, EmbeddingVectorizer
 
 
 class Text():
@@ -17,7 +17,7 @@ class Text():
 
     def __init__(self):
         self.supports_output = False
-        self.default_transformation_pipeline = [StringEncoder(), EmbeddingVectorizer()]
+        self.default_transformation_pipeline = [TypeConversionEncoder(str), EmbeddingVectorizer()]
 
     @staticmethod
     def input_nub_generator(variable, transformed_observations):
