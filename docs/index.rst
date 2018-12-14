@@ -25,6 +25,7 @@ API
 
    Automater.Automater
    data_types.Abstract.AbstractDatatype
+   data_types.Boolean.Boolean
    data_types.Categorical.Categorical
    data_types.Numerical.Numerical
    data_types.Text.Text

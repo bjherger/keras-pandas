@@ -6,7 +6,7 @@ from keras_pandas.data_types.Boolean import Boolean
 from tests.testbase import TestBase
 
 
-class TestNumerical(TestBase):
+class TestBoolean(TestBase):
 
     def test_init(self):
         # Create datatype
