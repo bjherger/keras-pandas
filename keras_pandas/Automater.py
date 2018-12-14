@@ -13,17 +13,18 @@ from keras_pandas.data_types.TimeSeries import TimeSeries
 
 
 class Automater(object):
-
-    def __init__(self, data_type_dict=dict(), output_var=None, datatype_handlers=dict()):
-        """
-        An Automater object, allows users to rapidly build and iterate on deep learning models.
+    """
+    An Automater object, allows users to rapidly build and iterate on deep learning models.
 
         This class supports building and iterating on deep learning models by providing:
 
          - A cleaned, transformed and correctly formatted X and y (good for keras, sklearn or any other ML platform)
          - An `input_nub`, without the hassle of worrying about input shapes or data types
          - An `nub`, correctly formatted for the kind of response variable provided
+    """
 
+    def __init__(self, data_type_dict=dict(), output_var=None, datatype_handlers=dict()):
+        """
         :param data_type_dict: A dictionary, in the format {'datatype': ['variable_name_1', 'variable_name_2']}
         :type data_type_dict: {str:[str]}
         :param output_var: The name of the response variable

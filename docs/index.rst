@@ -8,16 +8,27 @@ Index
 
 Welcome to keras-pandas! I'd recommend that you start with the keras-pandas section & Quick Start.
 
-
+User Guide
+-----------------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    intro
-   automater
-   datatypes
+   contributing
+
+API
+-----------------
+
+.. autosummary::
+   :toctree: autosummary
+
+   Automater.Automater
+   data_types.Abstract.Abstract
+   data_types.Categorical.Categorical
+   data_types.Numerical.Numerical
+   data_types.Text.Text
+   data_types.TimeSeries.TimeSeries
    lib
    transformations
-   contributing
 
