@@ -1,3 +1,6 @@
+"""
+Library / helper functions for Keras-Pandas
+"""
 import inspect
 import logging
 import os

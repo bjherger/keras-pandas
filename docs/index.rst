@@ -24,7 +24,7 @@ API
    :toctree: autosummary
 
    Automater.Automater
-   data_types.Abstract.Abstract
+   data_types.Abstract.AbstractDatatype
    data_types.Categorical.Categorical
    data_types.Numerical.Numerical
    data_types.Text.Text

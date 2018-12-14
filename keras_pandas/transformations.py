@@ -1,3 +1,6 @@
+"""
+SKLearn-compliant transformers, for use as part of pipelines
+"""
 import logging
 from collections import defaultdict
 

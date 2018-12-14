@@ -12,15 +12,15 @@ from keras_pandas.data_types.Text import Text
 from keras_pandas.data_types.TimeSeries import TimeSeries
 
 
-class Automater(object):
+class Automater():
     """
     An Automater object, allows users to rapidly build and iterate on deep learning models.
 
-        This class supports building and iterating on deep learning models by providing:
+    This class supports building and iterating on deep learning models by providing:
 
-         - A cleaned, transformed and correctly formatted X and y (good for keras, sklearn or any other ML platform)
-         - An `input_nub`, without the hassle of worrying about input shapes or data types
-         - An `nub`, correctly formatted for the kind of response variable provided
+     - A cleaned, transformed and correctly formatted X and y (good for keras, sklearn or any other ML platform)
+     - An `input_nub`, without the hassle of worrying about input shapes or data types
+     - An `nub`, correctly formatted for the kind of response variable provided
     """
 
     def __init__(self, data_type_dict=dict(), output_var=None, datatype_handlers=dict()):

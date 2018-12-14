@@ -1,4 +1,8 @@
 class AbstractDatatype():
+    """
+    Interface for all future datatypes
+    """
+
     def __init__(self):
         self.supports_output = False
         self.default_transformation_pipeline = []
