@@ -230,6 +230,10 @@ board games with my partner in Seattle.
 
 ### Development
 
+ - There's nothing here! (yet)
+
+### 3.1.0
+
  - Add boolean datatype (#104)
  - Added Contributing.md section for new datatypes (#101)
  - Added datatypes to docs in index.rst (#101)
