@@ -6,6 +6,7 @@ from functools import reduce
 from keras.layers import Concatenate
 from sklearn_pandas import DataFrameMapper
 
+from keras_pandas.data_types.Boolean import Boolean
 from keras_pandas.data_types.Categorical import Categorical
 from keras_pandas.data_types.Numerical import Numerical
 from keras_pandas.data_types.Text import Text
@@ -50,7 +51,7 @@ class Automater():
         # Set up datatype handlers
         self.datatype_handlers = {'numerical': Numerical(),
                                   'categorical': Categorical(),
-                                  'boolean': Categorical(),
+                                  'boolean': Boolean(),
                                   'timeseries': TimeSeries(),
                                   'text': Text()}
 
