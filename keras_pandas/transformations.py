@@ -1,9 +1,11 @@
 """
 SKLearn-compliant transformers, for use as part of pipelines
 """
+import datetime
 import logging
 from collections import defaultdict
 
+import dateinfer
 import numpy
 import pandas
 from gensim.utils import simple_preprocess
@@ -459,3 +461,31 @@ class TimeSeriesVectorizer(TransformerMixin, BaseEstimator):
         # Pad all of the sequences to be the same length
         X = pad_sequences(X, maxlen=self.max_sequence_length)
         return X
+
+
+class TimestampVectorizer(TransformerMixin, BaseEstimator):
+
+    def __init__(self):
+        self.strptime_format = None
+
+    def fit(self, X, y=None):
+        if self.strptime_format is None:
+            logging.info('No self.strptime_format set. Inferring datetime format')
+            self.strptime_format = dateinfer.infer(list(X[0]))
+            logging.info('Inferred datetime format: {}'.format(self.strptime_format))
+        else:
+            logging.info('self.strptime_format previously set. Inferred datetime format: {}'.format(
+                self.strptime_format))
+        return self
+
+    def transform(self, X):
+
+        # Undo numpy formatting
+        X = list(X[:, 0])
+
+        X = map(lambda x: datetime.datetime.strptime(x, self.strptime_format), X)
+
+        print(list(X))
+
+        # Correct numpy formatting
+        pass

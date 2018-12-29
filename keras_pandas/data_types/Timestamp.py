@@ -1,12 +1,15 @@
-class AbstractDatatype():
+from keras_pandas.transformations import TypeConversionEncoder, TimestampVectorizer
+
+class Timestamp():
     """
-    Support for ABSTRACT variables, such as EXAMPLE1: `[175000, 105000, 30000000]`, or EXAMPLE2: `[
-    1, 7, 22, 183, 12]`.
+    Support for timestamp variables, such as date_of_birth: `['1992-01-24', 2018-12-28', '1991-10-29']`,
+    or purchase_timestamp: `['December 29, 2018 1:53:05 AM', 'January 24, 1992 1:53:05 AM',
+    'January 1, 1970 12:00:42 AM']`.
     """
 
     def __init__(self):
         self.supports_output = False
-        self.default_transformation_pipeline = []
+        self.default_transformation_pipeline = [TypeConversionEncoder(str), TimestampVectorizer()]
 
     def input_nub_generator(self, variable, transformed_observations):
         """

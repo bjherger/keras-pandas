@@ -169,7 +169,7 @@ def load_lending_club(test_run=True):
     if test_run:
         observations = observations.sample(300)
 
-    logging.info('Available lending club columns: {}'.format(observations.columns))
+    logging.info('Available lending club columns: {}'.format(list(observations.columns)))
     return observations
 
 
