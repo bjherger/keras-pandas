@@ -465,7 +465,9 @@ class TimeSeriesVectorizer(TransformerMixin, BaseEstimator):
 
 class TimestampVectorizer(TransformerMixin, BaseEstimator):
 
-    def __init__(self):
+    def __init__(self, frequency_labels=['minutely', 'hourly', 'daily', 'weekly', 'monthly', 'quarterly', 'yearly']):
+        self.frequency_labels = frequency_labels
+        self.trig_periods = self.frequency_labels_to_trig_periods(self.frequency_labels)
         self.strptime_format = None
 
     def fit(self, X, y=None):
@@ -485,12 +487,21 @@ class TimestampVectorizer(TransformerMixin, BaseEstimator):
 
         # Convert from string to datetime
         X = map(lambda x: self.string_to_epoch(x, self.strptime_format), X)
-        X = list(X)
-
-        print(list(X))
 
         # Redo numpy formatting
+        X = list(X)
         X = numpy.array(X).reshape((len(X), 1))
+
+        # Apply sine / cosine
+        X = self.trig_periods * X
+        print(X.shape)
+        X_sin = numpy.sin(X)
+        X_cos = numpy.cos(X)
+        X = numpy.concatenate([X_sin, X_cos], axis=1)
+        print(X_sin)
+        print(X_cos)
+        print(X)
+        print(X.shape)
 
         return X
 
@@ -508,3 +519,30 @@ class TimestampVectorizer(TransformerMixin, BaseEstimator):
 
         except:
             return numpy.nan
+
+    @staticmethod
+    def frequency_labels_to_trig_periods(frequency_labels):
+
+        conversions = {
+            'minutely': 60,
+            'hourly': 3600,
+            'daily': 86400,
+            'weekly': 604800,
+            'monthly': 2628288,
+            'quarterly': 7883991,
+            'yearly': 31535965
+        }
+
+        # Check for unknown initial frequency_labels
+        for initial_frequency in frequency_labels:
+            if initial_frequency not in conversions:
+                raise AssertionError('Unknown initial frequency: {}. Please choose from: {}'.format(initial_frequency,
+                                                                                                    conversions.keys()))
+
+        # Convert initial frequency_labels to duration in seconds
+        initial_frequencies_seconds = list(map(lambda x: conversions[x], frequency_labels))
+
+        # Convert into trig_periods
+        trig_periods = list(map(lambda x: (2 * numpy.pi) / x, initial_frequencies_seconds))
+
+        return trig_periods
