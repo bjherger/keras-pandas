@@ -7,7 +7,7 @@ from keras_pandas.data_types.Timestamp import Timestamp
 from tests.testbase import TestBase
 
 
-class TestDatatypeTemplate(TestBase):
+class TestTimestamp(TestBase):
 
     def test_init(self):
         # Create datatype

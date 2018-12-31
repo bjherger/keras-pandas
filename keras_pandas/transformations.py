@@ -483,9 +483,28 @@ class TimestampVectorizer(TransformerMixin, BaseEstimator):
         # Undo numpy formatting
         X = list(X[:, 0])
 
-        X = map(lambda x: datetime.datetime.strptime(x, self.strptime_format), X)
+        # Convert from string to datetime
+        X = map(lambda x: self.string_to_epoch(x, self.strptime_format), X)
+        X = list(X)
 
         print(list(X))
 
-        # Correct numpy formatting
-        pass
+        # Redo numpy formatting
+        X = numpy.array(X).reshape((len(X), 1))
+
+        return X
+
+    @staticmethod
+    def string_to_epoch(value, strptime_format):
+
+        try:
+            # Convert from string to datetime
+            value = datetime.datetime.strptime(value, strptime_format)
+
+            # Attempt to convert to epoch
+            value = (value - datetime.datetime(1970, 1, 1)).total_seconds()
+
+            return value
+
+        except:
+            return numpy.nan
