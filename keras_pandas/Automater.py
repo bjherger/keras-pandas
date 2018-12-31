@@ -11,6 +11,7 @@ from keras_pandas.data_types.Categorical import Categorical
 from keras_pandas.data_types.Numerical import Numerical
 from keras_pandas.data_types.Text import Text
 from keras_pandas.data_types.TimeSeries import TimeSeries
+from keras_pandas.data_types.Timestamp import Timestamp
 
 
 class Automater():
@@ -49,11 +50,14 @@ class Automater():
         self.supervised = self.output_var is not None
 
         # Set up datatype handlers
-        self.datatype_handlers = {'numerical': Numerical(),
+        self.datatype_handlers = {'boolean': Boolean(),
                                   'categorical': Categorical(),
-                                  'boolean': Boolean(),
+                                  'numerical': Numerical(),
+                                  'text': Text(),
                                   'timeseries': TimeSeries(),
-                                  'text': Text()}
+                                  'timestamp': Timestamp()
+                                  }
+
 
         # Add user-supplied datatype handlers
         self.datatype_handlers.update(datatype_handlers)
