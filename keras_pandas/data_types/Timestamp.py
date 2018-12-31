@@ -1,3 +1,8 @@
+from keras import Input
+from keras.layers import Dense
+from sklearn.impute import SimpleImputer
+
+from keras_pandas import lib
 from keras_pandas.transformations import TypeConversionEncoder, TimestampVectorizer
 
 class Timestamp():
@@ -9,7 +14,8 @@ class Timestamp():
 
     def __init__(self):
         self.supports_output = False
-        self.default_transformation_pipeline = [TypeConversionEncoder(str), TimestampVectorizer()]
+        self.default_transformation_pipeline = [TypeConversionEncoder(str), TimestampVectorizer(),
+                                                SimpleImputer(strategy='constant', fill_value=0)]
 
     def input_nub_generator(self, variable, transformed_observations):
         """
@@ -26,8 +32,29 @@ class Timestamp():
         :return: A tuple containing the input layer, and the last layer of the nub
         """
 
-        input_layer = None
-        input_nub = None
+        # Get transformed data for shaping
+        if variable in transformed_observations.columns:
+            variable_list = [variable]
+        else:
+            variable_name_prefix = variable + '_'
+            variable_list = list(
+                filter(lambda x: x.startswith(variable_name_prefix),
+                       transformed_observations.columns))
+        transformed = transformed_observations[variable_list].as_matrix()
+
+        # Set up dimensions for input_layer layer
+        if len(transformed.shape) >= 2:
+            input_sequence_length = int(transformed.shape[1])
+        else:
+            input_sequence_length = 1
+
+        num_dense_units = int(min((input_sequence_length + 1) / 2, 10))
+
+        input_layer = Input(shape=(input_sequence_length,),
+                            name=lib.namespace_conversion('input_{}'.format(variable)))
+        x = input_layer
+        x = Dense(num_dense_units)(x)
+        input_nub = x
 
         return input_layer, input_nub
 

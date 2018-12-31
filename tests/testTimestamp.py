@@ -35,6 +35,7 @@ class TestTimestamp(TestBase):
         # Transform observations
         mapper = DataFrameMapper([([variable_name], datatype.default_transformation_pipeline)], df_out=True)
         transformed_df = mapper.fit_transform(observations)
+        print(transformed_df.columns)
 
         # Create network
         input_layer, input_nub = datatype.input_nub_generator(variable_name, transformed_df)
