@@ -1,3 +1,4 @@
+git+https://github.com/jeffreystarr/dateinfer.git@refs/pull/12/head
 gensim==3.6.0
 h5py==2.8.0
 Keras==2.2.4

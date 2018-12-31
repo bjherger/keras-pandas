@@ -1,9 +1,11 @@
 """
 SKLearn-compliant transformers, for use as part of pipelines
 """
+import datetime
 import logging
 from collections import defaultdict
 
+import dateinfer
 import numpy
 import pandas
 from gensim.utils import simple_preprocess
@@ -459,3 +461,87 @@ class TimeSeriesVectorizer(TransformerMixin, BaseEstimator):
         # Pad all of the sequences to be the same length
         X = pad_sequences(X, maxlen=self.max_sequence_length)
         return X
+
+
+class TimestampVectorizer(TransformerMixin, BaseEstimator):
+    """
+    Convert a timestamp string into usable information by:
+
+     - Determining timestamp format string (fit only)
+     - Converting string into timestamp (or NaN if not possible), using timestamp format string
+     - Convert timestamp to Unix Epoch time
+     - Calculating sine / cosine values, with frequencies described by `frequency_labels`
+    """
+
+    def __init__(self, frequency_labels=['minutely', 'hourly', 'daily', 'weekly', 'monthly', 'quarterly', 'yearly']):
+        self.frequency_labels = frequency_labels
+        self.trig_periods = self.frequency_labels_to_trig_periods(self.frequency_labels)
+        self.strptime_format = None
+
+    def fit(self, X, y=None):
+        if self.strptime_format is None:
+            logging.info('No self.strptime_format set. Inferring datetime format')
+            self.strptime_format = dateinfer.infer(list(X[0]))
+            logging.info('Inferred datetime format: {}'.format(self.strptime_format))
+        else:
+            logging.info('self.strptime_format previously set. Inferred datetime format: {}'.format(
+                self.strptime_format))
+        return self
+
+    def transform(self, X):
+
+        # Convert from string to epoch time
+        f = numpy.vectorize(lambda x: self.string_to_epoch(x, self.strptime_format))
+        X = f(X)
+
+        # Convert to appropriately scaled trig inputs
+        X = self.trig_periods * X
+
+        # Apply sine / cosine
+        X_sin = numpy.sin(X)
+        X_cos = numpy.cos(X)
+
+        X = numpy.concatenate([X_sin, X_cos], axis=1)
+        return X
+
+    @staticmethod
+    def string_to_epoch(value, strptime_format):
+
+        try:
+            # Convert from string to datetime
+            value = datetime.datetime.strptime(value, strptime_format)
+
+            # Attempt to convert to epoch
+            value = (value - datetime.datetime(1970, 1, 1)).total_seconds()
+
+            return value
+
+        except:
+            return numpy.nan
+
+    @staticmethod
+    def frequency_labels_to_trig_periods(frequency_labels):
+
+        conversions = {
+            'minutely': 60,
+            'hourly': 3600,
+            'daily': 86400,
+            'weekly': 604800,
+            'monthly': 2628288,
+            'quarterly': 7883991,
+            'yearly': 31535965
+        }
+
+        # Check for unknown initial frequency_labels
+        for initial_frequency in frequency_labels:
+            if initial_frequency not in conversions:
+                raise AssertionError('Unknown initial frequency: {}. Please choose from: {}'.format(initial_frequency,
+                                                                                                    conversions.keys()))
+
+        # Convert initial frequency_labels to duration in seconds
+        initial_frequencies_seconds = list(map(lambda x: conversions[x], frequency_labels))
+
+        # Convert into trig_periods
+        trig_periods = list(map(lambda x: (2 * numpy.pi) / x, initial_frequencies_seconds))
+
+        return trig_periods

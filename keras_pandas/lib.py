@@ -169,7 +169,7 @@ def load_lending_club(test_run=True):
     if test_run:
         observations = observations.sample(300)
 
-    logging.info('Available lending club columns: {}'.format(observations.columns))
+    logging.info('Available lending club columns: {}'.format(list(observations.columns)))
     return observations
 
 
@@ -177,7 +177,7 @@ def load_instanbul_stocks(as_ts=False):
     logging.info('Loading Instanbul data')
     file_path = download_file('https://archive.ics.uci.edu/ml/machine-learning-databases/00247/data_akbilgic.xlsx',
                               '~/.keras-pandas/example_datasets/',
-                              filename='instanbul_stocks.xlsw')
+                              filename='instanbul_stocks.xlsx')
     logging.info('Reading data from filepath: {}'.format(file_path))
 
     observations = pandas.read_excel(file_path, header=1)

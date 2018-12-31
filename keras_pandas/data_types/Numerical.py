@@ -2,7 +2,8 @@ import logging
 
 import keras
 from keras.layers import Dense
-from sklearn.preprocessing import Imputer, StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
 
 from keras_pandas import lib
 
@@ -15,7 +16,7 @@ class Numerical():
 
     def __init__(self):
         self.supports_output = True
-        self.default_transformation_pipeline = [Imputer(strategy='mean'), StandardScaler()]
+        self.default_transformation_pipeline = [SimpleImputer(strategy='mean'), StandardScaler()]
 
     @staticmethod
     def input_nub_generator(variable, transformed_observations):

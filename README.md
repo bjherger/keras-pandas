@@ -230,7 +230,7 @@ board games with my partner in Seattle.
 
 ### Development
 
- - There's nothing here! (yet)
+ - Support for timestamp datatype (#106)
 
 ### 3.1.0
 

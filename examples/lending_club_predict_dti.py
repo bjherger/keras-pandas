@@ -34,7 +34,8 @@ def main():
                                     'total_acc', 'pub_rec_bankruptcies'],
                       'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'addr_state',
                                       'application_type', 'disbursement_method'],
-                      'text': ['desc', 'purpose', 'title']}
+                      'text': ['desc', 'purpose', 'title'],
+                      'timestamp': ['last_credit_pull_d', 'issue_d']}
     output_var = 'dti'
 
     # Create and fit Automater

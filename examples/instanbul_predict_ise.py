@@ -33,7 +33,8 @@ def main():
     data_type_dict = {'numerical': ['ise', 'ise.1', 'sp', 'dax', 'ftse', 'nikkei', 'bovespa', 'eu', 'em'],
                       'categorical': [],
                       'text': [],
-                      'timeseries': ['ise_lagged', 'ise.1_lagged', 'sp_lagged', 'dax_lagged']}
+                      'timeseries': ['ise_lagged', 'ise.1_lagged', 'sp_lagged', 'dax_lagged'],
+                      'timestamp': ['date']}
     output_var = 'ise'
 
     # Create and fit Automater

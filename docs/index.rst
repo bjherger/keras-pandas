@@ -30,6 +30,7 @@ API
    data_types.Numerical.Numerical
    data_types.Text.Text
    data_types.TimeSeries.TimeSeries
+   data_types.Timestamp.Timestamp
    lib
    transformations
 

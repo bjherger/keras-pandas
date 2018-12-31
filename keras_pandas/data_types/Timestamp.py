@@ -1,12 +1,21 @@
-class AbstractDatatype():
+from keras import Input
+from keras.layers import Dense
+from sklearn.impute import SimpleImputer
+
+from keras_pandas import lib
+from keras_pandas.transformations import TypeConversionEncoder, TimestampVectorizer
+
+class Timestamp():
     """
-    Support for ABSTRACT variables, such as EXAMPLE1: `[175000, 105000, 30000000]`, or EXAMPLE2: `[
-    1, 7, 22, 183, 12]`.
+    Support for timestamp variables, such as date_of_birth: `['1992-01-24', 2018-12-28', '1991-10-29']`,
+    or purchase_timestamp: `['December 29, 2018 1:53:05 AM', 'January 24, 1992 1:53:05 AM',
+    'January 1, 1970 12:00:42 AM']`.
     """
 
     def __init__(self):
         self.supports_output = False
-        self.default_transformation_pipeline = []
+        self.default_transformation_pipeline = [TypeConversionEncoder(str), TimestampVectorizer(),
+                                                SimpleImputer(strategy='constant', fill_value=0)]
 
     def input_nub_generator(self, variable, transformed_observations):
         """
@@ -23,8 +32,29 @@ class AbstractDatatype():
         :return: A tuple containing the input layer, and the last layer of the nub
         """
 
-        input_layer = None
-        input_nub = None
+        # Get transformed data for shaping
+        if variable in transformed_observations.columns:
+            variable_list = [variable]
+        else:
+            variable_name_prefix = variable + '_'
+            variable_list = list(
+                filter(lambda x: x.startswith(variable_name_prefix),
+                       transformed_observations.columns))
+        transformed = transformed_observations[variable_list].as_matrix()
+
+        # Set up dimensions for input_layer layer
+        if len(transformed.shape) >= 2:
+            input_sequence_length = int(transformed.shape[1])
+        else:
+            input_sequence_length = 1
+
+        num_dense_units = int(min((input_sequence_length + 1) / 2, 10))
+
+        input_layer = Input(shape=(input_sequence_length,),
+                            name=lib.namespace_conversion('input_{}'.format(variable)))
+        x = input_layer
+        x = Dense(num_dense_units)(x)
+        input_nub = x
 
         return input_layer, input_nub
 

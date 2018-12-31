@@ -1,7 +1,7 @@
 from tests.testbase import TestBase
 
 
-class TestNumerical(TestBase):
+class TestDatatypeTemplate(TestBase):
 
     def test_init(self):
         # TODO Create datatype
