@@ -230,7 +230,7 @@ board games with my partner in Seattle.
 
 ### Development
 
- - Support for timestamp datatype (#TBD)
+ - Support for timestamp datatype (#106)
 
 ### 3.1.0
 
