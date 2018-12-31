@@ -464,6 +464,14 @@ class TimeSeriesVectorizer(TransformerMixin, BaseEstimator):
 
 
 class TimestampVectorizer(TransformerMixin, BaseEstimator):
+    """
+    Convert a timestamp string into usable information by:
+
+     - Determining timestamp format string (fit only)
+     - Converting string into timestamp (or NaN if not possible), using timestamp format string
+     - Convert timestamp to Unix Epoch time
+     - Calculating sine / cosine values, with frequencies described by `frequency_labels`
+    """
 
     def __init__(self, frequency_labels=['minutely', 'hourly', 'daily', 'weekly', 'monthly', 'quarterly', 'yearly']):
         self.frequency_labels = frequency_labels
@@ -482,27 +490,18 @@ class TimestampVectorizer(TransformerMixin, BaseEstimator):
 
     def transform(self, X):
 
-        # Undo numpy formatting
-        X = list(X[:, 0])
+        # Convert from string to epoch time
+        f = numpy.vectorize(lambda x: self.string_to_epoch(x, self.strptime_format))
+        X = f(X)
 
-        # Convert from string to datetime
-        X = map(lambda x: self.string_to_epoch(x, self.strptime_format), X)
-
-        # Redo numpy formatting
-        X = list(X)
-        X = numpy.array(X).reshape((len(X), 1))
+        # Convert to appropriately scaled trig inputs
+        X = self.trig_periods * X
 
         # Apply sine / cosine
-        X = self.trig_periods * X
-        print(X.shape)
         X_sin = numpy.sin(X)
         X_cos = numpy.cos(X)
-        X = numpy.concatenate([X_sin, X_cos], axis=1)
-        print(X_sin)
-        print(X_cos)
-        print(X)
-        print(X.shape)
 
+        X = numpy.concatenate([X_sin, X_cos], axis=1)
         return X
 
     @staticmethod
