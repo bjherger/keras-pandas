@@ -5,30 +5,36 @@
 
 **tl;dr:** keras-pandas allows users to rapidly build and iterate on deep learning models. 
 
-Getting data formatted and into keras can be tedious, time consuming, and difficult, whether your a veteran or new to 
-Keras. `keras-pandas` overcomes these issues by (automatically) providing:
+Getting data formatted and into keras can be tedious, time consuming, and require domain expertise, whether your a 
+veteran or new to Deep Learning. `keras-pandas` overcomes these issues by (automatically) providing:
 
- - A cleaned, transformed and correctly formatted `X` and `y` (good for keras, sklearn or any other ML platform)
- - An 'input nub', without the hassle of worrying about input shapes or data types
- - An output layer, correctly formatted for the kind of response variable provided
- 
-With these resources, it's possible to rapidly build and iterate on deep learning models, and focus on the parts of 
-modeling that you enjoy!
+ - **Data transformations**: A cleaned, transformed and correctly formatted `X` and `y` (good for keras, sklearn or any 
+ other ML 
+ platform)
+ - **Data piping**: Correctly formatted keras input, hidden and output layers to quickly start iterating on  
+
+These approaches are build on best in world approaches from practitioners, kaggle grand masters, papers, blog posts, 
+and coffee chats, to simple entry point into the world of deep learning, and a strong foundation for deep learning 
+experts.  
 
 For more info, check out the:
 
  - [Code](https://github.com/bjherger/keras-pandas)
  - [Documentation](http://keras-pandas.readthedocs.io/en/latest/intro.html)
- - [Issue tracker](https://github.com/bjherger/keras-pandas/issues)
- - [Author's website](https://www.hergertarian.com/)
  - [PyPi](https://pypi.org/project/keras-pandas/)
- - [CI/CD](https://travis-ci.org/bjherger/keras-pandas/builds)
+ - [Issue tracker](https://github.com/bjherger/keras-pandas/issues)
+ - [CI/CD](https://circleci.com/gh/bjherger/keras-pandas/tree/master)
+ - [Author's website](https://www.hergertarian.com/)
 
 ## Quick Start
 
 Let's build a model with the [lending club data set](https://www.lendingclub.com/info/download-data.action). This data set is 
 particularly fun because this data set contains a mix of text, categorical and numerical data types, and features a 
 lot of null values. 
+
+```bash
+pip install --upgrade keras-pandas
+```
 
 ```python
 from keras import Model
@@ -64,7 +70,6 @@ train_X, train_y = auto.fit_transform(train_observations)
 test_X, test_y = auto.transform(test_observations)
 
 # Create and fit keras (deep learning) model.
-
 x = auto.input_nub
 x = auto.output_nub(x)
 
@@ -230,7 +235,7 @@ board games with my partner in Seattle.
 
 ### Development
 
- - There's nothing here! (yet)
+ - Updated README and setup.py links (No PR)
 
 ### 3.1.0
 

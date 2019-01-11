@@ -25,13 +25,11 @@ setup(
     packages=find_packages(),
     install_requires=required,
     project_urls=OrderedDict((
-        ('Documentation', 'http://keras-pandas.readthedocs.io/en/latest/intro.html'),
         ('Code', 'https://github.com/bjherger/keras-pandas'),
-        ('Issue tracker', 'https://github.com/bjherger/keras-pandas/issues'),
+        ('Documentation', 'http://keras-pandas.readthedocs.io/en/latest/intro.html'),
         ('PyPi', 'https://pypi.org/project/keras-pandas/'),
-        ('CI/CD', 'https://travis-ci.org/bjherger/keras-pandas/builds'),
+        ('Issue tracker', 'https://github.com/bjherger/keras-pandas/issues'),
+        ('CI/CD', 'https://circleci.com/gh/bjherger/keras-pandas/tree/master'),
         ('Author\'s website', 'https://www.hergertarian.com/')
     )),
 )
-
-
