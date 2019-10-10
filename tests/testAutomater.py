@@ -42,7 +42,7 @@ class TestAutomater(TestBase):
                                         'revol_util',
                                         'total_acc', 'pub_rec_bankruptcies'],
                           'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
-                                          'application_type', 'disbursement_method'],
+                                          'application_type'],
                           'text': ['desc', 'purpose', 'title']}
         output_var = 'loan_status'
 
@@ -118,7 +118,7 @@ class TestAutomater(TestBase):
                                         'revol_util',
                                         'total_acc', 'pub_rec_bankruptcies'],
                           'categorical': ['term', 'grade', 'emp_length', 'home_ownership', 'loan_status', 'addr_state',
-                                          'application_type', 'disbursement_method'],
+                                          'application_type'],
                           'text': ['desc', 'purpose', 'title']}
         auto = Automater(data_type_dict=data_type_dict)
         self.assertFalse(auto.supervised)
